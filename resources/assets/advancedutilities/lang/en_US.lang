@@ -1,0 +1,141 @@
+itemGroup.AdvancedUtilities=Advanced Utilities
+itemGroup.AdvancedUtilitiesBETools=Advanced Utilities: BE Tools
+itemGroup.AdvancedUtilitiesBEMachines=Advanced Utilities: BE Machines
+
+tile.ChunkLoader.name=Chunk Loader
+
+tile.CopperOre.name=Copper Ore
+tile.TinOre.name=Tin Ore
+tile.ZincOre.name=Zinc Ore
+tile.SilverOre.name=Silver Ore
+tile.LeadOre.name=Lead Ore
+tile.BauxiteOre.name=Bauxite Ore
+tile.TungstenOre.name=Tungsten Ore
+tile.PlatinumOre.name=Platinum Ore
+
+
+tile.CopperBlock.name=Copper Block
+tile.TinBlock.name=Tin Block
+tile.BronzeBlock.name=Bronze Block
+tile.ZincBlock.name=Zinc Block
+tile.BrassBlock.name=Brass Block
+tile.SilverBlock.name=Silver Block
+tile.LeadBlock.name=Lead Block
+tile.AluminumBlock.name=Aluminum Block
+tile.TungstenBlock.name=Tungsten Block
+tile.PlatinumBlock.name=Platinum Block
+tile.IridiumBlock.name=Iridium Block
+tile.PalidiumBlock.name=Palidium Block
+tile.SteelBlock.name=Steel Block
+
+tile.RubberLog.name=Rubber Wood Log
+tile.RubberPlanks.name=Rubber Wood Planks
+tile.RubberLeaves.name=Rubber Leaves
+tile.RubberSapling.name=Rubber Sapling
+
+tile.Kiln.name=Kiln
+tile.Smeltry.name=Smeltry
+tile.ToolForge.name=Tool Forge
+tile.ArmorForge.name=Armor Forge
+
+item.CopperIngot.name=Copper Ingot
+item.TinIngot.name=Tin Ingot
+item.BronzeIngot.name=Bronze Ingot
+item.ZincIngot.name=Zinc Ingot
+item.BrassIngot.name=Brass Ingot
+item.SilverIngot.name=Silver Ingot
+item.LeadIngot.name=Lead Ingot
+item.AluminumIngot.name=Aluminum Ingot
+item.TungstenIngot.name=Tungsten Ingot
+item.PlatinumIngot.name=Platinum Ingot
+item.IridiumIngot.name=Iridium Ingot
+item.PalidiumIngot.name=Palidium Ingot
+item.SteelIngot.name=Steel Ingot
+
+item.toolPart.BronzeRod.name=Bronze Rod
+item.toolPart.IronRod.name=Iron Rod
+item.toolPart.IronPickaxeHead.name=Iron Pickaxe Head
+item.toolPart.IronSwordBlade.name=Iron Sword Blade
+item.toolPart.IronShovelHead.name=Iron Shovel Head
+item.toolPart.IronAxeHead.name=Iron Axe Head
+item.toolPart.BronzePickaxeHead.name=Bronze Pickaxe Head
+item.toolPart.BronzeSwordBlade.name=Bronze Sword Blade
+item.toolPart.BronzeShovelHead.name=Bronze Shovel Head
+item.toolPart.BronzeAxeHead.name=Bronze Axe Head
+
+item.Plate.IronPlate.name=Iron Plate
+item.Plate.BronzePlate.name=Bronze Plate
+item.Plate.BrassPlate.name=Brass Plate
+item.Plate.StonePlate.name=Stone Plate
+
+item.BronzeHelm.name=Bronze Helm
+item.BronzeChest.name=BronzeChest
+item.BronzeLegs.name=Bronze Legs
+item.BronzeBoots.name=Bronze Boots
+
+item.BrassRivets.name=Brass Rivets
+item.StoneRivets.name=Stone Rivets
+
+IronPickaxe.name=Iron Pickaxe
+IronSword.name=Iron Sword
+IronShovel.name=Iron Shovel
+IronAxe.name=Iron Axe
+
+BronzePickaxe.name=Bronze Pickaxe
+BronzeSword.name=Bronze Sword
+BronzeShovel.name=Bronze Shovel
+BronzeAxe.name=Bronze Axe
+item.PnumaticGun.name=Pnumatic Gun
+item.BronzeBullet.name=Bronze Bullet
+item.SteamJetpack.name=SteamJetpack
+item.Casing.StoneCasing.name=Stone Casing
+item.Casing.BronzeCasing.name=Bronze Bullet Casing
+item.Casing.SteamCanister.name=Steam Canister
+item.BulletHead.StoneHead.name=Stone Head
+item.BulletHead.LeadBullet.name=Lead Bullet Head
+item.JackHammer.name=Jack Hammer
+item.SpeedyMinecart.name=Speedy Minecart
+item.SpeedyChestcart.name=Speedy Chestcart
+
+entity.advancedutilities.EntitySpeedyMinecart.name=Entity Speedy Minecart
+entity.advancedutilities.EntitySpeedyChestcart.name=Entity Speedy Chestcart
+
+item.Cast.RodCast.name=Rod Cast
+item.Cast.PickCast.name=Pickaxe Head Cast
+item.Cast.SwordCast.name=Sword Blade Cast
+item.Cast.ShovelCast.name=Shovel Head Cast
+item.Cast.AxeCast.name=Axe Head Cast
+item.Cast.PlateCast.name=Plate Cast
+item.Cast.RivetCast.name=Rivets Cast
+item.Cast.HeadCast.name=Bullet Head Cast
+item.Cast.CasingCast.name=Bullet Casing Cast
+
+fluid.steam=Steam
+tile.SteamBoiler.name=Steam Boiler
+tile.SteamCrusher.name=Steam Crusher
+tile.SteamFurnace.name=Steam Furnace
+tile.SteamSmeltry.name=Steam Smeltry
+tile.SteamCompressor.name=Steam Compressor
+tile.Bellows.name=Bellows
+tile.BronzeMachine.name=Bronze Machine Block
+tile.SteamCharger.name=Steam Charger
+tile.ItemTube.name=Item Tube
+tile.RestrictedItemTube.name=Restricted Item Tube
+
+item.Dust.CopperDust.name=Copper Dust
+item.Dust.IronDust.name=Iron Dust
+item.Dust.ZincDust.name=Zinc Dust
+item.Dust.TinDust.name=Tin Dust
+item.Dust.BronzeDust.name=Bronze Dust
+item.Dust.BrassDust.name=Brass Dust
+item.Dust.GoldDust.name=Gold Dust
+item.Dust.DiamondDust.name=Diamond Dust
+item.Dust.CoalDust.name=Coal Dust
+item.Dust.SilverDust.name=Silver Dust
+item.Dust.LeadDust.name=Lead Dust
+item.Dust.AluminumDust.name=Aluminum Dust
+item.Dust.TungstenDust.name=Tungsten Dust
+item.Dust.PlatinumDust.name=Platinum Dust
+item.Dust.IridiumDust.name=Iridium Dust
+item.Dust.PalidiumDust.name=Palidium Dust
+item.Dust.SteelDust.name=Steel Dust

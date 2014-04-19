@@ -1,0 +1,5 @@
+{
+  "gunshot": {"category": "master","sounds": [{"name": "gunshot","stream": false}]},
+  "steam": {"category": "master","sounds": [{"name": "steam","stream": false}]},
+  "steamStream": {"category": "master","sounds": [{"name": "steamStream","stream": false}]}
+}

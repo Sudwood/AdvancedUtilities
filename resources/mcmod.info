@@ -1,0 +1,16 @@
+[
+{
+  "modid": "advancedutilities",
+  "name": "Advanced Utilities",
+  "description": "The mod about Advanced Utilities. Currently only adds Bronze Age",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["Sudwood"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
