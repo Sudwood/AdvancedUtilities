@@ -1,6 +1,7 @@
 package com.sudwood.advancedutilities.tileentity;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
+import com.sudwood.advancedutilities.AdvancedUtilitiesChunkLoadCallback;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -51,6 +52,7 @@ public class TileEntityChunkLoader extends TileEntity
 			 {
 				 System.out.println("FuckingHell");
 			 }
+			 chunkTicket.getModData().setInteger("type", AdvancedUtilitiesChunkLoadCallback.ChunkLoaderBlockID);
 			 chunkTicket.getModData().setInteger("blockX", xCoord);
 			 chunkTicket.getModData().setInteger("blockY", yCoord);
 			 chunkTicket.getModData().setInteger("blockZ", zCoord);

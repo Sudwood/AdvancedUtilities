@@ -1,16 +1,25 @@
 package com.sudwood.advancedutilities;
 
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.client.SoundHandler;
+import com.sudwood.advancedutilities.entity.minecart.EntityChunkLoadingCart;
+import com.sudwood.advancedutilities.entity.minecart.IChunkCart;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -72,4 +81,76 @@ public class AUEventHandler
 			// finally, we sync the data between server and client (we did this earlier in 3.3)
 		}
 	}
+	
+	@SubscribeEvent
+	public void onMinecartInteract(MinecartInteractEvent event)
+	{
+		if(event.player!=null && event.minecart != null && event.player.getCurrentEquippedItem() !=null && event.player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.crowbar)
+		{
+			EntityPlayer player = event.player;
+			ItemStack held = player.getCurrentEquippedItem().copy();
+			if(held.getTagCompound() == null)
+			{
+				held.setTagCompound(new NBTTagCompound());
+			}
+			NBTTagCompound tag = held.getTagCompound();
+			if(!tag.getBoolean("isSet"))
+			{
+				tag.setInteger("ID", event.minecart.getEntityId());
+				tag.setBoolean("isSet", true);
+				held.damageItem(1, player);
+				player.setCurrentItemOrArmor(0, held);
+				event.setCanceled(true);
+				return;
+			}
+			else if(tag.getBoolean("isSet"))
+			{
+				event.minecart.mountEntity(player.worldObj.getEntityByID(tag.getInteger("ID")));
+				tag.setBoolean("isSet", false);
+				tag.setInteger("ID", 0);
+				held.damageItem(1, player);
+				player.setCurrentItemOrArmor(0, held);
+				event.setCanceled(true);
+				return;
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityMoveChunks(EntityEvent.EnteringChunk event)
+	{
+		if(event.entity instanceof IChunkCart)
+		{
+			IChunkCart entity = (IChunkCart) event.entity;
+			entity.loadChunk(event.newChunkX, event.newChunkZ);
+			entity.unLoadChunk(event.oldChunkX, event.oldChunkZ);
+			
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityJump(LivingEvent.LivingJumpEvent event)
+	{
+		if(event.entityLiving != null && event.entityLiving instanceof EntityPlayer)
+		{
+			EntityPlayer player = (EntityPlayer)event.entityLiving;
+			if(player.getCurrentArmor(0) != null && player.getCurrentArmor(0).getItem() == AdvancedUtilitiesItems.runningShoes)
+			{
+				player.motionY+=0.05D;
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onLivingDeath(LivingDeathEvent event)
+	{
+		if(event.entityLiving instanceof EntitySheep && !event.entityLiving.worldObj.isRemote)
+		{
+			if(Math.random()>=0.4)
+			{
+				event.entityLiving.worldObj.spawnEntityInWorld(new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, new ItemStack(Items.leather, 1)));
+			}
+		}
+	}
+	
 }

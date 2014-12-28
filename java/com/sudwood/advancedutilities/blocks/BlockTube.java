@@ -1,22 +1,36 @@
 package com.sudwood.advancedutilities.blocks;
 
+import java.util.Random;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.common.util.RotationHelper;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.client.ClientRegistering;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteamCharger;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteamFurnace;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteamSmeltry;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,6 +38,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockTube extends BlockContainer
 {
 	private int Type;
+	private final Random field_149933_a = new Random();
+
 	 protected BlockTube(Material p_i45386_1_, int type) {
 		super(p_i45386_1_);
 		Type = type;
@@ -60,6 +76,7 @@ public class BlockTube extends BlockContainer
     {
         return false;
     }
+	@SideOnly(Side.CLIENT)
 	public int getRenderType()
     {
 		return ClientRegistering.tubeId;
@@ -97,11 +114,11 @@ public class BlockTube extends BlockContainer
     {
         float f = 0.0225F;
         if(world.getBlockMetadata(x, y, z) == 1 || world.getBlockMetadata(x, y, z) == 0)
-        	return AxisAlignedBB.getAABBPool().getAABB((double)((float)x + f*15), (double)y, (double)((float)z + f*14), (double)((float)(x + 1) - f*14), (double)((float)(y + 1) - f), (double)((float)(z + 1) - f*14));
+        	return AxisAlignedBB.getBoundingBox((double)((float)x + f*15), (double)y, (double)((float)z + f*14), (double)((float)(x + 1) - f*14), (double)((float)(y + 1) - f), (double)((float)(z + 1) - f*14));
         if(world.getBlockMetadata(x, y, z) == 2 || world.getBlockMetadata(x, y, z) == 3)
-        	return AxisAlignedBB.getAABBPool().getAABB((double)((float)x + f*15), (double)y+f*14, (double)z, (double)((float)(x + 1) - f*14), (double)((float)(y + 1) - f*14), (double)((float)(z + 1) - f));
+        	return AxisAlignedBB.getBoundingBox((double)((float)x + f*15), (double)y+f*14, (double)z, (double)((float)(x + 1) - f*14), (double)((float)(y + 1) - f*14), (double)((float)(z + 1) - f));
         else
-        	return AxisAlignedBB.getAABBPool().getAABB((double)x, (double)y+f*14, (double)((float)z + f*14), (double)((float)(x + 1) - f), (double)((float)(y + 1) - f*14), (double)((float)(z + 1) - f*14));
+        	return AxisAlignedBB.getBoundingBox((double)x, (double)y+f*14, (double)((float)z + f*14), (double)((float)(x + 1) - f), (double)((float)(y + 1) - f*14), (double)((float)(z + 1) - f*14));
     }
 
     /**
@@ -131,11 +148,11 @@ public class BlockTube extends BlockContainer
     {
         float f = 0.0225F;
         if(world.getBlockMetadata(x, y, z) == 1 || world.getBlockMetadata(x, y, z) == 0)
-        	return AxisAlignedBB.getAABBPool().getAABB((double)((float)x + f*15), (double)y, (double)((float)z + f*14), (double)((float)(x + 1) - f*14), (double)((float)(y + 1) - f), (double)((float)(z + 1) - f*14));
+        	return AxisAlignedBB.getBoundingBox((double)((float)x + f*15), (double)y, (double)((float)z + f*14), (double)((float)(x + 1) - f*14), (double)((float)(y + 1) - f), (double)((float)(z + 1) - f*14));
         if(world.getBlockMetadata(x, y, z) == 2 || world.getBlockMetadata(x, y, z) == 3)
-        	return AxisAlignedBB.getAABBPool().getAABB((double)((float)x + f*15), (double)y+f*14, (double)z, (double)((float)(x + 1) - f*14), (double)((float)(y + 1) - f*14), (double)((float)(z + 1) - f));
+        	return AxisAlignedBB.getBoundingBox((double)((float)x + f*15), (double)y+f*14, (double)z, (double)((float)(x + 1) - f*14), (double)((float)(y + 1) - f*14), (double)((float)(z + 1) - f));
         else
-        	return AxisAlignedBB.getAABBPool().getAABB((double)x, (double)y+f*14, (double)((float)z + f*14), (double)((float)(x + 1) - f), (double)((float)(y + 1) - f*14), (double)((float)(z + 1) - f*14));
+        	return AxisAlignedBB.getBoundingBox((double)x, (double)y+f*14, (double)((float)z + f*14), (double)((float)(x + 1) - f), (double)((float)(y + 1) - f*14), (double)((float)(z + 1) - f*14));
     }
 
 	@Override
@@ -149,23 +166,122 @@ public class BlockTube extends BlockContainer
 			return new TileEntityRestrictedItemTube();
 		return null;
 	}
+	@Override
+	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+    {
+		if(world.getBlockMetadata(x, y, z) < 5)
+		{
+			world.setBlockMetadataWithNotify(x, y, z, world.getBlockMetadata(x, y, z)+1, 3);
+		}
+		else
+		{
+			world.setBlockMetadataWithNotify(x, y, z, 0, 3);
+		}
+		return true;
+    }
+	
+	public void sneakWrench(World world, int x, int y, int z, EntityPlayer player)
+	{
+		if(!world.isRemote)
+		{
+			if(Type == 0)
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.itemTube, 1)));
+			if(Type == 1)
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.fluidTube, 1)));
+			if(Type == 2)
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.restrictedItemTube, 1)));
+			this.breakBlock(world, x, y, z, this, world.getBlockMetadata(x, y, z));
+		}
+		this.removedByPlayer(world, player, x, y, z);
+	}
+	
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_)
     {
-		if(Type == 0)
+		if(player.isSneaking())
+		{
+			this.sneakWrench(world, x, y, z, player);
+			return true;
+		}
+		if(Type == 0 && !player.isSneaking() && (player.getCurrentEquippedItem() == null || player.getCurrentEquippedItem().getItem() != AdvancedUtilitiesItems.bronzeWrench))
 		{
 			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.itemTubeGui, world, x, y, z);
 			return true;
 		}
-		if(Type == 1)
+		if(Type == 1 && !player.isSneaking() && (player.getCurrentEquippedItem() == null || player.getCurrentEquippedItem().getItem() != AdvancedUtilitiesItems.bronzeWrench))
 		{
 			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.fluidTubeGui, world, x, y, z);
 			return true;
 		}
-		if(Type == 2)
+		if(Type == 2 && !player.isSneaking() && (player.getCurrentEquippedItem() == null || player.getCurrentEquippedItem().getItem() != AdvancedUtilitiesItems.bronzeWrench))
 		{
 			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.restrictedItemTubeGui, world, x, y, z);
 			return true;
 		}
 		return false;
+    }
+	
+	public void breakBlock(World p_149749_1_, int p_149749_2_, int p_149749_3_, int p_149749_4_, Block p_149749_5_, int p_149749_6_)
+    {
+        if (!false && Type != 1)
+        {
+        	IInventory tileentityfurnace;
+        	switch(Type)
+        	{
+        	case 0:
+        		tileentityfurnace = (TileEntityItemTube)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
+        		break;
+    		case 2:
+    			tileentityfurnace = (TileEntityRestrictedItemTube)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
+    			break;
+
+    			default:
+    				tileentityfurnace = (TileEntityItemTube)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
+    				break;
+        	}
+            
+
+            if (tileentityfurnace != null)
+            {
+                for (int i1 = 0; i1 < tileentityfurnace.getSizeInventory(); ++i1)
+                {
+                    ItemStack itemstack = tileentityfurnace.getStackInSlot(i1);
+
+                    if (itemstack != null)
+                    {
+                        float f = this.field_149933_a.nextFloat() * 0.8F + 0.1F;
+                        float f1 = this.field_149933_a.nextFloat() * 0.8F + 0.1F;
+                        float f2 = this.field_149933_a.nextFloat() * 0.8F + 0.1F;
+
+                        while (itemstack.stackSize > 0)
+                        {
+                            int j1 = this.field_149933_a.nextInt(21) + 10;
+
+                            if (j1 > itemstack.stackSize)
+                            {
+                                j1 = itemstack.stackSize;
+                            }
+
+                            itemstack.stackSize -= j1;
+                            EntityItem entityitem = new EntityItem(p_149749_1_, (double)((float)p_149749_2_ + f), (double)((float)p_149749_3_ + f1), (double)((float)p_149749_4_ + f2), new ItemStack(itemstack.getItem(), j1, itemstack.getItemDamage()));
+
+                            if (itemstack.hasTagCompound())
+                            {
+                                entityitem.getEntityItem().setTagCompound((NBTTagCompound)itemstack.getTagCompound().copy());
+                            }
+
+                            float f3 = 0.05F;
+                            entityitem.motionX = (double)((float)this.field_149933_a.nextGaussian() * f3);
+                            entityitem.motionY = (double)((float)this.field_149933_a.nextGaussian() * f3 + 0.2F);
+                            entityitem.motionZ = (double)((float)this.field_149933_a.nextGaussian() * f3);
+                            p_149749_1_.spawnEntityInWorld(entityitem);
+                        }
+                    }
+                }
+
+                p_149749_1_.func_147453_f(p_149749_2_, p_149749_3_, p_149749_4_, p_149749_5_);
+            }
+        }
+
+        super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, p_149749_5_, p_149749_6_);
     }
 }

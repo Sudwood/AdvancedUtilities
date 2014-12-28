@@ -123,6 +123,113 @@ public class TransferHelper
 	 * @param z of the block being checked
 	 * @param inventory the inventory that the stack is going into - ei the tile entity of the hopper
 	 * @param worldObj the world of the block
+	 * @return
+	 */
+	public static int[] getFirstStackThatFits(int x, int y, int z, ItemStack[] inventory, World worldObj, int numTransfered, int side)
+	{
+		TileEntity tile = null;
+		int[] slot = new int[4];
+		try
+		{
+			tile = worldObj.getTileEntity(x, y, z);
+		}
+		catch(Exception e)
+		{
+			
+		}
+		if(tile != null && tile instanceof ISidedInventory)
+		{
+			int[] slots =  ((ISidedInventory) tile).getAccessibleSlotsFromSide(side);
+			if(tile instanceof TileEntityFurnace)
+				slots = new int[]{2};
+			for(int i = 0; i < slots.length; i++)
+			{
+				if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null)
+				{
+					for(int ix = 0; ix < inventory.length; ix++)
+					{
+						if(inventory[ix] == null)
+						{
+							slot[0] = slots[i];
+							slot[1] = 0;
+							slot[2] = ix;
+							return slot;
+						}
+						if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null && inventory[ix].isItemEqual(((ISidedInventory)tile).getStackInSlot(ix)))
+						{
+							if(((ISidedInventory)tile).getStackInSlot(slots[i]).stackSize + inventory[ix].stackSize < 64)
+							{
+								slot[0] = slots[i];
+								slot[1] = 1;
+								slot[2] = ix;
+								slot[3] = 0;
+								return slot;
+							}
+							else if(((ISidedInventory)tile).getStackInSlot(slots[i]).stackSize + inventory[ix].stackSize > 64)
+							{
+								slot[0] = slots[i];
+								slot[1] = 1;
+								slot[2] = ix;
+								slot[3] = 64-inventory[ix].stackSize;
+								return slot;
+							}
+						}
+					}
+				}
+			}
+			return null;
+		}
+		
+		
+		if(tile != null && tile instanceof IInventory)
+		{
+			for(int i = 0; i < ((IInventory)tile).getSizeInventory(); i++)
+			{
+				if(((IInventory)tile).getStackInSlot(i) != null)
+				{
+					for(int ix = 0; ix < inventory.length; ix++)
+					{
+						if(inventory[ix] == null)
+						{
+							slot[0] = i;
+							slot[1] = 0;
+							slot[2] = ix;
+							return slot;
+						}
+						if(((IInventory)tile).getStackInSlot(i) != null && inventory[ix].isItemEqual(((IInventory)tile).getStackInSlot(i)))
+						{
+							if(numTransfered + inventory[ix].stackSize < 64)
+							{
+								slot[0] = i;
+								slot[1] = 1;
+								slot[2] = ix;
+								slot[3] = 0;
+								return slot;
+							}
+							else if(numTransfered + inventory[ix].stackSize > 64 && inventory[ix].stackSize!=64)
+							{
+								slot[0] = i;
+								slot[1] = 1;
+								slot[2] = ix;
+								slot[3] = 64-inventory[ix].stackSize;
+								return slot;
+							}
+						}
+					}
+				}
+			}
+			return null;
+		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param x of the block being checked
+	 * @param y of the block being checked
+	 * @param z of the block being checked
+	 * @param inventory the inventory that the stack is going into - ei the tile entity of the hopper
+	 * @param worldObj the world of the block
 	 * @param The tile entity calling this method for isitemvalidforslot checking
 	 * @return
 	 */
@@ -224,6 +331,114 @@ public class TransferHelper
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param x of the block being checked
+	 * @param y of the block being checked
+	 * @param z of the block being checked
+	 * @param inventory the inventory that the stack is going into - ei the tile entity of the hopper
+	 * @param worldObj the world of the block
+	 * @param The tile entity calling this method for isitemvalidforslot checking
+	 * @return
+	 */
+	public static int[] getFirstStackThatFits(int x, int y, int z, ItemStack[] inventory, World worldObj, int numTransfered, IInventory tileen, int side)
+	{
+		TileEntity tile = null;
+		int[] slot = new int[4];
+		try
+		{
+			tile = worldObj.getTileEntity(x, y, z);
+		}
+		catch(Exception e)
+		{
+			
+		}
+		if(tile != null && tile instanceof ISidedInventory)
+		{
+			int[] slots =  ((ISidedInventory) tile).getAccessibleSlotsFromSide(side);
+			if(tile instanceof TileEntityFurnace)
+				slots = new int[]{2};
+			for(int i = 0; i < slots.length; i++)
+			{
+				if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null)
+				{
+					for(int ix = 0; ix < inventory.length; ix++)
+					{
+						if(inventory[ix] == null)
+						{
+							slot[0] = slots[i];
+							slot[1] = 0;
+							slot[2] = ix;
+							return slot;
+						}
+						if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null && inventory[ix] != null && inventory[ix].isItemEqual(((ISidedInventory)tile).getStackInSlot(slots[i])))
+						{
+							if(((ISidedInventory)tile).getStackInSlot(slots[i]).stackSize + inventory[ix].stackSize < 64)
+							{
+								slot[0] = slots[i];
+								slot[1] = 1;
+								slot[2] = ix;
+								slot[3] = 0;
+								return slot;
+							}
+							else if(((ISidedInventory)tile).getStackInSlot(slots[i]).stackSize + inventory[ix].stackSize > 64)
+							{
+								slot[0] = slots[i];
+								slot[1] = 1;
+								slot[2] = ix;
+								slot[3] = 64-inventory[ix].stackSize;
+								return slot;
+							}
+						}
+					}
+				}
+			}
+			return null;
+		}
+		
+		
+		if(tile != null && tile instanceof IInventory)
+		{
+			for(int i = 0; i < ((IInventory)tile).getSizeInventory(); i++)
+			{
+				if(((IInventory)tile).getStackInSlot(i) != null)
+				{
+					for(int ix = 0; ix < inventory.length; ix++)
+					{
+						if(inventory[ix] == null && tileen.isItemValidForSlot(ix, ((IInventory)tile).getStackInSlot(i)))
+						{
+							slot[0] = i;
+							slot[1] = 0;
+							slot[2] = ix;
+							return slot;
+						}
+						if(((IInventory)tile).getStackInSlot(i) != null && inventory[ix]!=null && inventory[ix].isItemEqual(((IInventory)tile).getStackInSlot(i)) && tileen.isItemValidForSlot(ix, ((IInventory)tile).getStackInSlot(i)))
+						{
+							if(numTransfered + inventory[ix].stackSize < 64)
+							{
+								slot[0] = i;
+								slot[1] = 1;
+								slot[2] = ix;
+								slot[3] = 0;
+								return slot;
+							}
+							else if(numTransfered + inventory[ix].stackSize > 64 && inventory[ix].stackSize!=64)
+							{
+								slot[0] = i;
+								slot[1] = 1;
+								slot[2] = ix;
+								slot[3] = 64-inventory[ix].stackSize;
+								return slot;
+							}
+						}
+					}
+				}
+			}
+			return null;
+		}
+		return null;
+	}
+	
 	
 	
 	 /**
@@ -247,13 +462,13 @@ public class TransferHelper
             	int[] slots =  ((ISidedInventory) tempTile).getAccessibleSlotsFromSide(sideAttached);
             	for(int i = 0; i < slots.length; i++)
             	{
-            		if(((ISidedInventory) tempTile).isItemValidForSlot(slots[i], stack) && ((ISidedInventory) tempTile).getStackInSlot(slots[i]) == null)
+            		if(((ISidedInventory) tempTile).canInsertItem(slots[0], stack, sideAttached) && ((ISidedInventory) tempTile).getStackInSlot(slots[i]) == null)
             		{
             			space[0] = slots[i];
             			space[1] = 0;
             			return space;
             		}
-            		if(((ISidedInventory) tempTile).isItemValidForSlot(slots[i], stack) && ((ISidedInventory) tempTile).getStackInSlot(slots[i]).isItemEqual(stack))
+            		if(((ISidedInventory) tempTile).canInsertItem(slots[0], stack, sideAttached) && ((ISidedInventory) tempTile).getStackInSlot(slots[i]).isItemEqual(stack))
             		{
             			if(((ISidedInventory) tempTile).getStackInSlot(slots[i]).stackSize + stack.stackSize <= ((ISidedInventory) tempTile).getInventoryStackLimit())
             			{

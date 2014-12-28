@@ -7,6 +7,8 @@ import java.util.List;
 
 
 
+
+
 import com.sudwood.advancedutilities.TransferHelper;
 
 import net.minecraft.command.IEntitySelector;
@@ -20,6 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 
 
 public class TileEntityRestrictedItemTube extends TileEntity implements IInventory
@@ -147,7 +150,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
     	switch(worldObj.getBlockMetadata(xCoord, yCoord, zCoord))
     	{
     	case 1:
-    		int[] slot = TransferHelper.getFirstStackThatFits(xCoord, yCoord+ForgeDirection.UP.offsetY, zCoord, inventory, worldObj, numTransfered, this);
+    		int[] slot = TransferHelper.getFirstStackThatFits(xCoord, yCoord+ForgeDirection.UP.offsetY, zCoord, inventory, worldObj, numTransfered, this, 0);
 	    	if(slot!= null)
 	    	{
 	    		try
@@ -189,7 +192,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	    	}
 	    	break;
     	case 0:
-    		int[] slot1 = TransferHelper.getFirstStackThatFits(xCoord, yCoord+ForgeDirection.DOWN.offsetY, zCoord, inventory, worldObj, numTransfered, this);
+    		int[] slot1 = TransferHelper.getFirstStackThatFits(xCoord, yCoord+ForgeDirection.DOWN.offsetY, zCoord, inventory, worldObj, numTransfered, this, 1);
 	    	if(slot1!= null)
 	    	{
 	    		try
@@ -231,7 +234,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	    	}
 	    	break;
     	case 3:
-    		int[] slot11 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ, inventory, worldObj, numTransfered, this);
+    		int[] slot11 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ, inventory, worldObj, numTransfered, this, 2);
 	    	if(slot11!= null)
 	    	{
 	    		try
@@ -273,7 +276,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	    	}
 	    	break;
     	case 2:
-    		int[] slot111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ, inventory, worldObj, numTransfered, this);
+    		int[] slot111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ, inventory, worldObj, numTransfered, this, 3);
 	    	if(slot111!= null)
 	    	{
 	    		try
@@ -315,7 +318,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	    	}
 	    	break;
     	case 4:
-    		int[] slot1111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ, inventory, worldObj, numTransfered, this);
+    		int[] slot1111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ, inventory, worldObj, numTransfered, this, 5);
 	    	if(slot1111!= null)
 	    	{
 	    		try
@@ -357,7 +360,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	    	}
 	    	break;
     	case 5:
-    		int[] slot11111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ, inventory, worldObj, numTransfered, this);
+    		int[] slot11111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ, inventory, worldObj, numTransfered, this, 4);
 	    	if(slot11111!= null)
 	    	{
 	    		try
@@ -652,11 +655,10 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		// TODO Auto-generated method stub
 		boolean result = false;
 		for (int ix = 0; ix < 9; ix++)
 		{
-			if(restriction[ix]!=null && restriction[ix].isItemEqual(itemstack))
+			if(restriction[ix]!=null && ((restriction[ix].getItem() == itemstack.getItem() && restriction[ix].getItemDamage() == itemstack.getItemDamage()) || OreDictionary.itemMatches(restriction[ix], itemstack, true)))
 			{
 				result = true;
 			}

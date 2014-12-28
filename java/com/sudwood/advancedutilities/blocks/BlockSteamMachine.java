@@ -13,8 +13,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
@@ -181,6 +183,40 @@ public class BlockSteamMachine extends BlockContainer
         }
     }
     
+    public void sneakWrench(World world, int x, int y, int z, EntityPlayer player)
+	{
+		if(!world.isRemote)
+		{
+			switch(type)
+			{
+			case 0:
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.steamBoiler, 1)));
+				break;
+			case 1:
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.steamCrusher, 1)));
+				break;
+			case 2:
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.steamFurnace, 1)));
+				break;
+			case 3:
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.steamSmeltry, 1)));
+				break;
+			case 4:
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.bellows, 1)));
+				break;
+			case 5:
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.steamCompressor, 1)));
+				break;
+			case 6:
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.steamCharger, 1)));
+				break;
+			}
+
+			this.breakBlock(world, x, y, z, this, world.getBlockMetadata(x, y, z));
+		}
+		this.removedByPlayer(world, player, x, y, z);
+	}
+    
     /**
      * Called when the block is placed in the world.
      */
@@ -216,6 +252,11 @@ public class BlockSteamMachine extends BlockContainer
      */
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_)
     {
+    	if(player.isSneaking())
+		{
+			this.sneakWrench(world, x, y, z, player);
+			return true;
+		}
     	switch(type)
 		{
 		case 0:
@@ -281,7 +322,7 @@ public class BlockSteamMachine extends BlockContainer
     {
         return false;
     }
-	
+	@SideOnly(Side.CLIENT)
 	public int getRenderType()
     {
 		switch(type)

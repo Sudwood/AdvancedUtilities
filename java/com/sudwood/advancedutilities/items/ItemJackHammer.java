@@ -1,26 +1,39 @@
 package com.sudwood.advancedutilities.items;
 
 import java.util.List;
+import java.util.Random;
 
-import com.sudwood.advancedutilities.client.SoundHandler;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 
-public class ItemJackHammer extends Item
+import com.sudwood.advancedutilities.client.SoundHandler;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+public class ItemJackHammer extends ItemPickaxe
 {
 	public static final int maxStorage = 64*FluidContainerRegistry.BUCKET_VOLUME;
 	public static final int steamUse = 40;
+	public ItemJackHammer()
+	{
+		super(ToolMaterial.IRON);
+		this.setHarvestLevel("pickaxe", 2);
+		this.setMaxDamage(0);
+		this.setMaxStackSize(1);
+	}
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) 
 	{
@@ -36,21 +49,58 @@ public class ItemJackHammer extends Item
 		par3List.add("Steam: "+tag.getInteger("tankAmount")+" / "+tag.getInteger("maxTankAmount")+" mB");
 		par3List.add("Blocks Remaining: "+ (tag.getInteger("tankAmount") / (this.steamUse)));
 	}
+	@SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister icon)
+    {
+		this.itemIcon = icon.registerIcon("advancedutilities:copperingot");
+    }
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
+ 	{
+ 		if(stack.getTagCompound() == null)
+ 		{
+ 			stack.setTagCompound(new NBTTagCompound());
+ 		}
+ 		NBTTagCompound tag = stack.getTagCompound();
+ 		if(tag.getInteger("maxTankAmount") == 0)
+ 		{
+ 			tag.setInteger("maxTankAmount", maxStorage);
+ 		}
+ 	}
 	
-	 /**
+	@Override
+	public boolean isItemTool(ItemStack par1ItemStack)
+    {
+        return true;
+    }
+	
+	public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
+    {
+		return true;
+    }
+	public boolean isRepairable()
+    {
+		return true;
+    }
+	
+	 public boolean isDamageable()
+	 {
+		 return true;
+	 }
+	
+	/* /**
      * ItemStack sensitive version of {@link #canHarvestBlock(Block)} 
      * @param par1Block The block trying to harvest
      * @param itemStack The itemstack used to harvest the block
      * @return true if can harvest the block
      */
-    @Override
+   /* @Override
     public boolean canHarvestBlock(Block par1Block, ItemStack itemStack)
     {
     	if(par1Block.isToolEffective("pickaxe", 2))
 			return true;
     	else
     		return false;
-    }
+    }*/
     
     public boolean isBookEnchantable(ItemStack stack, ItemStack book)
     {
@@ -91,6 +141,8 @@ public class ItemJackHammer extends Item
      */
     public float getDigSpeed(ItemStack itemstack, Block block, int metadata)
     {
+    	if(block == Blocks.obsidian)
+    		return 500F;
     	if(block.isToolEffective("pickaxe", 2))
 			return 40F;
     	else return 10F;
@@ -121,20 +173,52 @@ public class ItemJackHammer extends Item
     	NBTTagCompound tag = stack.getTagCompound();
     		if(block.isToolEffective("pickaxe", 2) && tag.getInteger("tankAmount") >= this.steamUse)
 	      	 {
-		      	 tag.setInteger("tankAmount", tag.getInteger("tankAmount")-this.steamUse);
-		      	if(tag.getInteger("tankAmount") <= 0)
-		      	{
-		      		SoundHandler.playAtEntity(player.worldObj, player, "steam",1F, 1F);
-		      	}
+    			int unbreaking = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
+    			if(unbreaking <=0)
+    			{
+			      	tag.setInteger("tankAmount", tag.getInteger("tankAmount")-this.steamUse);
+			      	if(tag.getInteger("tankAmount") <= 0)
+			      	{
+			      		SoundHandler.playAtEntity(player.worldObj, player, "steam",1F, 1F);
+			      	}
+    			}
+    			else
+    			{
+    				Random random = new Random();
+    				if(random.nextInt(10)-unbreaking > 0)
+    				{
+    					tag.setInteger("tankAmount", tag.getInteger("tankAmount")-this.steamUse);
+				      	if(tag.getInteger("tankAmount") <= 0)
+				      	{
+				      		SoundHandler.playAtEntity(player.worldObj, player, "steam",1F, 1F);
+				      	}
+    				}
+    			}
 		      	 return true;
 	      	 }
     		if(!block.isToolEffective("pickaxe", 2) && tag.getInteger("tankAmount") >= 2*this.steamUse)
 	      	 {
-		      	 tag.setInteger("tankAmount", tag.getInteger("tankAmount")-2*this.steamUse);
-		      	if(tag.getInteger("tankAmount") <= 0)
-		      	{
-		      		SoundHandler.playAtEntity(player.worldObj, player, "steam",1F, 1F);
-		      	}
+    			int unbreaking = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
+    			if(unbreaking <=0)
+    			{
+			      	tag.setInteger("tankAmount", tag.getInteger("tankAmount")-2*this.steamUse);
+			      	if(tag.getInteger("tankAmount") <= 0)
+			      	{
+			      		SoundHandler.playAtEntity(player.worldObj, player, "steam",1F, 1F);
+			      	}
+    			}
+    			else
+    			{
+    				Random random = new Random();
+    				if(random.nextInt(10)-unbreaking > 0)
+    				{
+    					tag.setInteger("tankAmount", tag.getInteger("tankAmount")-2*this.steamUse);
+				      	if(tag.getInteger("tankAmount") <= 0)
+				      	{
+				      		SoundHandler.playAtEntity(player.worldObj, player, "steam",1F, 1F);
+				      	}
+    				}
+    			}
 		      	 return true;
 	      	 }
 	        return false;

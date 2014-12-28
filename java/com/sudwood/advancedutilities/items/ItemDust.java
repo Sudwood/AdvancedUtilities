@@ -18,9 +18,12 @@ import net.minecraft.world.World;
 
 public class ItemDust extends Item
 {
-	private IIcon[] icons = new IIcon[17];
-	
-	private String[] names = {"CopperDust","IronDust", "TinDust", "ZincDust", "BronzeDust","BrassDust", "GoldDust", "DiamondDust", "CoalDust", "SilverDust", "PlatinumDust", "AluminumDust", "LeadDust", "TungstenDust", "IridiumDust", "PalidiumDust", "SteelDust"};
+	//private IIcon[] icons = new IIcon[18];
+	private IIcon tinyDust;
+	private String[] names = {"CopperDust","IronDust", "TinDust", "ZincDust", "BronzeDust",
+			"BrassDust", "GoldDust", "DiamondDust", "CoalDust", "SilverDust", "PlatinumDust", 
+			"AluminumDust", "LeadDust", "TungstenDust", "IridiumDust", "PalidiumDust", "SteelDust", 
+			"TinyDiamondDust", "Flour", "SawDust", "NickelDust"};
 	
 	public ItemDust()
 	{
@@ -34,7 +37,7 @@ public class ItemDust extends Item
      */
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
-        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 16);
+        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 20);
         return super.getUnlocalizedName() + "." + names[i];
     }
     
@@ -44,7 +47,7 @@ public class ItemDust extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List list)
     {
-        for (int i = 0; i < 17; ++i)
+        for (int i = 0; i < 21; ++i)
         {
             list.add(new ItemStack(item, 1, i));
             item.setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
@@ -59,13 +62,17 @@ public class ItemDust extends Item
 	@SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int par1)
     {
-        return this.itemIcon;
+		if(par1!= 17)
+			return this.itemIcon;
+		else
+        return this.tinyDust;
     }
 	
 	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister par1IconRegister)
     {
         this.itemIcon = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":dust");
+        this.tinyDust = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":tinydust");
     }
 	
 	@SideOnly(Side.CLIENT)
@@ -108,6 +115,14 @@ public class ItemDust extends Item
         	return 13553885;
         case 16: // steel
         	return 6250335;
+        case 17: // tiny diamond
+        	return 13101054;
+        case 18:
+        	return 16775631;
+        case 19:
+        	return 8216100;
+        case 20:
+        	return 10138981;
         default: return 0;
         }
     }

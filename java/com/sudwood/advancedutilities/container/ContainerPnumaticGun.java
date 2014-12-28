@@ -1,13 +1,14 @@
 package com.sudwood.advancedutilities.container;
 
-import com.sudwood.advancedutilities.SlotBulletSlot;
-import com.sudwood.advancedutilities.items.ItemBulletBE;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import com.sudwood.advancedutilities.items.ItemBulletBE;
+import com.sudwood.advancedutilities.items.ItemMagazine;
+import com.sudwood.advancedutilities.slot.SlotBulletOrMagazineSlot;
 
 public class ContainerPnumaticGun extends Container
 {
@@ -42,7 +43,7 @@ public class ContainerPnumaticGun extends Container
 			// from being stored within itself, but if you want to allow that and
 			// you followed my advice at the end of the above step, then you
 			// could get away with using the vanilla Slot class
-			this.addSlotToContainer(new SlotBulletSlot(this.inventory, i, 15+(18*i), 33));
+			this.addSlotToContainer(new SlotBulletOrMagazineSlot(this.inventory, i, 15+(18*i), 33));
 		}
 		
 		// If you want, you can add ARMOR SLOTS here as well, but you need to
@@ -107,7 +108,7 @@ public class ContainerPnumaticGun extends Container
 			else
 			{
 				// Check that the item is the right type
-				if (itemstack1.getItem() instanceof ItemBulletBE)
+				if (itemstack1.getItem() instanceof ItemBulletBE || itemstack1.getItem() instanceof ItemMagazine)
 				{
 					// Try to merge into your custom inventory slots
 					// We use 'InventoryItem.INV_SIZE' instead of INV_START just in case

@@ -14,7 +14,8 @@ import net.minecraft.util.MathHelper;
 
 public class ItemCast extends Item
 {
-	private String[] names = {"RodCast","PickCast", "SwordCast", "ShovelCast", "AxeCast",  "PlateCast", "RivetCast", "HeadCast", "CasingCast"};
+	private String[] names = {"RodCast","PickCast", "SwordCast", "ShovelCast", "AxeCast", 
+			"PlateCast", "RivetCast", "HeadCast", "CasingCast", "HammerCast"};
 	
 	public ItemCast()
 	{
@@ -29,7 +30,7 @@ public class ItemCast extends Item
      */
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
-        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 8);
+        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 9);
         return super.getUnlocalizedName() + "." + names[i];
     }
     
@@ -39,7 +40,7 @@ public class ItemCast extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List list)
     {
-        for (int i = 0; i < 9; ++i)
+        for (int i = 0; i < 10; ++i)
         {
             list.add(new ItemStack(item, 1, i));
             item.setCreativeTab(AdvancedUtilities.advancedBEToolsTab);

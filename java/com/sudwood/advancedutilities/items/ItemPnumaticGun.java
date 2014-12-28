@@ -1,9 +1,13 @@
 package com.sudwood.advancedutilities.items;
 
 import java.util.List;
+import java.util.Random;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -17,8 +21,14 @@ import com.sudwood.advancedutilities.entity.EntityBullet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemPnumaticGun extends Item
+public class ItemPnumaticGun extends ItemBow
 {
+	public ItemPnumaticGun()
+	{
+		super();
+		this.setMaxStackSize(1);
+		this.setMaxDamage(0);
+	}
 	public static final int maxStorage = 16*FluidContainerRegistry.BUCKET_VOLUME;
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) 
@@ -34,8 +44,48 @@ public class ItemPnumaticGun extends Item
 		}
 		par3List.add("Steam: "+tag.getInteger("tankAmount")+" / "+tag.getInteger("maxTankAmount")+" mB");
 		InventoryItem inv = new InventoryItem(par1ItemStack);
-		par3List.add("Bullets: "+inv.getTotalItems(AdvancedUtilitiesItems.bronzeBullet));
+		par3List.add("Bullets: "+inv.getTotalItemsWithInventoryItems(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine));
 	}
+	@SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister icon)
+    {
+		this.itemIcon = icon.registerIcon("advancedutilities:copperingot");
+    }
+	
+	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
+ 	{
+ 		if(stack.getTagCompound() == null)
+ 		{
+ 			stack.setTagCompound(new NBTTagCompound());
+ 		}
+ 		NBTTagCompound tag = stack.getTagCompound();
+ 		if(tag.getInteger("maxTankAmount") == 0)
+ 		{
+ 			tag.setInteger("maxTankAmount", maxStorage);
+ 		}
+ 	}
+	
+	
+	@Override
+	public boolean isItemTool(ItemStack par1ItemStack)
+    {
+        return true;
+    }
+	
+	public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
+    {
+		return true;
+    }
+	public boolean isRepairable()
+    {
+		return true;
+    }
+	
+	 public boolean isDamageable()
+	 {
+		 return true;
+	 }
+	
 	/**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
@@ -43,7 +93,7 @@ public class ItemPnumaticGun extends Item
     {
     	InventoryItem inv = new InventoryItem(par1ItemStack);
     	NBTTagCompound tag = par1ItemStack.getTagCompound();
-    	if((!par3EntityPlayer.isSneaking() || !par3EntityPlayer.onGround) && inv.hasItem(AdvancedUtilitiesItems.bronzeBullet) && tag.getInteger("tankAmount") >= 50)
+    	if((!par3EntityPlayer.isSneaking() || !par3EntityPlayer.onGround) && inv.hasItemWithInvItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine) && tag.getInteger("tankAmount") >= 50)
     	{
 	     float f = 50F;
 	    
@@ -53,8 +103,13 @@ public class ItemPnumaticGun extends Item
 	     {
 	         bullet.setIsCritical(true);
 	     }
+	     int damage = 10;
+	     if(EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, par1ItemStack) > 0)
+	     {
+	    	 damage+=EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, par1ItemStack);
+	     }
 	
-	     bullet.setDamage(8);
+	     bullet.setDamage(damage);
 	
 	     SoundHandler.playAtEntity(par2World, par3EntityPlayer, "gunshot", 1.4F, 0.6F); 
 	     
@@ -63,9 +118,20 @@ public class ItemPnumaticGun extends Item
 	     {
 	    	 par2World.spawnEntityInWorld(bullet);
 	     }
-	     int slot = inv.checkItem(AdvancedUtilitiesItems.bronzeBullet);
-	     inv.decrStackSize(slot, 1);
-	     tag.setInteger("tankAmount", tag.getInteger("tankAmount")-50);
+	     if(EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, par1ItemStack) <= 0)
+	     {
+	    	 inv.decreaseStackedItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine);
+		     tag.setInteger("tankAmount", tag.getInteger("tankAmount")-50);
+	     }
+	     else
+	     {
+	    	 Random random = new Random();
+	    	 if(random.nextInt(10) > 0)
+	    	 {
+	    		 inv.decreaseStackedItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine);
+			     tag.setInteger("tankAmount", tag.getInteger("tankAmount")-50);
+	    	 }
+	     }
     	}
     	if(par3EntityPlayer.isSneaking() && !par2World.isRemote && par3EntityPlayer.onGround)
     	{

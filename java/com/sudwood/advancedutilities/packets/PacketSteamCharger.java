@@ -2,12 +2,20 @@ package com.sudwood.advancedutilities.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 
 import com.sudwood.advancedutilities.ExtendedPlayer;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.items.ItemQuickPotion;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCharger;
 
-public class PacketSteamCharger extends AbstractPacket
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+
+public class PacketSteamCharger implements IMessage
 {
 	boolean isGun;
 	boolean isJetpack;
@@ -25,20 +33,24 @@ public class PacketSteamCharger extends AbstractPacket
 		this.y = y;
 		this.z = z;
 	}
-	
-	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) 
+
+	public static class Handler implements IMessageHandler<PacketSteamCharger, IMessage> 
 	{
-		buffer.writeBoolean(isGun);
-		buffer.writeBoolean(isJetpack);
-		buffer.writeBoolean(isJackHammer);
-		buffer.writeInt(x);
-		buffer.writeInt(y);
-		buffer.writeInt(z);
-	}
+        @Override
+        public IMessage onMessage(PacketSteamCharger message, MessageContext ctx) 
+        {
+        	EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        	TileEntitySteamCharger tile = (TileEntitySteamCharger) player.worldObj.getTileEntity(message.x, message.y, message.z);
+    		//tile.renderGun = message.isGun;
+    		tile.renderJetpack = message.isJetpack;
+    		tile.renderJackHammer = message.isJackHammer;
+        	
+            return null; // no response in this case
+        }
+    }
 
 	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) 
+	public void fromBytes(ByteBuf buffer) 
 	{
 		isGun = buffer.readBoolean();
 		isJetpack = buffer.readBoolean();
@@ -49,17 +61,14 @@ public class PacketSteamCharger extends AbstractPacket
 	}
 
 	@Override
-	public void handleClientSide(EntityPlayer player) 
+	public void toBytes(ByteBuf buffer)
 	{
-		TileEntitySteamCharger tile = (TileEntitySteamCharger) player.worldObj.getTileEntity(x, y, z);
-		tile.renderGun = isGun;
-		tile.renderJetpack = isJetpack;
-		tile.renderJackHammer = isJackHammer;
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player) 
-	{
+		buffer.writeBoolean(isGun);
+		buffer.writeBoolean(isJetpack);
+		buffer.writeBoolean(isJackHammer);
+		buffer.writeInt(x);
+		buffer.writeInt(y);
+		buffer.writeInt(z);
 	}
 
 }

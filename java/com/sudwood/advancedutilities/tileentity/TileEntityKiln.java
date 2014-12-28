@@ -327,39 +327,47 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
         }
         else
         {
-            
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotTin && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null)
             {
-            	return true;
-            }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null &&this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotTin && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
-            {
-            	return true;
-            }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null &&this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotTin && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
-            {
-            	return true;
-            }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null &&this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotTin && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
-            {
-            	return true;
-            }
-
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotZinc && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
-            {
-            	return true;
-            }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null &&this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotZinc && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
-            {
-            	return true;
-            }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null &&this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotZinc && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
-            {
-            	return true;
-            }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null &&this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotZinc && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
-            {
-            	return true;
+            	if(OreDictionary.getOreIDs(inventory[0]) != null && OreDictionary.getOreIDs(inventory[1]) != null && OreDictionary.getOreIDs(inventory[2]) != null && OreDictionary.getOreIDs(inventory[3]) != null)
+            	{
+            		if(OreDictionary.getOreIDs(inventory[0]).length > 0 && OreDictionary.getOreIDs(inventory[1]).length > 0 && OreDictionary.getOreIDs(inventory[2]).length > 0 && OreDictionary.getOreIDs(inventory[3]).length > 0)
+            		{
+			            if(OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            {
+			            	return true;
+			            }
+			            if(OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            {
+			            	return true;
+			            }
+			            if(OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            {
+			            	return true;
+			            }
+			            if(OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            {
+			            	return true;
+			            }
+			
+			            if(OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            {
+			            	return true;
+			            }
+			            if(OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            {
+			            	return true;
+			            }
+			            if(OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            {
+			            	return true;
+			            }
+			            if(OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            {
+			            	return true;
+			            }
+            		}
+            	}
             }
             ItemStack itemstack;
             if(inventory[0] !=null)
@@ -410,122 +418,133 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
         if (this.canSmelt())
         {
         	
-        	if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotTin && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper)
+        	if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null)
             {
-        		if(this.inventory[5] == null)
-        		{
-        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        			return;
-        		}
-        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
-        		{
-        			this.inventory[5].stackSize+=2;
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        		}
         		
-            	return;
-            }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotTin && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper)
-            {
-            	if(this.inventory[5] == null)
+        		if(OreDictionary.getOreIDs(inventory[0]) != null && OreDictionary.getOreIDs(inventory[1]) != null && OreDictionary.getOreIDs(inventory[2]) != null && OreDictionary.getOreIDs(inventory[3]) != null && OreDictionary.getOreIDs(inventory[0]).length >= 1 && OreDictionary.getOreIDs(inventory[1]).length >= 1 && OreDictionary.getOreIDs(inventory[2]).length >= 1 && OreDictionary.getOreIDs(inventory[3]).length >= 1)
         		{
-        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        			return;
-        		}
-        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
+        		if(OreDictionary.getOreIDs(inventory[0])[0] != -1 && OreDictionary.getOreIDs(inventory[1])[0] != -1 && OreDictionary.getOreIDs(inventory[2])[0] != -1 && OreDictionary.getOreIDs(inventory[3])[0] != -1 && OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1)).length > 0 && OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1)).length > 0)
         		{
-        			this.inventory[5].stackSize+=2;
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        		}
-            	return;
-            }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotTin && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper)
-            {
-            	if(this.inventory[5] == null)
-        		{
-        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        			return;
-        		}
-        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
-        		{
-        			this.inventory[5].stackSize+=2;
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        		}
-            	return;
-            }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotTin && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper)
-            {
-            	if(this.inventory[5] == null)
-        		{
-        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        			return;
-        		}
-        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
-        		{
-        			this.inventory[5].stackSize+=2;
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        		}
-            	return;
+        			if(OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+        			{
+        				if(this.inventory[5] == null)
+		        		{
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        			return;
+		        		}
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
+		        		{
+		        			this.inventory[5].stackSize+=2;
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        			return;
+		        		}
+		        		return;
+        			}
+            
+		            if(OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            {
+		            	if(this.inventory[5] == null)
+		        		{
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        			return;
+		        		}
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
+		        		{
+		        			this.inventory[5].stackSize+=2;
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        		}
+		            	return;
+		            }
+		            if(OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            {
+		            	if(this.inventory[5] == null)
+		        		{
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        			return;
+		        		}
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
+		        		{
+		        			this.inventory[5].stackSize+=2;
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        		}
+		            	return;
+		            }
+		            if(OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0] && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            {
+		            	if(this.inventory[5] == null)
+		        		{
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        			return;
+		        		}
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
+		        		{
+		        			this.inventory[5].stackSize+=2;
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        		}
+		            	return;
+		            }
+        	}
+        	}
             }
             
             
@@ -538,122 +557,130 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
              */
             if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotZinc && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper)
             {
-        		if(this.inventory[5] == null)
+            	if(OreDictionary.getOreIDs(inventory[0]) != null && OreDictionary.getOreIDs(inventory[1]) != null && OreDictionary.getOreIDs(inventory[2]) != null && OreDictionary.getOreIDs(inventory[3]) != null && OreDictionary.getOreIDs(inventory[0]).length > 0 && OreDictionary.getOreIDs(inventory[1]).length > 0 && OreDictionary.getOreIDs(inventory[2]).length > 0 && OreDictionary.getOreIDs(inventory[3]).length > 0)
+            	{
+        		if(OreDictionary.getOreIDs(inventory[0])[0] != -1 && OreDictionary.getOreIDs(inventory[1])[0] != -1 && OreDictionary.getOreIDs(inventory[2])[0] != -1 && OreDictionary.getOreIDs(inventory[3])[0] != -1)
         		{
-        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        			return;
-        		}
-        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
-        		{
-        			this.inventory[5].stackSize+=2;
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        		}
-        		
-            	return;
+            		if(OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+            		{
+		        		if(this.inventory[5] == null)
+		        		{
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        			return;
+		        		}
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
+		        		{
+		        			this.inventory[5].stackSize+=2;
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        		}
+		        		return;
+            		}
+		            
+		            if(OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            {
+		            	if(this.inventory[5] == null)
+		        		{
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        			return;
+		        		}
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
+		        		{
+		        			this.inventory[5].stackSize+=2;
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        		}
+		            	return;
+		            }
+		            if(OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            {
+		            	if(this.inventory[5] == null)
+		        		{
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        			return;
+		        		}
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
+		        		{
+		        			this.inventory[5].stackSize+=2;
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        		}
+		            	return;
+		            }
+		            if(OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0] && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            {
+		            	if(this.inventory[5] == null)
+		        		{
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        			return;
+		        		}
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
+		        		{
+		        			this.inventory[5].stackSize+=2;
+		        			for(int i = 0; i < 4; i++)
+		                    {
+		                   	 --this.inventory[i].stackSize;
+		                        if (this.inventory[i].stackSize <= 0)
+		                        {
+		                            this.inventory[i] = null;
+		                        }
+		                    }
+		        		}
+		            	return;
+		            }
+            	}
+            	}
             }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotZinc && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper)
-            {
-            	if(this.inventory[5] == null)
-        		{
-        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        			return;
-        		}
-        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
-        		{
-        			this.inventory[5].stackSize+=2;
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        		}
-            	return;
-            }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotZinc && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper)
-            {
-            	if(this.inventory[5] == null)
-        		{
-        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        			return;
-        		}
-        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
-        		{
-        			this.inventory[5].stackSize+=2;
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        		}
-            	return;
-            }
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotZinc && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper)
-            {
-            	if(this.inventory[5] == null)
-        		{
-        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        			return;
-        		}
-        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
-        		{
-        			this.inventory[5].stackSize+=2;
-        			for(int i = 0; i < 4; i++)
-                    {
-                   	 --this.inventory[i].stackSize;
-                        if (this.inventory[i].stackSize <= 0)
-                        {
-                            this.inventory[i] = null;
-                        }
-                    }
-        		}
-            	return;
-            }
-          
             
             
             if(inventory[0] == null)
@@ -727,6 +754,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
             
             if(inventory[1]!=null&&inventory[2]!=null&&inventory[3]!=null&&inventory[0].getItem() == inventory[1].getItem()&& inventory[1].getItem() == inventory[2].getItem() && inventory[2].getItem() == inventory[3].getItem() && (this.inventory[5]== null || this.inventory[5].stackSize <=60))
             {
+            	
             	ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.inventory[0]);
             	itemstack.stackSize = 4;
                 if (this.inventory[5] == null)
@@ -765,7 +793,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
                 return;
             }
             
-            if(inventory[1]!=null&&inventory[2]!=null&&inventory[0].getItem() == inventory[1].getItem()&& inventory[1].getItem() == inventory[2].getItem() && (this.inventory[5]== null || this.inventory[5].stackSize <=61))
+            if(inventory[1]!=null&&inventory[2]!=null&& inventory[3] == null&&inventory[0].getItem() == inventory[1].getItem()&& inventory[1].getItem() == inventory[2].getItem() && (this.inventory[5]== null || this.inventory[5].stackSize <=61))
             {
             	ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.inventory[0]);
             	itemstack.stackSize = 3;
@@ -826,11 +854,11 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
                 return;
             }
             
-            if(this.inventory[0]!=null)
+            if(this.inventory[0]!=null && this.inventory[1] == null && this.inventory[2] == null && this.inventory[3] == null)
         	{
         		int copper = OreDictionary.getOreID("oreCopper");
         		int tin = OreDictionary.getOreID("oreTin");
-        		if(OreDictionary.getOreID(inventory[0]) == copper)
+        		if(OreDictionary.getOreIDs(inventory[0])!=null&& OreDictionary.getOreIDs(inventory[0]).length>0 && OreDictionary.getOreIDs(inventory[0])[0] == copper)
         		{
         			if(this.inventory[5] == null)
             		{
@@ -853,7 +881,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
                             return;
             		}
         		}
-        		if(OreDictionary.getOreID(inventory[0]) == tin)
+        		if(OreDictionary.getOreIDs(inventory[0])!=null&& OreDictionary.getOreIDs(inventory[0]).length>0 &&OreDictionary.getOreIDs(inventory[0])[0] == tin)
         		{
         			if(this.inventory[5] == null)
             		{
@@ -876,17 +904,17 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
                             return;
             		}
         		}
-        	}
+        	
             
-            ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.inventory[0]);
-
-            if (this.inventory[5] == null)
+            ItemStack itemstack2 = FurnaceRecipes.smelting().getSmeltingResult(this.inventory[0]);
+            itemstack2.stackSize = 1;
+            if (this.inventory[5] == null && itemstack2!=null)
             {
-                this.inventory[5] = itemstack.copy();
+                this.inventory[5] = itemstack2.copy();
             }
-            else if (this.inventory[5].getItem() == itemstack.getItem())
+            else if (itemstack2!=null && this.inventory[5].getItem() == itemstack2.getItem())
             {
-                this.inventory[5].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
+                this.inventory[5].stackSize += itemstack2.stackSize; // Forge BugFix: Results may have multiple items
             }
 
             --this.inventory[0].stackSize;
@@ -895,6 +923,9 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
             {
                 this.inventory[0] = null;
             }
+        	//System.out.println(itemstack2);
+            return;
+        	}
         }
         	
     }

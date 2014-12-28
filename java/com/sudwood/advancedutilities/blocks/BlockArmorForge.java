@@ -47,6 +47,7 @@ public class BlockArmorForge extends BlockContainer
         return false;
     }
 	
+	@SideOnly(Side.CLIENT)
 	public int getRenderType()
     {
         return ClientRegistering.toolForgeId;

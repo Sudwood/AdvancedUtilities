@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -12,16 +12,23 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
+import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.client.SoundHandler;
+import com.sudwood.advancedutilities.config.ServerOptions;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.items.ItemArmorSteamJetpack;
+import com.sudwood.advancedutilities.items.ItemJackHammer;
+import com.sudwood.advancedutilities.items.ItemPnumaticGun;
 import com.sudwood.advancedutilities.packets.PacketSteamCharger;
 
-public class TileEntitySteamCharger extends TileEntitySteamBase implements IInventory
+public class TileEntitySteamCharger extends TileEntity implements IInventory, IFluidHandler, ISteamTank
 {
 	 public FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME*32);
 	 public static final int fillAmount = 60;
+	 public static int drainAmount = 60;
 	 private ItemStack inventory;
 	 private boolean isDone;
 	 private boolean hasPlayed;
@@ -55,6 +62,8 @@ public class TileEntitySteamCharger extends TileEntitySteamBase implements IInve
 	    }
 	    public void updateEntity()
 	    {
+	    	if(this.drainAmount > this.tank.getCapacity())
+	    		this.drainAmount = this.tank.getCapacity();
 	    	if(isGun()&&!hasSent && this.hasWorldObj())
             {
 	    		this.addItem(inventory);
@@ -90,15 +99,15 @@ public class TileEntitySteamCharger extends TileEntitySteamBase implements IInve
 	    	inventory = item.copy();
 	    	if(isGun())
             {
-            	AdvancedUtilities.packetPipeline.sendToAll(new PacketSteamCharger(true, false, false, xCoord, yCoord, zCoord));
+            	//AdvancedUtilities.network.sendToAll(new PacketSteamCharger(true, false, false, xCoord, yCoord, zCoord));
             }
             if(isJetpack())
             {
-            	AdvancedUtilities.packetPipeline.sendToAll(new PacketSteamCharger(false, true, false, xCoord, yCoord, zCoord));
+            	//AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, true, false, xCoord, yCoord, zCoord));
             }
             if(isJackHammer())
             {
-            	AdvancedUtilities.packetPipeline.sendToAll(new PacketSteamCharger(false, false, true, xCoord, yCoord, zCoord));
+            	//AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, false, true, xCoord, yCoord, zCoord));
             }
 	    }
 	    
@@ -108,7 +117,7 @@ public class TileEntitySteamCharger extends TileEntitySteamBase implements IInve
 	    	inventory = null;
 	    	isDone = false;
 	    	hasPlayed = false;
-            AdvancedUtilities.packetPipeline.sendToAll(new PacketSteamCharger(false, false, false, xCoord, yCoord, zCoord));
+          //  AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, false, false, xCoord, yCoord, zCoord));
 
 	    	return temp;
 	    }
@@ -122,10 +131,22 @@ public class TileEntitySteamCharger extends TileEntitySteamBase implements IInve
 	    			inventory.setTagCompound(new NBTTagCompound());
 	    		}
 	    		NBTTagCompound tag = inventory.getTagCompound();
+	    		if(inventory.getItem() == AdvancedUtilitiesItems.steamJetpack && tag.getInteger("maxTankAmount") == 0)
+	    		{
+	    			tag.setInteger("maxTankAmount", ItemArmorSteamJetpack.maxStorage);
+	    		}
+	    		if(inventory.getItem() == AdvancedUtilitiesItems.pnumaticGun && tag.getInteger("maxTankAmount") == 0)
+	    		{
+	    			tag.setInteger("maxTankAmount", ItemPnumaticGun.maxStorage);
+	    		}
+	    		if(inventory.getItem() == AdvancedUtilitiesItems.jackHammer && tag.getInteger("maxTankAmount") == 0)
+	    		{
+	    			tag.setInteger("maxTankAmount", ItemJackHammer.maxStorage);
+	    		}
 	    		if(tag.getInteger("tankAmount")<= tag.getInteger("maxTankAmount")-this.fillAmount && this.tank.getFluidAmount() >= this.fillAmount)
 	    		{
 	    			tag.setInteger("tankAmount", tag.getInteger("tankAmount")+this.fillAmount);
-	    			this.drain(ForgeDirection.UNKNOWN, this.fillAmount, true);
+	    			this.drain(ForgeDirection.UNKNOWN, this.drainAmount, true);
 	    		}
 	    	}
 	    	
@@ -230,7 +251,7 @@ public class TileEntitySteamCharger extends TileEntitySteamBase implements IInve
 	    @Override
 	    public boolean canFill(ForgeDirection from, Fluid fluid)
 	    {
-	    	if(fluid == FluidRegistry.getFluid("steam"))
+	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesBlocks.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
 	    		return true;
 	    	else return false;
 	    }
@@ -315,6 +336,11 @@ public class TileEntitySteamCharger extends TileEntitySteamBase implements IInve
 		public void closeInventory() {
 			// TODO Auto-generated method stub
 			
+		}
+		@Override
+		public boolean isItemValidForSlot(int var1, ItemStack var2) {
+			// TODO Auto-generated method stub
+			return false;
 		}
 
 

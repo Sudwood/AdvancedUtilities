@@ -8,7 +8,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
-import com.sudwood.advancedutilities.SlotForged;
+import com.sudwood.advancedutilities.slot.SlotForged;
 import com.sudwood.advancedutilities.tileentity.TileEntityArmorForge;
 
 import cpw.mods.fml.relauncher.Side;

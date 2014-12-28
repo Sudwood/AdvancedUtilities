@@ -17,9 +17,11 @@ import net.minecraft.world.World;
 
 public class ItemToolPart extends Item
 {
-	private IIcon[] icons = new IIcon[10];
+	private IIcon[] icons = new IIcon[13];
 	
-	private String[] names = {"BronzeRod","IronRod", "IronPickaxeHead", "IronSwordBlade", "IronShovelHead","IronAxeHead", "BronzePickaxeHead", "BronzeSwordBlade", "BronzeShovelHead","BronzeAxeHead"};
+	private String[] names = {"BronzeRod","IronRod", "IronPickaxeHead", "IronSwordBlade", 
+			"IronShovelHead","IronAxeHead", "BronzePickaxeHead", "BronzeSwordBlade", "BronzeShovelHead",
+			"BronzeAxeHead", "StoneHammerHead", "BronzeHammerHead", "IronHammerHead"};
 	
 	public ItemToolPart()
 	{
@@ -33,7 +35,7 @@ public class ItemToolPart extends Item
      */
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
-        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 9);
+        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 12);
         return super.getUnlocalizedName() + "." + names[i];
     }
     
@@ -43,7 +45,7 @@ public class ItemToolPart extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List list)
     {
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < 13; ++i)
         {
             list.add(new ItemStack(item, 1, i));
             item.setCreativeTab(AdvancedUtilities.advancedBEToolsTab);
@@ -74,6 +76,9 @@ public class ItemToolPart extends Item
         this.icons[7] = par1IconRegister.registerIcon("advancedutilities:bronzeswordtop");
         this.icons[8] = par1IconRegister.registerIcon("advancedutilities:bronzeshoveltop");
         this.icons[9] = par1IconRegister.registerIcon("advancedutilities:bronzeaxetop");
+        this.icons[10] = par1IconRegister.registerIcon("advancedutilities:stonehammertop");
+        this.icons[11] = par1IconRegister.registerIcon("advancedutilities:bronzehammertop");
+        this.icons[12] = par1IconRegister.registerIcon("advancedutilities:ironhammertop");
     }
 	
 }

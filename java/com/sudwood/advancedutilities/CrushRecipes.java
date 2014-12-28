@@ -27,6 +27,7 @@ public class CrushRecipes
 	 public static final int ORE_EMERALD = OreDictionary.getOreID("oreEmerald");
 	 public static final int ORE_QUARTZ = OreDictionary.getOreID("oreQuartz");
 	 public static final int ORE_COAL = OreDictionary.getOreID("oreCoal");
+	 public static final int ORE_NICKEL = OreDictionary.getOreID("oreNickel");
 	 
 	 public static final int INGOT_TIN = OreDictionary.getOreID("ingotTin");
 	 public static final int INGOT_COPPER = OreDictionary.getOreID("ingotCopper");
@@ -41,11 +42,22 @@ public class CrushRecipes
 	 public static final int INGOT_IRIDIUM = OreDictionary.getOreID("ingotIridium");
 	 public static final int INGOT_PALIDIUM = OreDictionary.getOreID("ingotPalidium");
 	 public static final int INGOT_STEEL = OreDictionary.getOreID("ingotSteel");
+	 public static final int INGOT_NICKEL = OreDictionary.getOreID("ingotNickel");
+	 
+	 public static final int PLANKS = OreDictionary.getOreID("plankWood");
 	public static ItemStack getCrushResult(ItemStack stack)
 	{
 		if(stack == null)
 			return null;
-		int checkID = OreDictionary.getOreID(stack);
+		if(stack.getItem() == Item.getItemFromBlock(Blocks.cobblestone))
+		{
+			return new ItemStack(Blocks.gravel, 1);
+		}
+		if(stack.getItem() == Item.getItemFromBlock(Blocks.gravel))
+		{
+			return new ItemStack(Blocks.sand, 1);
+		}
+		int checkID = OreDictionary.getOreIDs(stack)[0];
 		
 		if(checkID == ORE_TIN)
 		{
@@ -164,6 +176,18 @@ public class CrushRecipes
 		{
 			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 16);
 		}
+		if(checkID == ORE_NICKEL)
+		{
+			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 20);
+		}
+		if(checkID == INGOT_NICKEL)
+		{
+			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 20);
+		}
+		if(checkID == PLANKS)
+		{
+			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 19);
+		}
 		if(stack.getItem() == Items.iron_ingot)
 		{
 			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 1);
@@ -183,6 +207,10 @@ public class CrushRecipes
 		if(stack.getItem() == Item.getItemFromBlock(Blocks.coal_block))
 		{
 			return new ItemStack(AdvancedUtilitiesItems.dust, 9, 8);
+		}
+		if(stack.getItem() == Items.wheat)
+		{
+			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 18);
 		}
 		if(checkID == -1) 
 			return null;

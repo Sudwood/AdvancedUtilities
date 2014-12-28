@@ -1,13 +1,8 @@
 package com.sudwood.advancedutilities.tileentity;
 
-import com.sudwood.advancedutilities.TransferHelper;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -15,8 +10,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHandler
+public class TileEntityFluidTube extends TileEntity implements IFluidHandler, ISteamTank
 {
 	 public FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME*16);
 	 private int transferAmount = 1000;
@@ -40,12 +37,17 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 	    	if(!worldObj.isRemote && !worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
 	    	{
 		    	if(tank.getFluidAmount() >= this.transferAmount)
+		    	{
 		    		pushFluid();
-		    	
+		    		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		    	}
 		    	if(tank.getFluidAmount() + this.transferAmount <= tank.getCapacity())
 		    	{
 		    		pullFluid();
+		    		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		    	}
+		    	this.markDirty();
+		    	
 	    	}
 	    }
 
@@ -70,7 +72,7 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 	    public String getFluidName()
 	    {
 	    	if(this.tank.getFluidAmount() > 0)
-	    		return this.tank.getFluid().getFluid().getLocalizedName();
+	    		return this.tank.getFluid().getFluid().getLocalizedName(tank.getFluid());
 	    	else
 	    		return "Empty";
 	    }
@@ -93,7 +95,7 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 	    @Override
 	    public boolean canFill(ForgeDirection from, Fluid fluid)
 	    {
-	    	if(fluid == tank.getFluid().getFluid())
+	    	if(tank.getFluidAmount() <=0 || (fluid == tank.getFluid().getFluid() && tank.getFluidAmount()< tank.getCapacity()) )
 	    		return true;
 	    	else return false;
 	    }
@@ -101,7 +103,9 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 	    @Override
 	    public boolean canDrain(ForgeDirection from, Fluid fluid)
 	    {
-	        return true;
+	    	if(tank.getFluidAmount() >=0 || fluid == tank.getFluid().getFluid() )
+	    		return true;
+	    	else return false;
 	    }
 
 	    @Override
@@ -171,6 +175,7 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 	    		{
 	    			if(!(worldObj.getTileEntity(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ) instanceof TileEntityFluidTube))
 	    			{
+	    				
 	    				IFluidHandler tile = (IFluidHandler) worldObj.getTileEntity(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ);
 	    				if(tile.getTankInfo(ForgeDirection.SOUTH)[0].fluid.amount>0 && this.canFill(ForgeDirection.NORTH, tile.getTankInfo(ForgeDirection.SOUTH)[0].fluid.getFluid()))
 	    				{
@@ -230,9 +235,17 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 		    			try
 		    			{
 		    				IFluidHandler tile = (IFluidHandler) (worldObj.getTileEntity(xCoord, yCoord+ForgeDirection.DOWN.offsetY, zCoord));
-		    				if(tile.getTankInfo(ForgeDirection.UP)[0].fluid.amount +this.transferAmount <= tile.getTankInfo(ForgeDirection.UP)[0].capacity  && this.canDrain(ForgeDirection.DOWN, tank.getFluid().getFluid()))
+		    				if(tile.canFill(ForgeDirection.UP, this.tank.getFluid().getFluid())   && this.canDrain(ForgeDirection.DOWN, tank.getFluid().getFluid()))
 		    				{
-		    					tile.fill(ForgeDirection.UP, this.drain(ForgeDirection.DOWN, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    					if(!(tile instanceof TileEntityTank) && tile.getTankInfo(ForgeDirection.UP)[0]!=null && tile.getTankInfo(ForgeDirection.UP)[0].fluid != null)
+		    					{
+		    						if(tile.getTankInfo(ForgeDirection.UP)[0].fluid.amount+this.transferAmount <= tile.getTankInfo(ForgeDirection.UP)[0].capacity)
+		    						{
+		    							tile.fill(ForgeDirection.UP, this.drain(ForgeDirection.DOWN, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    						}
+		    					}
+		    					else
+		    						tile.fill(ForgeDirection.UP, this.drain(ForgeDirection.DOWN, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
 		    				}
 		    			}
 		    			catch(Exception e)
@@ -244,9 +257,17 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 		    			try
 		    			{
 		    				IFluidHandler tile = (IFluidHandler) (worldObj.getTileEntity(xCoord, yCoord+ForgeDirection.UP.offsetY, zCoord));
-		    				if(tile.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount +this.transferAmount <= tile.getTankInfo(ForgeDirection.DOWN)[0].capacity && this.canDrain(ForgeDirection.UP, tank.getFluid().getFluid()))
+		    				if(tile.canFill(ForgeDirection.DOWN, this.tank.getFluid().getFluid())  && this.canDrain(ForgeDirection.UP, tank.getFluid().getFluid()))
 		    				{
-		    					tile.fill(ForgeDirection.DOWN, this.drain(ForgeDirection.UP, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    					if(!(tile instanceof TileEntityTank) && tile.getTankInfo(ForgeDirection.DOWN)[0]!=null && tile.getTankInfo(ForgeDirection.DOWN)[0].fluid != null)
+		    					{
+		    						if(tile.getTankInfo(ForgeDirection.DOWN)[0].fluid.amount+this.transferAmount <= tile.getTankInfo(ForgeDirection.DOWN)[0].capacity)
+		    						{
+		    							tile.fill(ForgeDirection.DOWN, this.drain(ForgeDirection.UP, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    						}
+		    					}
+		    					else
+		    						tile.fill(ForgeDirection.DOWN, this.drain(ForgeDirection.UP, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
 		    				}
 		    			}
 		    			catch(Exception e)
@@ -259,9 +280,17 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 		    			try
 		    			{
 		    				IFluidHandler tile = (IFluidHandler) (worldObj.getTileEntity(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ));
-		    				if(tile.getTankInfo(ForgeDirection.SOUTH)[0].fluid.amount +this.transferAmount <= tile.getTankInfo(ForgeDirection.SOUTH)[0].capacity && this.canDrain(ForgeDirection.NORTH, tank.getFluid().getFluid()))
+		    				if(tile.canFill(ForgeDirection.SOUTH, this.tank.getFluid().getFluid())  && this.canDrain(ForgeDirection.NORTH, tank.getFluid().getFluid()))
 		    				{
-		    					tile.fill(ForgeDirection.SOUTH, this.drain(ForgeDirection.NORTH, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    					if(!(tile instanceof TileEntityTank) && tile.getTankInfo(ForgeDirection.SOUTH)[0]!=null && tile.getTankInfo(ForgeDirection.SOUTH)[0].fluid != null)
+		    					{
+		    						if(tile.getTankInfo(ForgeDirection.SOUTH)[0].fluid.amount+this.transferAmount <= tile.getTankInfo(ForgeDirection.SOUTH)[0].capacity)
+		    						{
+		    							tile.fill(ForgeDirection.SOUTH, this.drain(ForgeDirection.NORTH, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    						}
+		    					}
+		    					else
+		    						tile.fill(ForgeDirection.SOUTH, this.drain(ForgeDirection.NORTH, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
 		    				}
 		    			}
 		    			catch(Exception e)
@@ -272,9 +301,17 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 		    			try
 		    			{
 		    				IFluidHandler tile = (IFluidHandler) (worldObj.getTileEntity(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ));
-		    				if(tile.getTankInfo(ForgeDirection.NORTH)[0].fluid.amount +this.transferAmount <= tile.getTankInfo(ForgeDirection.NORTH)[0].capacity && this.canDrain(ForgeDirection.SOUTH, tank.getFluid().getFluid()))
+		    				if(tile.canFill(ForgeDirection.NORTH, this.tank.getFluid().getFluid()) && this.canDrain(ForgeDirection.SOUTH, tank.getFluid().getFluid()))
 		    				{
-		    					tile.fill(ForgeDirection.NORTH, this.drain(ForgeDirection.SOUTH, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    					if(!(tile instanceof TileEntityTank) && tile.getTankInfo(ForgeDirection.NORTH)[0]!=null && tile.getTankInfo(ForgeDirection.NORTH)[0].fluid != null)
+		    					{
+		    						if(tile.getTankInfo(ForgeDirection.NORTH)[0].fluid.amount+this.transferAmount <= tile.getTankInfo(ForgeDirection.NORTH)[0].capacity)
+		    						{
+		    							tile.fill(ForgeDirection.NORTH, this.drain(ForgeDirection.SOUTH, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    						}
+		    					}
+		    					else
+		    						tile.fill(ForgeDirection.NORTH, this.drain(ForgeDirection.SOUTH, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
 		    				}
 		    			}
 		    			catch(Exception e)
@@ -286,9 +323,17 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 		    			try
 		    			{
 		    				IFluidHandler tile = (IFluidHandler) (worldObj.getTileEntity(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ));
-		    				if(tile.getTankInfo(ForgeDirection.EAST)[0].fluid.amount +this.transferAmount <= tile.getTankInfo(ForgeDirection.EAST)[0].capacity && this.canDrain(ForgeDirection.WEST, tank.getFluid().getFluid()))
+		    				if(tile.canFill(ForgeDirection.EAST, this.tank.getFluid().getFluid()) && this.canDrain(ForgeDirection.WEST, tank.getFluid().getFluid()))
 		    				{
-		    					tile.fill(ForgeDirection.EAST, this.drain(ForgeDirection.WEST, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    					if(!(tile instanceof TileEntityTank) && tile.getTankInfo(ForgeDirection.EAST)[0]!=null && tile.getTankInfo(ForgeDirection.EAST)[0].fluid != null)
+		    					{
+		    						if(tile.getTankInfo(ForgeDirection.EAST)[0].fluid.amount+this.transferAmount <= tile.getTankInfo(ForgeDirection.EAST)[0].capacity)
+		    						{
+		    							tile.fill(ForgeDirection.EAST, this.drain(ForgeDirection.WEST, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    						}
+		    					}
+		    					else
+		    						tile.fill(ForgeDirection.EAST, this.drain(ForgeDirection.WEST, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
 		    				}
 		    			}
 		    			catch(Exception e)
@@ -300,9 +345,19 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 		    			try
 		    			{
 		    				IFluidHandler tile = (IFluidHandler) (worldObj.getTileEntity(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ));
-		    				if(tile.getTankInfo(ForgeDirection.WEST)[0].fluid.amount +this.transferAmount <= tile.getTankInfo(ForgeDirection.WEST)[0].capacity && this.canDrain(ForgeDirection.EAST, tank.getFluid().getFluid()))
+		    				if(tile.canFill(ForgeDirection.WEST, this.tank.getFluid().getFluid())  && this.canDrain(ForgeDirection.EAST, tank.getFluid().getFluid()))
 		    				{
-		    					tile.fill(ForgeDirection.WEST, this.drain(ForgeDirection.EAST, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    					
+		    					if(!(tile instanceof TileEntityTank) && tile.getTankInfo(ForgeDirection.WEST)[0]!=null && tile.getTankInfo(ForgeDirection.WEST)[0].fluid != null)
+		    					{
+		    						
+		    						if(tile.getTankInfo(ForgeDirection.WEST)[0].fluid.amount+this.transferAmount <= tile.getTankInfo(ForgeDirection.WEST)[0].capacity)
+		    						{
+		    							tile.fill(ForgeDirection.WEST, this.drain(ForgeDirection.EAST, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+		    						}
+		    					}
+		    					else
+		    						tile.fill(ForgeDirection.WEST, this.drain(ForgeDirection.EAST, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
 		    				}
 		    			}
 		    			catch(Exception e)
@@ -314,10 +369,9 @@ public class TileEntityFluidTube extends TileEntitySteamBase implements IFluidHa
 		    		
 	    }
 	    
-	    @Override
-		public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer) 
+	    public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer)
 	    {
-	    	return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : par1EntityPlayer.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
-		}
+	        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : par1EntityPlayer.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
+	    }
 	    
 }

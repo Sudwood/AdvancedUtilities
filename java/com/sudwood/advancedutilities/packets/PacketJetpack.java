@@ -3,45 +3,63 @@ package com.sudwood.advancedutilities.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 
 import com.sudwood.advancedutilities.ExtendedPlayer;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.items.ItemQuickPotion;
 
-public class PacketJetpack extends AbstractPacket
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+
+public class PacketJetpack implements IMessage
 {
 	boolean isJetpack;
+	int type;
 	public PacketJetpack(){
 
 	}
 
-	public PacketJetpack(boolean isJetpack){
+	public PacketJetpack(boolean isJetpack, int type){
 		this.isJetpack = isJetpack;
-	}
-	
-	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) 
-	{
-		buffer.writeBoolean(isJetpack);
+		this.type = type;
 	}
 
+
 	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) 
+	public void fromBytes(ByteBuf buffer) 
 	{
 		isJetpack = buffer.readBoolean();
+		type = buffer.readByte();
 	}
 
 	@Override
-	public void handleClientSide(EntityPlayer player) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player) 
+	public void toBytes(ByteBuf buffer) 
 	{
-		ExtendedPlayer props = ExtendedPlayer.get(player);
-		props.isJetpack = isJetpack;
-		props.saveProxyData(player);
-		props.loadProxyData(player);
+		buffer.writeBoolean(isJetpack);
+		buffer.writeByte(type);
 	}
+	
+	public static class Handler implements IMessageHandler<PacketJetpack, IMessage> 
+	{
+        @Override
+        public IMessage onMessage(PacketJetpack message, MessageContext ctx) 
+        {
+        	EntityPlayer player = ctx.getServerHandler().playerEntity;
+        	ExtendedPlayer props = ExtendedPlayer.get(player);
+    		if(message.type == 0)
+    		{
+    			props.isJetpack = message.isJetpack;
+    		}
+    		if(message.type == 1)
+    		{
+    			props.toggleJetpack = message.isJetpack;
+    		}
+    		props.saveProxyData(player);
+    		props.loadProxyData(player);
+            return null; // no response in this case
+        }
+    }
 
 }

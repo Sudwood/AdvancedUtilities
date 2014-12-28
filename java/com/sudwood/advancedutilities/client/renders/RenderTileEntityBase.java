@@ -11,7 +11,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.sudwood.advancedutilities.client.models.AdvancedModelBase;
 
-public class RenderTileEntityBase implements IItemRenderer{
+public class RenderTileEntityBase implements IItemRenderer
+{
 
 	TileEntity dummyTile;
 	
@@ -25,7 +26,8 @@ public class RenderTileEntityBase implements IItemRenderer{
 	}
 	
 	@Override
-	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
+	public boolean handleRenderType(ItemStack item, ItemRenderType type) 
+	{
 		// TODO Auto-generated method stub
 		switch(type)
 		{
@@ -38,10 +40,8 @@ public class RenderTileEntityBase implements IItemRenderer{
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,
-			ItemRendererHelper helper) {
-		// TODO Auto-generated method stub
-		
+	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) 
+	{
 		return true;
 	}
 

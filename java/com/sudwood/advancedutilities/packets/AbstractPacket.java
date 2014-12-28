@@ -2,15 +2,15 @@ package com.sudwood.advancedutilities.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.Packet;
 
 
 /**
  * AbstractPacket class. Should be the parent of all packets wishing to use the PacketPipeline.
  * @author sirgingalot
  */
-public abstract class AbstractPacket {
+public abstract class AbstractPacket{
 
     /**
      * Encode the packet data into the ByteBuf stream. Complex data sets may need specific data handlers (See @link{cpw.mods.fml.common.network.ByteBuffUtils})

@@ -1,32 +1,22 @@
 package com.sudwood.advancedutilities.tileentity;
 
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-import com.sudwood.advancedutilities.items.ItemBETool;
+import java.util.Map;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockFurnace;
-import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityArmorForge extends TileEntity implements IInventory
 {
@@ -218,7 +208,7 @@ public class TileEntityArmorForge extends TileEntity implements IInventory
     	  this.furnaceCookTime++;
     	  if(!worldObj.isRemote)
     	  {
-    		  if(this.furnaceCookTime == 1200)
+    		  if(this.furnaceCookTime == 12)
     		  {
     			  this.smeltItem();
     			  this.isCrafting = false;
@@ -286,28 +276,76 @@ public class TileEntityArmorForge extends TileEntity implements IInventory
     			return new ItemStack(AdvancedUtilitiesItems.bronzeChest, 1);
     		}
     	}
+    	if(top.getItem() instanceof ItemArmor)
+    	{
+    		if(rod.getItem() == AdvancedUtilitiesItems.upgrade && rod.getItemDamage() != 1 && rod.getItemDamage() != 2 && rod.getItemDamage() != 3 && rod.getItemDamage() != 7 && rod.getItemDamage() != 8 && rod.getItemDamage() != 9 && rod.getItemDamage() != 13 && rod.getItemDamage() != 14 && rod.getItemDamage() != 15)
+    		{
+    			ItemStack result = top.copy();
+    			switch(rod.getItemDamage())
+    			{
+    			case 0:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.aquaAffinity.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.aquaAffinity, 1);
+    				break;
+    			case 4:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.featherFalling.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.featherFalling, 1);
+    				break;
+    			case 5:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.featherFalling.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.featherFalling, 2);
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.featherFalling.effectId, result) < 2)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.featherFalling.effectId, 2);
+    					EnchantmentHelper.setEnchantments(map, result);
+    				}
+    				break;
+    			case 6:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.featherFalling.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.featherFalling, 3);
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.featherFalling.effectId, result) < 3)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.featherFalling.effectId, 3);
+    					EnchantmentHelper.setEnchantments(map, result);
+    				}
+    				break;
+    			case 10:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.protection.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.protection, 1);
+    				break;
+    			case 11:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.protection.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.protection, 2);
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.protection.effectId, result) < 2)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.protection.effectId, 2);
+    					EnchantmentHelper.setEnchantments(map, result);
+    				}
+    				break;
+    			case 12:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.protection.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.protection, 3);
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.protection.effectId, result) < 3)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.protection.effectId, 3);
+    					EnchantmentHelper.setEnchantments(map, result);
+    				}
+    				break;
+    			}
+    			return result;
+    		}
+    	}
     	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.steamJetpack, 1)))
     	{
     		ItemStack result = top.copy();
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.featherFalling.effectId, rod) > 0)
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.itemCasing, 1, 2)))
     		{
-    			result.addEnchantment(Enchantment.featherFalling, EnchantmentHelper.getEnchantmentLevel(Enchantment.featherFalling.effectId, rod));
-    		}
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.protection.effectId, rod) > 0)
-    		{
-    			result.addEnchantment(Enchantment.protection, EnchantmentHelper.getEnchantmentLevel(Enchantment.protection.effectId, rod));
-    		}
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fireProtection.effectId, rod) > 0)
-    		{
-    			result.addEnchantment(Enchantment.fireProtection, EnchantmentHelper.getEnchantmentLevel(Enchantment.fireProtection.effectId, rod));
-    		}
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.projectileProtection.effectId, rod) > 0)
-    		{
-    			result.addEnchantment(Enchantment.projectileProtection, EnchantmentHelper.getEnchantmentLevel(Enchantment.projectileProtection.effectId, rod));
-    		}
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.blastProtection.effectId, rod) > 0)
-    		{
-    			result.addEnchantment(Enchantment.blastProtection, EnchantmentHelper.getEnchantmentLevel(Enchantment.blastProtection.effectId, rod));
+    			NBTTagCompound tag = result.getTagCompound();
+    			tag.setInteger("maxTankAmount", tag.getInteger("maxTankAmount")+16*FluidContainerRegistry.BUCKET_VOLUME);
     		}
     		return result;
     	}

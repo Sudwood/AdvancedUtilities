@@ -1,6 +1,8 @@
 package com.sudwood.advancedutilities.tileentity;
 
+import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.config.ServerOptions;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFurnace;
@@ -31,7 +33,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityBoiler extends TileEntitySteamBase implements ISidedInventory, IFluidHandler
+public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFluidHandler, ISteamTank
 {
 
 	private static final int[] slotsTop = new int[] {};
@@ -161,10 +163,14 @@ public class TileEntityBoiler extends TileEntitySteamBase implements ISidedInven
 	    	try
 	    	{
 	    		TileEntity tile = worldObj.getTileEntity(xCoord, yCoord+1, zCoord);
-	    		if(tile instanceof TileEntitySteamBase && this.tank.getFluidAmount() >= amount)
+	    		if(tile instanceof ISteamTank && this.tank.getFluidAmount() >= amount)
 	    		{
-	    			((TileEntitySteamBase)tile).fill(ForgeDirection.DOWN, new FluidStack(FluidRegistry.getFluid("steam"), amount), true);
-	    			this.drain(ForgeDirection.UNKNOWN, new FluidStack(FluidRegistry.getFluid("steam"), amount), true);
+	    			if(((IFluidHandler)tile).canFill(ForgeDirection.DOWN, AdvancedUtilitiesBlocks.fluidSteam))
+	    			{
+		    			((IFluidHandler)tile).fill(ForgeDirection.DOWN, new FluidStack(AdvancedUtilitiesBlocks.fluidSteam, amount), true);
+		    			this.drain(ForgeDirection.UNKNOWN, new FluidStack(AdvancedUtilitiesBlocks.fluidSteam, amount), true);
+		    			worldObj.markBlockForUpdate(xCoord, yCoord+1, zCoord);
+	    			}
 	    		}
 	    	}
 	    	catch(Exception e)
@@ -208,12 +214,12 @@ public class TileEntityBoiler extends TileEntitySteamBase implements ISidedInven
         this.field_145958_o = p_145951_1_;
     }
 
-    public void readFromNBT(NBTTagCompound p_145839_1_)
+    public void readFromNBT(NBTTagCompound tag)
     {
-        super.readFromNBT(p_145839_1_);
-        NBTTagList nbttaglist = p_145839_1_.getTagList("Items", 10);
+        super.readFromNBT(tag);
+        NBTTagList nbttaglist = tag.getTagList("Items", 10);
         this.inventory = new ItemStack[this.getSizeInventory()];
-        this.waterTank.readFromNBT(p_145839_1_);
+        this.waterTank.readFromNBT((NBTTagCompound) tag.getTag("waterTank"));
 
         for (int i = 0; i < nbttaglist.tagCount(); ++i)
         {
@@ -226,13 +232,13 @@ public class TileEntityBoiler extends TileEntitySteamBase implements ISidedInven
             }
         }
 
-        this.furnaceBurnTime = p_145839_1_.getShort("BurnTime");
+        this.furnaceBurnTime = tag.getShort("BurnTime");
         this.currentItemBurnTime = getItemBurnTime(this.inventory[0]);
-        this.steamMulti = p_145839_1_.getInteger("steamMulti");
-        this.tank.readFromNBT(p_145839_1_);
-        if (p_145839_1_.hasKey("CustomName", 8))
+        this.steamMulti = tag.getInteger("steamMulti");
+        this.tank.readFromNBT(tag);
+        if (tag.hasKey("CustomName", 8))
         {
-            this.field_145958_o = p_145839_1_.getString("CustomName");
+            this.field_145958_o = tag.getString("CustomName");
         }
     }
 
@@ -256,7 +262,9 @@ public class TileEntityBoiler extends TileEntitySteamBase implements ISidedInven
 
         p_145841_1_.setTag("Items", nbttaglist);
         this.tank.writeToNBT(p_145841_1_);
-        this.waterTank.writeToNBT(p_145841_1_);
+        NBTTagCompound tagish = new NBTTagCompound();
+        this.waterTank.writeToNBT(tagish);
+        p_145841_1_.setTag("waterTank", tagish);
         if (this.hasCustomInventoryName())
         {
             p_145841_1_.setString("CustomName", this.field_145958_o);
@@ -353,7 +361,7 @@ public class TileEntityBoiler extends TileEntitySteamBase implements ISidedInven
                 
             }
             getWater();
-            pushSteam(100*steamMulti);
+            pushSteam(20*steamMulti*ServerOptions.steamCreationRate);
         }
 
         if (flag1)
@@ -369,8 +377,9 @@ public class TileEntityBoiler extends TileEntitySteamBase implements ISidedInven
 
     public void makeSteam()
     {
-    	this.fill(ForgeDirection.UNKNOWN, new FluidStack(FluidRegistry.getFluid("steam"), 5*steamMulti), true);
-    	this.drain(ForgeDirection.DOWN, new FluidStack(FluidRegistry.WATER, 5*steamMulti), true);
+    	this.fill(ForgeDirection.UNKNOWN, new FluidStack(AdvancedUtilitiesBlocks.fluidSteam, ServerOptions.steamCreationRate*steamMulti), true);
+    	this.waterTank.drain(ServerOptions.steamCreationRate*steamMulti, true);
+    	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
     
     public void checkBellows()
@@ -548,7 +557,7 @@ public class TileEntityBoiler extends TileEntitySteamBase implements ISidedInven
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
     {
-    	 if(resource.getFluid() == FluidRegistry.getFluid("steam"))
+    	 if(resource.getFluid() == AdvancedUtilitiesBlocks.fluidSteam)
          	return tank.fill(resource, doFill);
          if(resource.getFluid() == FluidRegistry.WATER)
          	return waterTank.fill(resource, doFill);
@@ -562,10 +571,8 @@ public class TileEntityBoiler extends TileEntitySteamBase implements ISidedInven
         {
             return null;
         }
-        if(resource.getFluid() == FluidRegistry.getFluid("steam"))
+        if(resource.getFluid() == AdvancedUtilitiesBlocks.fluidSteam)
         	return tank.drain(resource.amount, doDrain);
-        if(resource.getFluid() == FluidRegistry.WATER)
-        	return waterTank.drain(resource.amount, doDrain);
 		return null;
     }
 
@@ -578,7 +585,7 @@ public class TileEntityBoiler extends TileEntitySteamBase implements ISidedInven
     @Override
     public boolean canFill(ForgeDirection from, Fluid fluid)
     {
-        if(fluid == FluidRegistry.WATER || fluid == FluidRegistry.getFluid("steam"))
+        if(fluid == FluidRegistry.WATER || fluid == AdvancedUtilitiesBlocks.fluidSteam)
         	return true;
         else
         	return false;
@@ -587,7 +594,14 @@ public class TileEntityBoiler extends TileEntitySteamBase implements ISidedInven
     @Override
     public boolean canDrain(ForgeDirection from, Fluid fluid)
     {
-        return true;
+        if(fluid == AdvancedUtilitiesBlocks.fluidSteam)
+        {
+        	return true;
+        }
+        else
+        {
+        	return false;
+        }
     }
 
     @Override

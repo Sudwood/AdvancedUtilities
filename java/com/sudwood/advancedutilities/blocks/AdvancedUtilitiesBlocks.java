@@ -1,21 +1,20 @@
 package com.sudwood.advancedutilities.blocks;
 
-import com.sudwood.advancedutilities.AdvancedUtilities;
-import com.sudwood.advancedutilities.fluids.BlockFluidSteam;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+
+import com.sudwood.advancedutilities.AdvancedUtilities;
+import com.sudwood.advancedutilities.fluids.BlockFluidSteam;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.items.ItemTank;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class AdvancedUtilitiesBlocks 
 {
@@ -28,6 +27,7 @@ public class AdvancedUtilitiesBlocks
     public static Block blockBauxiteOre;
     public static Block blockTungstenOre;
     public static Block blockPlatinumOre;
+    public static Block blockNickelOre;
     
     public static Block blockCopperBlock;
     public static Block blockTinBlock;
@@ -42,6 +42,7 @@ public class AdvancedUtilitiesBlocks
     public static Block blockIridiumBlock;
     public static Block blockPalidiumBlock;
     public static Block blockSteelBlock;
+    public static Block blockNickelBlock;
     
     public static Block blockRubberLog;
     public static Block blockRubberLeaves;
@@ -66,11 +67,23 @@ public class AdvancedUtilitiesBlocks
     public static Block restrictedItemTube;
     public static Block steamCharger;
     public static Block fluidTube;
+    public static Block blockTank;
     
+    public static Block blockBreaker;
+    public static Block blockSpeedyGrowing;
+    public static Block tomatoPlant;
+    
+    public static Block dummyChunkChest;
+    public static Block dummyTank;
+    public static Block dummyChunkTank;
+
     
 	public static void init()
 	{
-		chunkLoader = new BlockChunkLoader(Material.circuits).setBlockName("ChunkLoader").setHardness(20F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
+		chunkLoader = new BlockChunkLoader(Material.circuits, 0).setBlockName("ChunkLoader").setHardness(20F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
+		dummyChunkChest = new BlockChunkLoader(Material.circuits, 1).setBlockName("DummyChunkChest").setHardness(20F).setResistance(100F);
+		dummyTank = new BlockChunkLoader(Material.circuits, 2).setBlockName("DummyTank").setHardness(20F).setResistance(100F);
+		dummyChunkTank = new BlockChunkLoader(Material.circuits, 3).setBlockName("DummyChunkTank").setHardness(20F).setResistance(100F);
 		
 		blockCopperOre = new BlockOre(Material.rock, 0).setBlockName("CopperOre").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		blockTinOre = new BlockOre(Material.rock, 1).setBlockName("TinOre").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
@@ -80,6 +93,7 @@ public class AdvancedUtilitiesBlocks
 		blockBauxiteOre = new BlockOre(Material.rock, 5).setBlockName("BauxiteOre").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		blockTungstenOre = new BlockOre(Material.rock, 6).setBlockName("TungstenOre").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		blockPlatinumOre = new BlockOre(Material.rock, 7).setBlockName("PlatinumOre").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
+		blockNickelOre = new BlockOre(Material.rock, 9).setBlockName("NickelOre").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		
 		blockCopperBlock = new BlockIngotBlock(Material.iron, 0).setBlockName("CopperBlock").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		blockTinBlock = new BlockIngotBlock(Material.iron, 1).setBlockName("TinBlock").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
@@ -94,6 +108,7 @@ public class AdvancedUtilitiesBlocks
 		blockIridiumBlock = new BlockIngotBlock(Material.iron, 11).setBlockName("IridiumBlock").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		blockPalidiumBlock = new BlockIngotBlock(Material.iron, 12).setBlockName("PalidiumBlock").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		blockSteelBlock = new BlockIngotBlock(Material.iron, 13).setBlockName("SteelBlock").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
+		blockNickelBlock = new BlockIngotBlock(Material.iron, 14).setBlockName("NickelBlock").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		
 		blockRubberLog = new BlockWood(Material.wood, 0).setBlockName("RubberLog").setHardness(2F).setStepSound(Block.soundTypeWood).setCreativeTab(AdvancedUtilities.advancedTab);
 		blockRubberPlanks = new BlockWood(Material.wood, 1).setBlockName("RubberPlanks").setHardness(2F).setStepSound(Block.soundTypeWood).setCreativeTab(AdvancedUtilities.advancedTab);
@@ -117,67 +132,80 @@ public class AdvancedUtilitiesBlocks
 		steamCharger = new BlockSteamMachine(Material.iron, 6).setBlockName("SteamCharger").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
 		fluidTube = new BlockTube(Material.iron, 1).setBlockName("FluidTube").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		
+		blockBreaker = new BlockBlockBreaker(Material.piston).setBlockName("BlockBreaker").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
+		blockSpeedyGrowing = new BlockSpeedyGrowing(Material.clay).setBlockName("SpeedyGrowing").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
+		tomatoPlant = new BlockTomatoPlant(Material.plants).setBlockName("TomatoPlant").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		
-		fluidSteam = new Fluid("steam").setDensity(103).setGaseous(true).setTemperature(373).setViscosity(108);
-		
-		
+		fluidSteam = new Fluid(AdvancedUtilities.steamName).setDensity(103).setGaseous(true).setTemperature(373).setViscosity(108).setUnlocalizedName("Steam");
+    	FluidRegistry.registerFluid(fluidSteam);
+    	blockFluidSteam = new BlockFluidSteam(fluidSteam, Material.water).setBlockName("BlockFluidSteam");
+		GameRegistry.registerBlock(blockFluidSteam, "blockfluidsteam");
+		fluidSteam.setBlock(blockFluidSteam);
+		blockTank = new BlockTank(Material.rock).setBlockName("BlockTank").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		registerBlocks();
 	}
 	
 	public static void registerBlocks()
 	{
-		GameRegistry.registerBlock(chunkLoader, "advancedutilities:chunkloader");
+		GameRegistry.registerBlock(chunkLoader, "chunkloader");
+		GameRegistry.registerBlock(dummyChunkChest, "dummyChunkChest");
+		GameRegistry.registerBlock(dummyTank, "dummyTank");
+		GameRegistry.registerBlock(dummyChunkTank, "dummyChunkTank");
 		
-		GameRegistry.registerBlock(blockCopperOre, "advancedutilities:coperore");
-		GameRegistry.registerBlock(blockTinOre, "advancedutilities:tinore");
-		GameRegistry.registerBlock(blockZincOre, "advancedutilities:zincore");
-		GameRegistry.registerBlock(blockSilverOre, "advancedutilities:silverore");
-		GameRegistry.registerBlock(blockLeadOre, "advancedutilities:leadore");
-		GameRegistry.registerBlock(blockBauxiteOre, "advancedutilities:bauxiteore");
-		GameRegistry.registerBlock(blockTungstenOre, "advancedutilities:tungstenore");
-		GameRegistry.registerBlock(blockPlatinumOre, "advancedutilities:platinumore");
+		GameRegistry.registerBlock(blockCopperOre, "coperore");
+		GameRegistry.registerBlock(blockTinOre, "tinore");
+		GameRegistry.registerBlock(blockZincOre, "zincore");
+		GameRegistry.registerBlock(blockSilverOre, "silverore");
+		GameRegistry.registerBlock(blockLeadOre, "leadore");
+		GameRegistry.registerBlock(blockBauxiteOre, "bauxiteore");
+		GameRegistry.registerBlock(blockTungstenOre, "tungstenore");
+		GameRegistry.registerBlock(blockPlatinumOre, "platinumore");
+		GameRegistry.registerBlock(blockNickelOre, "nickelore");
 		
-		GameRegistry.registerBlock(blockCopperBlock, "advancedutilities:coperblock");
-		GameRegistry.registerBlock(blockTinBlock, "advancedutilities:tinblock");
-		GameRegistry.registerBlock(blockBronzeBlock, "advancedutilities:bronzeblock");
-		GameRegistry.registerBlock(blockZincBlock, "advancedutilities:zincblock");
-		GameRegistry.registerBlock(blockBrassBlock, "advancedutilities:brassblock");
-		GameRegistry.registerBlock(blockSilverBlock, "advancedutilities:silverblock");
-		GameRegistry.registerBlock(blockLeadBlock, "advancedutilities:leadblock");
-		GameRegistry.registerBlock(blockAluminumBlock, "advancedutilities:aluminumblock");
-		GameRegistry.registerBlock(blockTungstenBlock, "advancedutilities:tungstenblock");
-		GameRegistry.registerBlock(blockPlatinumBlock, "advancedutilities:platinumblock");
-		GameRegistry.registerBlock(blockIridiumBlock, "advancedutilities:iridiumblock");
-		GameRegistry.registerBlock(blockPalidiumBlock, "advancedutilities:palidiumblock");
-		GameRegistry.registerBlock(blockSteelBlock, "advancedutilities:steelblock");
+		GameRegistry.registerBlock(blockCopperBlock, "coperblock");
+		GameRegistry.registerBlock(blockTinBlock, "tinblock");
+		GameRegistry.registerBlock(blockBronzeBlock, "bronzeblock");
+		GameRegistry.registerBlock(blockZincBlock, "zincblock");
+		GameRegistry.registerBlock(blockBrassBlock, "brassblock");
+		GameRegistry.registerBlock(blockSilverBlock, "silverblock");
+		GameRegistry.registerBlock(blockLeadBlock, "leadblock");
+		GameRegistry.registerBlock(blockAluminumBlock, "aluminumblock");
+		GameRegistry.registerBlock(blockTungstenBlock, "tungstenblock");
+		GameRegistry.registerBlock(blockPlatinumBlock, "platinumblock");
+		GameRegistry.registerBlock(blockIridiumBlock, "iridiumblock");
+		GameRegistry.registerBlock(blockPalidiumBlock, "palidiumblock");
+		GameRegistry.registerBlock(blockSteelBlock, "steelblock");
+		GameRegistry.registerBlock(blockNickelBlock, "nickelblock");
 		
-		GameRegistry.registerBlock(blockRubberLog, "advancedutilities:rubberlog");
-		GameRegistry.registerBlock(blockRubberPlanks, "advancedutilities:rubberplanks");
-		GameRegistry.registerBlock(blockRubberSapling, "advancedutilities:rubbersapling");
-		GameRegistry.registerBlock(blockRubberLeaves, "advancedutilities:rubberleaves");
+		GameRegistry.registerBlock(blockRubberLog, "rubberlog");
+		GameRegistry.registerBlock(blockRubberPlanks, "rubberplanks");
+		GameRegistry.registerBlock(blockRubberSapling, "rubbersapling");
+		GameRegistry.registerBlock(blockRubberLeaves, "rubberleaves");
 		
-		GameRegistry.registerBlock(blockKiln, "advancedutilities:kiln");
-		GameRegistry.registerBlock(blockSmeltry, "advancedutilities:smeltry");
-		GameRegistry.registerBlock(blockToolForge, "advancedutilities:toolforge");
-		GameRegistry.registerBlock(blockArmorForge, "advancedutilities:armorforge");
+		GameRegistry.registerBlock(blockKiln, "kiln");
+		GameRegistry.registerBlock(blockSmeltry, "smeltry");
+		GameRegistry.registerBlock(blockToolForge, "toolforge");
+		GameRegistry.registerBlock(blockArmorForge, "armorforge");
 		
-		GameRegistry.registerBlock(steamBoiler, "advancedutilities:steamboiler");
-		GameRegistry.registerBlock(steamCrusher, "advancedutilities:steamcrusher");
-		GameRegistry.registerBlock(steamFurnace, "advancedutilities:steamfurnace");
-		GameRegistry.registerBlock(steamSmeltry, "advancedutilities:steamsmeltry");
-		GameRegistry.registerBlock(steamCompressor, "advancedutilities:steamcompressor");
-		GameRegistry.registerBlock(steamCharger, "advancedutilities:steamcharger");
-		GameRegistry.registerBlock(itemTube, "advancedutilities:itemtube");
-		GameRegistry.registerBlock(restrictedItemTube, "advancedutilities:restricteditemtube");
-		GameRegistry.registerBlock(fluidTube, "advancedutilities:fluidtube");
-		GameRegistry.registerBlock(bellows, "advancedutilities:bellows");
-		GameRegistry.registerBlock(bronzeMachineCase, "advancedutilities:bronzemachinecase");
-
+		GameRegistry.registerBlock(steamBoiler, "steamboiler");
+		GameRegistry.registerBlock(steamCrusher, "steamcrusher");
+		GameRegistry.registerBlock(steamFurnace, "steamfurnace");
+		GameRegistry.registerBlock(steamSmeltry, "steamsmeltry");
+		GameRegistry.registerBlock(steamCompressor, "steamcompressor");
+		GameRegistry.registerBlock(steamCharger, "steamcharger");
+		GameRegistry.registerBlock(itemTube, "itemtube");
+		GameRegistry.registerBlock(restrictedItemTube, "restricteditemtube");
+		GameRegistry.registerBlock(fluidTube, "fluidtube");
+		GameRegistry.registerBlock(bellows, "bellows");
+		GameRegistry.registerBlock(bronzeMachineCase, "bronzemachinecase");
+		GameRegistry.registerBlock(blockTank, ItemTank.class, "blocktank");
 		
-		FluidRegistry.registerFluid(fluidSteam);
-		blockFluidSteam = new BlockFluidSteam(fluidSteam, Material.water).setBlockName("BlockFluidSteam");
-		GameRegistry.registerBlock(blockFluidSteam, "advancedutilities:blockfluidsteam");
-		fluidSteam.setBlock(blockFluidSteam);
+		GameRegistry.registerBlock(blockBreaker, "blockbreaker");
+		GameRegistry.registerBlock(blockSpeedyGrowing, "speedygrowing");
+		GameRegistry.registerBlock(tomatoPlant, "tomatoplant");
+		
+		
+		
 
 		OreDictionary.registerOre("oreCopper", blockCopperOre);
 		OreDictionary.registerOre("oreTin", blockTinOre);
@@ -189,6 +217,7 @@ public class AdvancedUtilitiesBlocks
 		OreDictionary.registerOre("oreAluminum", blockBauxiteOre);
 		OreDictionary.registerOre("oreTungsten", blockTungstenOre);
 		OreDictionary.registerOre("orePlatinum", blockPlatinumOre);
+		OreDictionary.registerOre("oreNickel", blockNickelOre);
 		
 		
 		OreDictionary.registerOre("blockCopper", blockCopperBlock);
@@ -204,6 +233,7 @@ public class AdvancedUtilitiesBlocks
 		OreDictionary.registerOre("blockIridium", blockIridiumBlock);
 		OreDictionary.registerOre("blockPalidium", blockPalidiumBlock);
 		OreDictionary.registerOre("blockSteel", blockSteelBlock);
+		OreDictionary.registerOre("blockNickel", blockNickelBlock);
 		
 		
 		
@@ -219,6 +249,7 @@ public class AdvancedUtilitiesBlocks
 		GameRegistry.addSmelting(blockBauxiteOre, new ItemStack(AdvancedUtilitiesItems.ingotAluminum, 1), 1);
 		GameRegistry.addSmelting(blockTungstenOre, new ItemStack(AdvancedUtilitiesItems.ingotTungsten, 1),1);
 		GameRegistry.addSmelting(blockPlatinumOre, new ItemStack(AdvancedUtilitiesItems.ingotPlatinum, 1),1);
+		GameRegistry.addSmelting(blockNickelOre, new ItemStack(AdvancedUtilitiesItems.ingotNickel, 1),1);
 		
 		GameRegistry.addRecipe(new ItemStack(chunkLoader, 1), new Object[]{
 			"CRC", "RDR", "CRC", 'C', Blocks.coal_block, 'R', Blocks.redstone_block, 'D', Items.diamond
@@ -240,6 +271,9 @@ public class AdvancedUtilitiesBlocks
 		});
 		GameRegistry.addRecipe(new ItemStack(Blocks.golden_rail, 32), new Object[]{
 			"I I", "IRI", "ISI", 'I', AdvancedUtilitiesItems.ingotBronze, 'R', new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 0), 'S', Items.redstone
+		});
+		GameRegistry.addRecipe(new ItemStack(blockBreaker, 1), new Object[]{
+			"WWW", "CRC", "CIC", 'I', AdvancedUtilitiesItems.ingotBronze, 'R', Items.redstone, 'C', Blocks.cobblestone, 'W', new ItemStack(Blocks.planks, 1, OreDictionary.WILDCARD_VALUE)
 		});
 		GameRegistry.addRecipe(new ItemStack(Blocks.sand, 8, 1) , new Object[]{
 			"SSS","SDS","SSS",Character.valueOf('S'), Blocks.sand, 'D', new ItemStack(Items.dye, 1, 1)
@@ -316,6 +350,9 @@ public class AdvancedUtilitiesBlocks
 		GameRegistry.addRecipe(new ItemStack(blockSteelBlock, 1), new Object[]{
 			"III", "III", "III", 'I', AdvancedUtilitiesItems.ingotSteel
 		});
+		GameRegistry.addRecipe(new ItemStack(blockNickelBlock, 1), new Object[]{
+			"III", "III", "III", 'I', AdvancedUtilitiesItems.ingotNickel
+		});
 		
 		GameRegistry.addShapelessRecipe(new ItemStack(AdvancedUtilitiesItems.ingotCopper, 9), new Object[]{blockCopperBlock});
 		GameRegistry.addShapelessRecipe(new ItemStack(AdvancedUtilitiesItems.ingotTin, 9), new Object[]{blockTinBlock});
@@ -330,6 +367,7 @@ public class AdvancedUtilitiesBlocks
 		GameRegistry.addShapelessRecipe(new ItemStack(AdvancedUtilitiesItems.ingotIridium, 9), new Object[]{blockIridiumBlock});
 		GameRegistry.addShapelessRecipe(new ItemStack(AdvancedUtilitiesItems.ingotPalidium, 9), new Object[]{blockPalidiumBlock});
 		GameRegistry.addShapelessRecipe(new ItemStack(AdvancedUtilitiesItems.ingotSteel, 9), new Object[]{blockSteelBlock});
+		GameRegistry.addShapelessRecipe(new ItemStack(AdvancedUtilitiesItems.ingotNickel, 9), new Object[]{blockNickelBlock});
 		
 		GameRegistry.addRecipe(new ItemStack(steamBoiler, 1), new Object[]{
 			" B ", "WMW", " B ", 'M', bronzeMachineCase, 'B', Items.bucket, 'W', Items.water_bucket
@@ -348,6 +386,12 @@ public class AdvancedUtilitiesBlocks
 		});
 		GameRegistry.addRecipe(new ItemStack(steamCompressor, 1), new Object[]{
 			" P ", " M ", " P ", 'M', bronzeMachineCase, 'P', new ItemStack(AdvancedUtilitiesItems.plate, 1, 1)
+		});
+		GameRegistry.addRecipe(new ItemStack(blockTank, 1) , new Object[]{
+			"GGG","GMG","GGG",Character.valueOf('G'), Blocks.glass, 'M', bronzeMachineCase
+		});
+		GameRegistry.addRecipe(new ItemStack(fluidTube, 16) , new Object[]{
+			" P ","P P"," P ",Character.valueOf('P'), new ItemStack(AdvancedUtilitiesItems.plate, 1, 1)
 		});
 		
 	}

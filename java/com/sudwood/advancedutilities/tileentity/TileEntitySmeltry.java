@@ -22,6 +22,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntitySmeltry extends TileEntity implements ISidedInventory
 {
@@ -372,11 +373,15 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
     		}
     		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.itemCasing, 1, 0)))
     		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 7);
+    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 8);
     		}
     		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.itemBulletHead, 1, 0)))
     		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 8);
+    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 7);
+    		}
+    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 10)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 9);
     		}
     	}
     	if(melt.getItem() == Items.iron_ingot)
@@ -405,8 +410,12 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
     		{
     			return new ItemStack(AdvancedUtilitiesItems.plate, 1, 0);
     		}
+    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 9)) && melt.stackSize >= 8)
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 12);
+    		}
     	}
-    	if(melt.getItem() == AdvancedUtilitiesItems.ingotBronze)
+    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 && OreDictionary.getOreIDs(melt)[0] == OreDictionary.getOreIDs(new ItemStack(AdvancedUtilitiesItems.ingotBronze, 1))[0])
     	{
     		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 0)))
     		{
@@ -436,8 +445,12 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
     		{
     			return new ItemStack(AdvancedUtilitiesItems.itemCasing, 16, 1);
     		}
+    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 9)) && melt.stackSize >= 8)
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 11);
+    		}
     	}
-    	if(melt.getItem() == AdvancedUtilitiesItems.ingotBrass)
+    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 && OreDictionary.getOreIDs(melt)[0] == OreDictionary.getOreIDs(new ItemStack(AdvancedUtilitiesItems.ingotBrass, 1))[0])
     	{
     		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 5)))
     		{
@@ -448,7 +461,7 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
     			return new ItemStack(AdvancedUtilitiesItems.brassRivets, 1);
     		}
     	}
-    	if(melt.getItem() == AdvancedUtilitiesItems.ingotLead)
+    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 && OreDictionary.getOreIDs(melt)[0] == OreDictionary.getOreIDs(new ItemStack(AdvancedUtilitiesItems.ingotLead, 1))[0])
     	{
     		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 8)))
     		{
@@ -476,8 +489,12 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
             {
                 this.inventory[3].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
             }
-
-            --this.inventory[0].stackSize;
+            if(itemstack.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 11)) || itemstack.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 12)))
+            {
+            	this.inventory[0].stackSize-=8;
+            }
+            else
+            	--this.inventory[0].stackSize;
 
             if (this.inventory[0].stackSize <= 0)
             {

@@ -88,7 +88,7 @@ public class GuiPnumaticGun extends GuiContainer
         int var6 = (this.height - this.ySize) / 2;
         if(par1 >= 110+var5 && par2 >= 8+var6 && par1 <= 143+var5 && par2 <= 74+var6)
 		{
-			String[] text = {"Amount: "+tag.getInteger("tankAmount")+" mB Steam"};
+			String[] text = {"Amount: "+tag.getInteger("tankAmount")+" / "+tag.getInteger("maxTankAmount")+" mB Steam"};
 			List temp = Arrays.asList(text);
 			drawHoveringText(temp, par1, par2, fontRendererObj);
 		}

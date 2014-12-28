@@ -1,12 +1,5 @@
 package com.sudwood.advancedutilities.tileentity;
 
-import com.sudwood.advancedutilities.CrushRecipes;
-import com.sudwood.advancedutilities.TransferHelper;
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -16,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -25,13 +19,22 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntitySteamFurnace extends TileEntitySteamBase implements ISidedInventory, IFluidHandler
+import com.sudwood.advancedutilities.AdvancedUtilities;
+import com.sudwood.advancedutilities.TransferHelper;
+import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.config.ServerOptions;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+public class TileEntitySteamFurnace extends TileEntity implements ISidedInventory, IFluidHandler, ISteamTank
 {
 	 public FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME*64);
 	 private static final int[] slotsTop = new int[] {0,1};
 	 private static final int[] slotsBottom = new int[] {};
 	 private static final int[] slotsSides = new int[] {2,3};	
-	 private static final int smeltCost = 120;
+	 private static int smeltCost = 24*ServerOptions.steamCreationRate;
 	 private int costMod = 0;
 	 private int speedMult = 1;
 	 private ItemStack[] inventory = new ItemStack[4];
@@ -88,6 +91,8 @@ public class TileEntitySteamFurnace extends TileEntitySteamBase implements ISide
 	    }
 	    public void updateEntity()
 	    {
+	    	if(this.smeltCost > this.tank.getCapacity())
+	    		this.smeltCost = this.tank.getCapacity();
 	    		if(this.canSmelt() == 1 || this.canSmelt() == 2)
 	    		{
 	    			this.progressTime++;
@@ -122,42 +127,49 @@ public class TileEntitySteamFurnace extends TileEntitySteamBase implements ISide
 	    		if(inventory[0]!=null)
 	    		{
 		    		 ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.inventory[0]);
-	
-		             if (this.inventory[2] == null)
-		             {
-		                 this.inventory[2] = itemstack.copy();
-		             }
-		             else if (this.inventory[2].getItem() == itemstack.getItem())
-		             {
-		                 this.inventory[2].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
-		             }
-	
-		             --this.inventory[0].stackSize;
-	
-		             if (this.inventory[0].stackSize <= 0)
-		             {
-		                 this.inventory[0] = null;
-		             }
+		    		 if(itemstack!=null)
+		    		 {
+		    			 itemstack.stackSize = 1;
+			             if (this.inventory[2] == null)
+			             {
+			                 this.inventory[2] = itemstack.copy();
+			             }
+			             else if (this.inventory[2].getItem() == itemstack.getItem())
+			             {
+			                 this.inventory[2].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
+			             }
+		
+			             --this.inventory[0].stackSize;
+		
+			             if (this.inventory[0].stackSize <= 0)
+			             {
+			                 this.inventory[0] = null;
+			             }
+		    		 }
 	    		}
 	    		if(inventory[1]!=null)
 	    		{
 		    		 ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.inventory[1]);
-	
-		             if (this.inventory[3] == null)
-		             {
-		                 this.inventory[3] = itemstack.copy();
-		             }
-		             else if (this.inventory[3].getItem() == itemstack.getItem())
-		             {
-		                 this.inventory[3].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
-		             }
-	
-		             --this.inventory[1].stackSize;
-	
-		             if (this.inventory[1].stackSize <= 0)
-		             {
-		                 this.inventory[1] = null;
-		             }
+		    		
+		    		 if(itemstack!= null)
+		    		 {
+		    			 itemstack.stackSize = 1;
+			             if (this.inventory[3] == null)
+			             {
+			                 this.inventory[3] = itemstack.copy();
+			             }
+			             else if (this.inventory[3].getItem() == itemstack.getItem())
+			             {
+			                 this.inventory[3].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
+			             }
+		
+			             --this.inventory[1].stackSize;
+		
+			             if (this.inventory[1].stackSize <= 0)
+			             {
+			                 this.inventory[1] = null;
+			             }
+		    		 }
 	    		}
 	    		
 		    	this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
@@ -282,6 +294,62 @@ public class TileEntitySteamFurnace extends TileEntitySteamBase implements ISide
     		    	}
     				return;
 	    		}
+	    		if(inventory[0].getItem() == Items.coal)
+	    		{
+	    			output = new ItemStack(AdvancedUtilitiesItems.ingotSteel, 1);
+	    			if(inventory[2] == null)
+    			    {
+    			    		inventory[2] = output;
+    			    		inventory[0].stackSize-=8;
+    			    		if(inventory[0].stackSize <= 0)
+    			    			inventory[0] = null;
+    			    		inventory[1].stackSize-=1;
+    			    		if(inventory[1].stackSize <= 0)
+    			    			inventory[1] = null;
+    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+    			    		
+    			    }
+    		    	else if(inventory[2].stackSize + output.stackSize < 64)
+    		    	{
+    		    		inventory[2].stackSize+=output.stackSize;
+    		    		inventory[0].stackSize-=8;
+    		    		if(inventory[0].stackSize <= 0)
+    		    			inventory[0] = null;
+    		    		inventory[1].stackSize-=1;
+			    		if(inventory[1].stackSize <= 0)
+			    			inventory[1] = null;
+    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+    		    	}
+    				return;
+	    		}
+	    		if(inventory[0].getItem() == Items.iron_ingot)
+	    		{
+	    			output = new ItemStack(AdvancedUtilitiesItems.ingotSteel, 1);
+	    			if(inventory[2] == null)
+    			    {
+    			    		inventory[2] = output;
+    			    		inventory[0].stackSize-=1;
+    			    		if(inventory[0].stackSize <= 0)
+    			    			inventory[0] = null;
+    			    		inventory[1].stackSize-=8;
+    			    		if(inventory[1].stackSize <= 0)
+    			    			inventory[1] = null;
+    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+    			    		
+    			    }
+    		    	else if(inventory[2].stackSize + output.stackSize < 64)
+    		    	{
+    		    		inventory[2].stackSize+=output.stackSize;
+    		    		inventory[0].stackSize-=1;
+    		    		if(inventory[0].stackSize <= 0)
+    		    			inventory[0] = null;
+    		    		inventory[1].stackSize-=8;
+			    		if(inventory[1].stackSize <= 0)
+			    			inventory[1] = null;
+    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+    		    	}
+    				return;
+	    		}
 	    		
 
 	    	}
@@ -309,6 +377,20 @@ public class TileEntitySteamFurnace extends TileEntitySteamBase implements ISide
 	    		if(inventory[0]!=null && inventory[0].getItem() == AdvancedUtilitiesItems.ingotZinc && inventory[0].stackSize >=1)
 	    		{
 	    			if(inventory[1]!=null&& inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && inventory[1].stackSize >= 3)
+	    			{
+	    				return 2;
+	    			}
+	    		}
+	    		if(inventory[0]!=null && inventory[0].getItem() == Items.iron_ingot && inventory[0].stackSize >=1)
+	    		{
+	    			if(inventory[1]!=null&& inventory[1].getItem() == Items.coal && inventory[1].stackSize >= 8)
+	    			{
+	    				return 2;
+	    			}
+	    		}
+	    		if(inventory[0]!=null && inventory[0].getItem() == Items.coal && inventory[0].stackSize >=8)
+	    		{
+	    			if(inventory[1]!=null&& inventory[1].getItem() == Items.iron_ingot && inventory[1].stackSize >= 1)
 	    			{
 	    				return 2;
 	    			}
@@ -550,7 +632,7 @@ public class TileEntitySteamFurnace extends TileEntitySteamBase implements ISide
 	     */
 	    public boolean canExtractItem(int par1, ItemStack par2ItemStack, int par3)
 	    {
-	        return par3 != 0 || par1 != 1 || par2ItemStack.getItem() == Items.bucket;
+	        return par1 == 2 || par1 == 3;
 	    }
 
 	    @Override
@@ -578,7 +660,7 @@ public class TileEntitySteamFurnace extends TileEntitySteamBase implements ISide
 	    @Override
 	    public boolean canFill(ForgeDirection from, Fluid fluid)
 	    {
-	    	if(fluid == FluidRegistry.getFluid("steam"))
+	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesBlocks.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
 	    		return true;
 	    	else return false;
 	    }
@@ -687,5 +769,11 @@ public class TileEntitySteamFurnace extends TileEntitySteamBase implements ISide
 		public int getInventoryStackLimit() {
 			// TODO Auto-generated method stub
 			return 64;
+		}
+
+		@Override
+		public boolean isItemValidForSlot(int var1, ItemStack var2) {
+			// TODO Auto-generated method stub
+			return var1 == 0 || var1 == 1;
 		}
 }

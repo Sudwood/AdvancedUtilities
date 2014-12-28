@@ -49,7 +49,7 @@ public class GuiArmorForge extends GuiContainer
     {
 	    if(button.id == 0)
 	    {
-	    	AdvancedUtilities.packetPipeline.sendToServer(new PacketForge(tile.getWorldObj().provider.dimensionId, tile.xCoord, tile.yCoord, tile.zCoord, 1));
+	    	AdvancedUtilities.network.sendToServer(new PacketForge(tile.getWorldObj().provider.dimensionId, tile.xCoord, tile.yCoord, tile.zCoord, 1));
 	    }
     }
 
@@ -90,13 +90,13 @@ public class GuiArmorForge extends GuiContainer
 
         if(par1 >= 42+var5 && par2 >= 27+var6 && par1 <= 57+var5 && par2 <= 42+var6)
 		{
-			String[] text = {"Armor Plates"};
+			String[] text = {"Armor Plates / Armor to Upgrade"};
 			List temp = Arrays.asList(text);
 			drawHoveringText(temp, par1-40, par2-15, fontRendererObj);
 		}
         if(par1 >= 42+var5 && par2 >= 45+var6 && par1 <= 57+var5 && par2 <= 60+var6)
 		{
-			String[] text = {"Armor Rivets"};
+			String[] text = {"Armor Rivets / Upgrade Item"};
 			List temp = Arrays.asList(text);
 			drawHoveringText(temp, par1-40, par2-15, fontRendererObj);
 		}

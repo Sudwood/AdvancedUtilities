@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.sudwood.advancedutilities.SlotForged;
+import com.sudwood.advancedutilities.slot.SlotForged;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamSmeltry;
 
 import cpw.mods.fml.relauncher.Side;

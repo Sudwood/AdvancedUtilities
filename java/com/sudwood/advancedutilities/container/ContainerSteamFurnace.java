@@ -10,7 +10,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.sudwood.advancedutilities.SlotForged;
+import com.sudwood.advancedutilities.slot.SlotForged;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamFurnace;
 
 import cpw.mods.fml.relauncher.Side;

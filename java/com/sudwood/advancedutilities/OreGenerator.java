@@ -3,6 +3,7 @@ package com.sudwood.advancedutilities;
 import java.util.Random;
 
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.config.ServerOptions;
 
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
@@ -30,17 +31,18 @@ public class OreGenerator implements IWorldGenerator
     {
  
     }
- 
+  //Block block, World world, Random random, int blockXPos, int blockZPos, int maxX, int maxZ, int maxVeinSize, int chancesToSpawn, int minY, int maxY
     private void generateSurface(World world, Random random, int x, int z)
     {
-        this.addOreSpawn(AdvancedUtilitiesBlocks.blockCopperOre, world, random, x, z, 16, 16, 4 + random.nextInt(3), 12, 1, 128);
-        this.addOreSpawn(AdvancedUtilitiesBlocks.blockTinOre, world, random, x, z, 16, 16, 4 + random.nextInt(3), 12, 1, 128);
-        this.addOreSpawn(AdvancedUtilitiesBlocks.blockZincOre, world, random, x, z, 16, 16, 4 + random.nextInt(3), 12, 1, 128);
-        this.addOreSpawn(AdvancedUtilitiesBlocks.blockSilverOre, world, random, x, z, 16, 16, 4 + random.nextInt(3), 10, 1, 64);
-        this.addOreSpawn(AdvancedUtilitiesBlocks.blockLeadOre, world, random, x, z, 16, 16, 4 + random.nextInt(3), 12, 1, 128);
-        this.addOreSpawn(AdvancedUtilitiesBlocks.blockBauxiteOre, world, random, x, z, 16, 16, 4 + random.nextInt(3), 11, 1, 128);
-        this.addOreSpawn(AdvancedUtilitiesBlocks.blockTungstenOre, world, random, x, z, 16, 16, 4 + random.nextInt(3), 3, 10, 26);
-        this.addOreSpawn(AdvancedUtilitiesBlocks.blockPlatinumOre, world, random, x, z, 16, 16, 4 + random.nextInt(3), 3, 1, 16);
+        this.addOreSpawn(AdvancedUtilitiesBlocks.blockCopperOre, world, random, x, z, 16, 16, 12 + random.nextInt(3), ServerOptions.copperSpawnRate, 2, 128);
+        this.addOreSpawn(AdvancedUtilitiesBlocks.blockTinOre, world, random, x, z, 16, 16, 12 + random.nextInt(3), ServerOptions.tinSpawnRate, 2, 128);
+        this.addOreSpawn(AdvancedUtilitiesBlocks.blockZincOre, world, random, x, z, 16, 16, 12 + random.nextInt(3), ServerOptions.zincSpawnRate, 2, 128);
+        this.addOreSpawn(AdvancedUtilitiesBlocks.blockSilverOre, world, random, x, z, 16, 16, 12 + random.nextInt(3), ServerOptions.silverSpawnRate, 2, 64);
+        this.addOreSpawn(AdvancedUtilitiesBlocks.blockLeadOre, world, random, x, z, 16, 16, 12 + random.nextInt(3), ServerOptions.leadSpawnRate, 2, 128);
+        this.addOreSpawn(AdvancedUtilitiesBlocks.blockBauxiteOre, world, random, x, z, 16, 16, 12 + random.nextInt(3), ServerOptions.bauxiteSpawnRate, 2, 128);
+        this.addOreSpawn(AdvancedUtilitiesBlocks.blockTungstenOre, world, random, x, z, 16, 16, 8 + random.nextInt(3), ServerOptions.tungstenSpawnRate, 8, 26);
+        this.addOreSpawn(AdvancedUtilitiesBlocks.blockPlatinumOre, world, random, x, z, 16, 16, 8 + random.nextInt(3), ServerOptions.platinumSpawnRate, 2, 16);
+        this.addOreSpawn(AdvancedUtilitiesBlocks.blockNickelOre, world, random, x, z, 16, 16, 12 + random.nextInt(3), ServerOptions.nickelSpawnRate, 2, 128);
     }
  
     private void generateNether(World world, Random random, int x, int z)

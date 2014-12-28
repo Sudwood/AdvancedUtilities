@@ -9,6 +9,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.init.Blocks;
+import net.minecraft.world.IBlockAccess;
 
 public class BlockIngotBlock extends Block{
 
@@ -77,7 +79,15 @@ public class BlockIngotBlock extends Block{
         case 13:
         	this.blockIcon = icon.registerIcon("advancedutilities:steelblock"+AdvancedUtilities.textureSize);
         	break;
+        case 14:
+        	this.blockIcon = icon.registerIcon("advancedutilities:nickelblock"+AdvancedUtilities.textureSize);
+        	break;
         }
+    }
+    
+    public boolean isBeaconBase(IBlockAccess worldObj, int x, int y, int z, int beaconX, int beaconY, int beaconZ)
+    {
+        return true;
     }
 
 }

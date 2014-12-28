@@ -9,9 +9,9 @@ import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
-import com.sudwood.advancedutilities.SlotForged;
-import com.sudwood.advancedutilities.SlotToolRod;
-import com.sudwood.advancedutilities.SlotToolTop;
+import com.sudwood.advancedutilities.slot.SlotForged;
+import com.sudwood.advancedutilities.slot.SlotToolRod;
+import com.sudwood.advancedutilities.slot.SlotToolTop;
 import com.sudwood.advancedutilities.tileentity.TileEntityToolForge;
 
 import cpw.mods.fml.relauncher.Side;
@@ -28,8 +28,8 @@ public class ContainerToolForge extends Container
     public ContainerToolForge(InventoryPlayer par1InventoryPlayer, TileEntityToolForge par2TileEntityToolForge)
     {
         this.tileFurnace = par2TileEntityToolForge;
-        this.addSlotToContainer(new SlotToolTop(par2TileEntityToolForge, 0, 42, 27));
-        this.addSlotToContainer(new SlotToolRod(par2TileEntityToolForge, 1, 42, 45));
+        this.addSlotToContainer(new Slot(par2TileEntityToolForge, 0, 42, 27));
+        this.addSlotToContainer(new Slot(par2TileEntityToolForge, 1, 42, 45));
         this.addSlotToContainer(new SlotForged(par2TileEntityToolForge, 2, 116, 35));
         int i;
 

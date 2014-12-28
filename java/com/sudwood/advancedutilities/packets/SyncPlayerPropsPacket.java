@@ -3,13 +3,19 @@ package com.sudwood.advancedutilities.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
+import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.ExtendedPlayer;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class SyncPlayerPropsPacket extends AbstractPacket
+public class SyncPlayerPropsPacket implements IMessage
 {
 	// Previously, we've been writing each field in our properties one at a time,
 	// but that is really annoying, and we've already done it in the save and load
@@ -32,30 +38,26 @@ public class SyncPlayerPropsPacket extends AbstractPacket
 		ExtendedPlayer.get(player).saveNBTData(data);
 	}
 	
-	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	public static class Handler implements IMessageHandler<SyncPlayerPropsPacket, IMessage> 
 	{
-		// ByteBufUtils provides a convenient method for writing the compound
-		ByteBufUtils.writeTag(buffer, data);
-	}
-	
+        @Override
+        public IMessage onMessage(SyncPlayerPropsPacket message, MessageContext ctx) 
+        {
+        	EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        	ExtendedPlayer.get(player).loadNBTData(message.data);
+            return null; // no response in this case
+        }
+    }
+
 	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) 
+	public void fromBytes(ByteBuf buffer) 
 	{
-		// luckily, ByteBufUtils provides an easy way to read the NBT
 		data = ByteBufUtils.readTag(buffer);
 	}
-	
+
 	@Override
-	public void handleClientSide(EntityPlayer player) 
+	public void toBytes(ByteBuf buffer) 
 	{
-		// now we can just load the NBTTagCompound data directly; one and done, folks
-		ExtendedPlayer.get(player).loadNBTData(data);
-	}
-	
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-		
+		ByteBufUtils.writeTag(buffer, data);
 	}
 }

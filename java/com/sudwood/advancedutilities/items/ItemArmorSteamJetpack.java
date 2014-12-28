@@ -7,6 +7,7 @@ import com.sudwood.advancedutilities.client.ClientRegistering;
 import com.sudwood.advancedutilities.client.SoundHandler;
 import com.sudwood.advancedutilities.container.InventoryItem;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;
@@ -30,8 +31,22 @@ public class ItemArmorSteamJetpack extends ItemArmor
 	{
 		super(material, render, type);
 		this.type = type;
+		this.maxStackSize = 1;
 		// TODO Auto-generated constructor stub
 	}
+	@SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister icon)
+    {
+		this.itemIcon = icon.registerIcon("advancedutilities:copperingot");
+    }
+	public int getItemEnchantability()
+    {
+		 return 10;
+    }
+	public boolean isItemTool(ItemStack par1ItemStack)
+    {
+        return true;
+    }
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) 
 	{
@@ -54,6 +69,19 @@ public class ItemArmorSteamJetpack extends ItemArmor
 	 		return AdvancedUtilities.MODID+":"+"textures/items/jetpack.png";
 
  		}
+	 	
+	 	public void onCreated(ItemStack stack, World world, EntityPlayer player) 
+	 	{
+	 		if(stack.getTagCompound() == null)
+	 		{
+	 			stack.setTagCompound(new NBTTagCompound());
+	 		}
+	 		NBTTagCompound tag = stack.getTagCompound();
+	 		if(tag.getInteger("maxTankAmount") == 0)
+	 		{
+	 			tag.setInteger("maxTankAmount", maxStorage);
+	 		}
+	 	}
  		
 	 	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
 	    {
@@ -77,7 +105,7 @@ public class ItemArmorSteamJetpack extends ItemArmor
  	    	 armorModel = ClientRegistering.jetpackArmor;
  	    	 armorModel.bipedHead.showModel = armorSlot == 0;
  	    	 armorModel.bipedHeadwear.showModel = armorSlot == 0;
- 	    	 armorModel.bipedBody.showModel = false;
+ 	    	 armorModel.bipedBody.showModel = true;
  	    	 armorModel.bipedRightArm.showModel = false;
  	    	 armorModel.bipedLeftArm.showModel = false;
  	    	 armorModel.bipedRightLeg.showModel = false;
@@ -118,8 +146,11 @@ public class ItemArmorSteamJetpack extends ItemArmor
  	    		}
 	 	    	if(itemStack.getItem() == AdvancedUtilitiesItems.steamJetpack && tag.getInteger("tankAmount") >= this.steamHover && player.isSneaking() && !player.onGround)
 	 	    	{
-	 	    		player.setVelocity(player.motionX,-0.14,player.motionZ);
+	 	    		player.jumpMovementFactor = (float) 0.06;
+	 	    		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+	 	    			player.setVelocity(player.motionX,-0.14,player.motionZ);
 	 	    		SoundHandler.playAtEntity(player.worldObj, player, "steamStream", 0.1F, 0.6F);
+	 	    		if(!player.capabilities.isCreativeMode)
 	 	    		tag.setInteger("tankAmount", tag.getInteger("tankAmount")-this.steamHover);
 	 	    	}
  	    	}

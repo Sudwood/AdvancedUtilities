@@ -1,26 +1,34 @@
 package com.sudwood.advancedutilities;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.sudwood.advancedutilities.client.gui.GuiArmorForge;
+import com.sudwood.advancedutilities.client.gui.GuiBag;
 import com.sudwood.advancedutilities.client.gui.GuiBoiler;
 import com.sudwood.advancedutilities.client.gui.GuiFluidTube;
 import com.sudwood.advancedutilities.client.gui.GuiItemTube;
 import com.sudwood.advancedutilities.client.gui.GuiKiln;
+import com.sudwood.advancedutilities.client.gui.GuiMagazine;
 import com.sudwood.advancedutilities.client.gui.GuiPnumaticGun;
+import com.sudwood.advancedutilities.client.gui.GuiRebreather;
 import com.sudwood.advancedutilities.client.gui.GuiRestrictedItemTube;
+import com.sudwood.advancedutilities.client.gui.GuiSkills;
 import com.sudwood.advancedutilities.client.gui.GuiSmeltry;
 import com.sudwood.advancedutilities.client.gui.GuiSteamCrusher;
 import com.sudwood.advancedutilities.client.gui.GuiSteamFurnace;
 import com.sudwood.advancedutilities.client.gui.GuiSteamSmeltry;
 import com.sudwood.advancedutilities.client.gui.GuiToolForge;
 import com.sudwood.advancedutilities.container.ContainerArmorForge;
+import com.sudwood.advancedutilities.container.ContainerBag;
 import com.sudwood.advancedutilities.container.ContainerFluidTube;
 import com.sudwood.advancedutilities.container.ContainerItemTube;
 import com.sudwood.advancedutilities.container.ContainerKiln;
+import com.sudwood.advancedutilities.container.ContainerMagazine;
 import com.sudwood.advancedutilities.container.ContainerPnumaticGun;
+import com.sudwood.advancedutilities.container.ContainerRebreather;
 import com.sudwood.advancedutilities.container.ContainerRestrictedItemTube;
 import com.sudwood.advancedutilities.container.ContainerSmeltry;
 import com.sudwood.advancedutilities.container.ContainerSteamBoiler;
@@ -28,7 +36,12 @@ import com.sudwood.advancedutilities.container.ContainerSteamCrusher;
 import com.sudwood.advancedutilities.container.ContainerSteamFurnace;
 import com.sudwood.advancedutilities.container.ContainerSteamSmeltry;
 import com.sudwood.advancedutilities.container.ContainerToolForge;
+import com.sudwood.advancedutilities.container.InventoryBag;
 import com.sudwood.advancedutilities.container.InventoryItem;
+import com.sudwood.advancedutilities.container.RebreatherInv;
+import com.sudwood.advancedutilities.items.ItemArmorRebreather;
+import com.sudwood.advancedutilities.items.ItemBag;
+import com.sudwood.advancedutilities.items.ItemMagazine;
 import com.sudwood.advancedutilities.items.ItemPnumaticGun;
 import com.sudwood.advancedutilities.tileentity.TileEntityArmorForge;
 import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
@@ -125,6 +138,24 @@ public class GuiHandler implements IGuiHandler
 				{
 					return new ContainerRestrictedItemTube(player.inventory, (TileEntityRestrictedItemTube)tile21111);
 				}
+			case AdvancedUtilities.bulletMagazineGui:
+				if(player.getCurrentEquippedItem().getItem() instanceof ItemMagazine)
+				{
+					return new ContainerMagazine(player, player.inventory, new InventoryItem(player.getCurrentEquippedItem()));
+				}
+			case AdvancedUtilities.bagGui:
+				if(player.getCurrentEquippedItem().getItem() instanceof ItemBag)
+				{
+					return new ContainerBag(player, player.inventory, new InventoryBag(player.getCurrentEquippedItem()));
+				}
+			case AdvancedUtilities.skillsGui:
+				return null;
+				
+			case AdvancedUtilities.rebreatherGui:
+				if(player.getCurrentEquippedItem().getItem() instanceof ItemArmorRebreather)
+				{
+					return new ContainerRebreather(player, player.inventory, new RebreatherInv(player.getCurrentEquippedItem()));
+				}
 				
 			default: return null;
 		}
@@ -206,6 +237,23 @@ public class GuiHandler implements IGuiHandler
 				if(tile21111 instanceof TileEntityRestrictedItemTube)
 				{
 					return new GuiRestrictedItemTube(player.inventory, (TileEntityRestrictedItemTube)tile21111);
+				}
+			case AdvancedUtilities.bulletMagazineGui:
+				if(player.getCurrentEquippedItem().getItem() instanceof ItemMagazine)
+				{
+					return new GuiMagazine(new ContainerMagazine(player, player.inventory, new InventoryItem(player.getCurrentEquippedItem())), player.getCurrentEquippedItem());
+				}
+			case AdvancedUtilities.bagGui:
+				if(player.getCurrentEquippedItem().getItem() instanceof ItemBag)
+				{
+					return new GuiBag(new ContainerBag(player, player.inventory, new InventoryBag(player.getCurrentEquippedItem())), player.getCurrentEquippedItem());
+				}
+			case AdvancedUtilities.skillsGui:
+				return new GuiSkills(Minecraft.getMinecraft());
+			case AdvancedUtilities.rebreatherGui:
+				if(player.getCurrentEquippedItem().getItem() instanceof ItemArmorRebreather)
+				{
+					return new GuiRebreather(new ContainerRebreather(player, player.inventory, new RebreatherInv(player.getCurrentEquippedItem())), player.getCurrentEquippedItem());
 				}
 			default: return null;
 		}

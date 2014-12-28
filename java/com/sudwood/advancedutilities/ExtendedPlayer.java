@@ -23,6 +23,9 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	
 	// Declare other variables you want to add here
 	public boolean isJetpack;
+	public boolean isRunning;
+	public boolean toggleJetpack;
+	public byte[] skills;
 	
 	/*
 	The default constructor takes no arguments, but I put in the Entity so I can initialize the above variable 'player'
@@ -33,6 +36,9 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	{
 		this.player = player;
 		isJetpack = false;
+		isRunning = false;
+		toggleJetpack = false;
+		skills = new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	}
 	
 	/**
@@ -62,6 +68,9 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		NBTTagCompound properties = new NBTTagCompound();
 		
 		properties.setBoolean("isJetpack", isJetpack);
+		properties.setBoolean("isRunning", isRunning);
+		properties.setBoolean("toggleJetpack", toggleJetpack);
+		properties.setByteArray("skills", skills);
 		
 		/*
 		Now add our custom tag to the player's tag with a unique name (our property's name). This will allow you to save multiple types of properties and distinguish between them. If you only have one type, it isn't as important, but it will still avoid conflicts between your tag names and vanilla tag names. For instance, if you add some "Items" tag, that will conflict with vanilla. Not good. So just use a unique tag name.
@@ -76,6 +85,9 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		// Here we fetch the unique tag compound we set for this class of Extended Properties
 		NBTTagCompound properties = (NBTTagCompound) compound.getTag(EXT_PROP_NAME);
 		this.isJetpack = properties.getBoolean("isJetpack");
+		this.isRunning = properties.getBoolean("isRunning");
+		this.toggleJetpack = properties.getBoolean("toggleJetpack");
+		this.skills = properties.getByteArray("skills");
 	}
 	
 	private static final String getSaveKey(EntityPlayer player) 
@@ -91,7 +103,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		if (savedData != null) { playerData.loadNBTData(savedData); }
 		// we are replacing the entire sync() method with a single line; more on packets later
 		// data can by synced just by sending the appropriate packet, as everything is handled internally by the packet class
-		AdvancedUtilities.packetPipeline.sendTo(new SyncPlayerPropsPacket(player), (EntityPlayerMP) player);
+		AdvancedUtilities.network.sendTo(new SyncPlayerPropsPacket(player), (EntityPlayerMP) player);
 	}
 	
 	public static void saveProxyData(EntityPlayer player) 

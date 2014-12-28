@@ -1,5 +1,7 @@
 package com.sudwood.advancedutilities.tileentity;
 
+import java.util.Map;
+
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.items.ItemBETool;
 
@@ -18,6 +20,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -26,6 +29,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 
 public class TileEntityToolForge extends TileEntity implements IInventory
 {
@@ -194,7 +198,7 @@ public class TileEntityToolForge extends TileEntity implements IInventory
      */
     public int getInventoryStackLimit()
     {
-        return 1;
+        return 64;
     }
 
     /**
@@ -217,7 +221,7 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     	  this.furnaceCookTime++;
     	  if(!worldObj.isRemote)
     	  {
-    		  if(this.furnaceCookTime == 1200)
+    		  if(this.furnaceCookTime >= 1200)
     		  {
     			  this.smeltItem();
     			  this.isCrafting = false;
@@ -386,53 +390,219 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 21);
     		}
     	}
-    	if(top.getItem() == AdvancedUtilitiesItems.toolBE && (top.getItemDamage() < 12))
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 11)))
+    	{
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 0)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 26);
+    		}
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 1)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 25);
+    		}
+    		if(rod.isItemEqual(new ItemStack(Items.stick, 1, 0)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 24);
+    		}
+    	}
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 12)))
+    	{
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 0)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 29);
+    		}
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 1)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 28);
+    		}
+    		if(rod.isItemEqual(new ItemStack(Items.stick, 1, 0)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 27);
+    		}
+    	}
+    	if(top.getItem() == AdvancedUtilitiesItems.toolBE && (top.getItemDamage() < 12 || top.getItemDamage() == 27 || top.getItemDamage() == 28 || top.getItemDamage() == 29))
     	{
     		if(rod.getItem() == Items.iron_ingot)
     		{
-    			return new ItemStack(top.getItem(), 1, top.getItemDamage());
+    			ItemStack result = top.copy();
+    			NBTTagCompound tag = result.getTagCompound();
+    			tag.setInteger("CurrentDamage", tag.getInteger("MaxDamage"));
+    			return result;
     		}
     	}
-    	if(top.getItem() == AdvancedUtilitiesItems.toolBE && (top.getItemDamage() > 11))
+    	if(top.getItem() == AdvancedUtilitiesItems.toolBE && (top.getItemDamage() > 11|| top.getItemDamage() == 24 || top.getItemDamage() == 25 || top.getItemDamage() == 26))
     	{
     		if(rod.getItem() == AdvancedUtilitiesItems.ingotBronze)
     		{
-    			return new ItemStack(top.getItem(), 1, top.getItemDamage());
+    			ItemStack result = top.copy();
+    			NBTTagCompound tag = result.getTagCompound();
+    			tag.setInteger("CurrentDamage", tag.getInteger("MaxDamage"));
+    			return result;
     		}
     	}
-    	if(top.getItem() == AdvancedUtilitiesItems.jackHammer)
+    	if(top.getItem() instanceof ItemTool)
+    	{
+    		if(rod.getItem() == AdvancedUtilitiesItems.upgrade && rod.getItemDamage() != 0 && rod.getItemDamage() != 4 && rod.getItemDamage() != 5 && rod.getItemDamage() != 6 && rod.getItemDamage() != 10 && rod.getItemDamage() != 11 && rod.getItemDamage() != 12)
+    		{
+    			ItemStack result = top.copy();
+    			switch(rod.getItemDamage())
+    			{
+    			case 1:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.efficiency, 1);
+    				break;
+    			case 2:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.efficiency, 2);
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, result) < 2)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.efficiency.effectId, 2);
+    					EnchantmentHelper.setEnchantments(map, result);
+    				}
+    				break;
+    			case 3:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.efficiency, 3);
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, result) < 3)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.efficiency.effectId, 3);
+    					EnchantmentHelper.setEnchantments(map, result);
+    				}
+    				break;
+    			case 7:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.fortune, 1);
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.looting.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.looting, 1);
+    				break;
+    			case 8:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.fortune, 2);
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, result) < 2)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.fortune.effectId, 2);
+    					EnchantmentHelper.setEnchantments(map, result);
+    				}
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.looting.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.looting, 2);
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.looting.effectId, result) < 2)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.looting.effectId, 2);
+    					EnchantmentHelper.setEnchantments(map, result);
+    				}
+    				break;
+    			case 9:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.fortune, 3);
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, result) < 3)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.fortune.effectId, 3);
+    					EnchantmentHelper.setEnchantments(map, result);
+    				}
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.looting.effectId, result)<=0)
+    					result.addEnchantment(Enchantment.looting, 3);
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.looting.effectId, result) < 3)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.looting.effectId, 3);
+    					EnchantmentHelper.setEnchantments(map, result);
+    				}
+    				break;
+    			case 13:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, result)<=0)
+    				{
+    					result.addEnchantment(Enchantment.sharpness, 1);
+    					NBTTagCompound tag = result.getTagCompound();
+    					tag.setInteger("Attack", tag.getInteger("Attack")+2);
+    				}
+    				break;
+    			case 14:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, result)<=0)
+    				{
+    					result.addEnchantment(Enchantment.sharpness, 2);
+    					NBTTagCompound tag = result.getTagCompound();
+    					tag.setInteger("Attack", tag.getInteger("Attack")+6);
+    				}
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, result) < 2)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.sharpness.effectId, 2);
+    					EnchantmentHelper.setEnchantments(map, result);
+    					NBTTagCompound tag = result.getTagCompound();
+    					tag.setInteger("Attack", tag.getInteger("Attack")+4);
+    				}
+    				break;
+    			case 15:
+    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, result)<=0)
+    				{
+    					result.addEnchantment(Enchantment.sharpness, 3);
+    					NBTTagCompound tag = result.getTagCompound();
+    					tag.setInteger("Attack", tag.getInteger("Attack")+10);
+    				}
+    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, result) < 3)
+    				{
+    					Map map = EnchantmentHelper.getEnchantments(result);
+    					map.put(Enchantment.sharpness.effectId, 3);
+    					EnchantmentHelper.setEnchantments(map, result);
+    					NBTTagCompound tag = result.getTagCompound();
+    					tag.setInteger("Attack", tag.getInteger("Attack")+4);
+    				}
+    				break;
+    			}
+    			return result;
+    		}
+    	}
+    	if(top.getItem() instanceof ItemBow)
+    	{
+    		if(rod.getItem() == AdvancedUtilitiesItems.upgrade && (rod.getItemDamage()  == 13 || rod.getItemDamage()  == 14 || rod.getItemDamage()  == 15 ))
+    		{
+    			ItemStack result = top.copy();
+    			switch(rod.getItemDamage())
+    			{
+	    			case 13:
+	    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, result)<=0)
+	    					result.addEnchantment(Enchantment.power, 1);
+	    				break;
+	    			case 14:
+	    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, result)<=0)
+	    					result.addEnchantment(Enchantment.power, 2);
+	    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, result) < 2)
+	    				{
+	    					Map map = EnchantmentHelper.getEnchantments(result);
+	    					map.put(Enchantment.power.effectId, 2);
+	    					EnchantmentHelper.setEnchantments(map, result);
+	    				}
+	    				break;
+	    			case 15:
+	    				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, result)<=0)
+	    					result.addEnchantment(Enchantment.power, 3);
+	    				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, result) < 3)
+	    				{
+	    					Map map = EnchantmentHelper.getEnchantments(result);
+	    					map.put(Enchantment.power.effectId, 3);
+	    					EnchantmentHelper.setEnchantments(map, result);
+	    				}
+	    				break;
+    			}
+    			return result;
+    		}
+    	}
+    	if(top.getItem() == AdvancedUtilitiesItems.jackHammer || top.getItem() == AdvancedUtilitiesItems.pnumaticGun)
     	{
     		ItemStack result = top.copy();
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, rod) > 0)
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.itemCasing, 1, 2)))
     		{
-    			result.addEnchantment(Enchantment.efficiency, EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, rod));
-    		}
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, rod) > 0 && EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, rod)<= 0)
-    		{
-    			result.addEnchantment(Enchantment.fortune, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, rod));
-    		}
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, rod) > 0 && EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, rod)<= 0)
-    		{
-    			result.addEnchantment(Enchantment.silkTouch, EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, rod));
-    		}
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, rod) > 0)
-    		{
-    			result.addEnchantment(Enchantment.fireAspect, EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, rod));
-    		}
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, rod) > 0)
-    		{
-    			result.addEnchantment(Enchantment.sharpness, EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, rod));
-    		}
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.smite.effectId, rod) > 0)
-    		{
-    			result.addEnchantment(Enchantment.smite, EnchantmentHelper.getEnchantmentLevel(Enchantment.smite.effectId, rod));
-    		}
-    		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.baneOfArthropods.effectId, rod) > 0)
-    		{
-    			result.addEnchantment(Enchantment.baneOfArthropods, EnchantmentHelper.getEnchantmentLevel(Enchantment.baneOfArthropods.effectId, rod));
+    			NBTTagCompound tag = result.getTagCompound();
+    			tag.setInteger("maxTankAmount", tag.getInteger("maxTankAmount")+16*FluidContainerRegistry.BUCKET_VOLUME);
     		}
     		return result;
     	}
+    	
     	
     	return null;
     }

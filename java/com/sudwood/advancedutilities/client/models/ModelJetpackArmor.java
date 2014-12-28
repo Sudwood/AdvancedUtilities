@@ -160,7 +160,7 @@ public class ModelJetpackArmor extends ModelBiped
   {
     super.render(entity, f, f1, f2, f3, f4, f5);
     setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-    Shape1.render(f5);
+   /* Shape1.render(f5);
     Shape2.render(f5);
     Shape3.render(f5);
     Shape4.render(f5);
@@ -175,7 +175,7 @@ public class ModelJetpackArmor extends ModelBiped
     Shape13.render(f5);
     Shape14.render(f5);
     Shape15.render(f5);
-    Shape16.render(f5);
+    Shape16.render(f5);*/
   }
   
   private void setRotation(ModelRenderer model, float x, float y, float z)

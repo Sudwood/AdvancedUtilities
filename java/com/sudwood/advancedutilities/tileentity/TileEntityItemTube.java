@@ -118,7 +118,7 @@ public class TileEntityItemTube extends TileEntity implements IInventory
     	switch(worldObj.getBlockMetadata(xCoord, yCoord, zCoord))
     	{
     	case 1:
-    		int[] slot = TransferHelper.getFirstStackThatFits(xCoord, yCoord+ForgeDirection.UP.offsetY, zCoord, inventory, worldObj, numTransfered, this);
+    		int[] slot = TransferHelper.getFirstStackThatFits(xCoord, yCoord+ForgeDirection.UP.offsetY, zCoord, inventory, worldObj, numTransfered, this, 0);
 	    	if(slot!= null)
 	    	{
 	    		try
@@ -160,7 +160,7 @@ public class TileEntityItemTube extends TileEntity implements IInventory
 	    	}
 	    	break;
     	case 0:
-    		int[] slot1 = TransferHelper.getFirstStackThatFits(xCoord, yCoord+ForgeDirection.DOWN.offsetY, zCoord, inventory, worldObj, numTransfered, this);
+    		int[] slot1 = TransferHelper.getFirstStackThatFits(xCoord, yCoord+ForgeDirection.DOWN.offsetY, zCoord, inventory, worldObj, numTransfered, this, 1);
 	    	if(slot1!= null)
 	    	{
 	    		try
@@ -202,7 +202,7 @@ public class TileEntityItemTube extends TileEntity implements IInventory
 	    	}
 	    	break;
     	case 3:
-    		int[] slot11 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ, inventory, worldObj, numTransfered, this);
+    		int[] slot11 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ, inventory, worldObj, numTransfered, this, 2);
 	    	if(slot11!= null)
 	    	{
 	    		try
@@ -244,7 +244,7 @@ public class TileEntityItemTube extends TileEntity implements IInventory
 	    	}
 	    	break;
     	case 2:
-    		int[] slot111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ, inventory, worldObj, numTransfered, this);
+    		int[] slot111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ, inventory, worldObj, numTransfered, this, 3);
 	    	if(slot111!= null)
 	    	{
 	    		try
@@ -286,7 +286,7 @@ public class TileEntityItemTube extends TileEntity implements IInventory
 	    	}
 	    	break;
     	case 4:
-    		int[] slot1111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ, inventory, worldObj, numTransfered, this);
+    		int[] slot1111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ, inventory, worldObj, numTransfered, this, 5);
 	    	if(slot1111!= null)
 	    	{
 	    		try
@@ -328,7 +328,7 @@ public class TileEntityItemTube extends TileEntity implements IInventory
 	    	}
 	    	break;
     	case 5:
-    		int[] slot11111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ, inventory, worldObj, numTransfered, this);
+    		int[] slot11111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ, inventory, worldObj, numTransfered, this, 4);
 	    	if(slot11111!= null)
 	    	{
 	    		try

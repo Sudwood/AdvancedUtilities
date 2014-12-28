@@ -1,20 +1,13 @@
 package com.sudwood.advancedutilities.tileentity;
 
-import com.sudwood.advancedutilities.CrushRecipes;
-import com.sudwood.advancedutilities.TransferHelper;
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -24,14 +17,23 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntitySteamCrusher extends TileEntitySteamBase implements ISidedInventory, IFluidHandler
+import com.sudwood.advancedutilities.AdvancedUtilities;
+import com.sudwood.advancedutilities.CrushRecipes;
+import com.sudwood.advancedutilities.TransferHelper;
+import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.config.ServerOptions;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+public class TileEntitySteamCrusher extends TileEntity implements ISidedInventory, IFluidHandler, ISteamTank
 {
 	 public FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME*64);
 	 private static final int[] slotsTop = new int[] {0};
 	 private static final int[] slotsBottom = new int[] {};
 	 private static final int[] slotsSides = new int[] {1};	 
 	 private ItemStack[] inventory = new ItemStack[2];
-	 private static final int crushCost = 500;
+	 private static int crushCost = 100*ServerOptions.steamCreationRate;
 	 private int currentOutput = 0;
 	 private int costMod = 0;
 	 private int speedMult = 1;
@@ -92,6 +94,8 @@ public class TileEntitySteamCrusher extends TileEntitySteamBase implements ISide
 	    }
 	    public void updateEntity()
 	    {
+	    	if(this.crushCost > this.tank.getCapacity())
+	    		this.crushCost = this.tank.getCapacity();
 	    		if(this.canCrush())
 	    		{
 	    			this.progressTime++;
@@ -357,8 +361,17 @@ public class TileEntitySteamCrusher extends TileEntitySteamBase implements ISide
 	     */
 	    public boolean canInsertItem(int par1, ItemStack par2ItemStack, int par3)
 	    {
-	        return this.isItemValidForSlot(par1, par2ItemStack);
+	        return par3 == 1 && par1 == 0;
 	    }
+	    
+	    @Override
+		public boolean isItemValidForSlot(int var1, ItemStack var2) {
+			// TODO Auto-generated method stub
+			if(var1 == 1)
+				return false;
+			else
+				return true;
+		}
 
 	    /**
 	     * Returns true if automation can extract the given item in the given slot from the given side. Args: Slot, item,
@@ -366,7 +379,7 @@ public class TileEntitySteamCrusher extends TileEntitySteamBase implements ISide
 	     */
 	    public boolean canExtractItem(int par1, ItemStack par2ItemStack, int par3)
 	    {
-	        return par3 != 0 || par1 != 1 || par2ItemStack.getItem() == Items.bucket;
+	        return par1!= 0;
 	    }
 
 	    @Override
@@ -394,7 +407,7 @@ public class TileEntitySteamCrusher extends TileEntitySteamBase implements ISide
 	    @Override
 	    public boolean canFill(ForgeDirection from, Fluid fluid)
 	    {
-	    	if(fluid == FluidRegistry.getFluid("steam"))
+	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesBlocks.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
 	    		return true;
 	    	else return false;
 	    }

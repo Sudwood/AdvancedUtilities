@@ -46,7 +46,7 @@ public class BlockToolForge extends BlockContainer
     {
         return false;
     }
-	
+	@SideOnly(Side.CLIENT)
 	public int getRenderType()
     {
         return ClientRegistering.toolForgeId;

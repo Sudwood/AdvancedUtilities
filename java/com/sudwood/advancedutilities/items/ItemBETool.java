@@ -1,36 +1,56 @@
 package com.sudwood.advancedutilities.items;
 
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
+import com.google.common.collect.Sets;
 import com.sudwood.advancedutilities.AdvancedUtilities;
+import com.sudwood.advancedutilities.HelperLibrary;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemBETool extends Item
+public class ItemBETool extends ItemTool
 {
-	private IIcon[] icons = new IIcon[24];
 	
-	private static final int PICK = 0;
-	private static final int SWORD = 1;
-	private static final int SHOVEL = 2;
-	private static final int AXE = 3;
+	public int hamBreakRadius = 1;
+    public int hamBreakDepth = 0;
+	
+	private IIcon[] icons = new IIcon[30];
+	
+	public static final int PICK = 0;
+	public static final int SWORD = 1;
+	public static final int SHOVEL = 2;
+	public static final int AXE = 3;
+	public static final int HAMMER = 4;
 	
 	private static final int WOODB = 100;
 	private static final int IRONB = 190;
@@ -39,10 +59,18 @@ public class ItemBETool extends Item
 	private static final int IRONT = 210;
 	private static final int BRONZET = 350;
 	
-	private String[] names = {"IronPickaxe", "IronSword", "IronShovel", "IronAxe", "BronzePickaxe", "BronzeSword", "BronzeShovel", "BronzeAxe"};
+	private static final int IRONHAM = 1100;
+	private static final int BRONZEHAM = 1500;
+	
+	 private static final Set field_150915_c = Sets.newHashSet(new Block[] {Blocks.cobblestone, Blocks.double_stone_slab, Blocks.stone_slab, Blocks.stone, Blocks.sandstone, Blocks.mossy_cobblestone, Blocks.iron_ore, Blocks.iron_block, Blocks.coal_ore, Blocks.gold_block, Blocks.gold_ore, Blocks.diamond_ore, Blocks.diamond_block, Blocks.ice, Blocks.netherrack, Blocks.lapis_ore, Blocks.lapis_block, Blocks.redstone_ore, Blocks.lit_redstone_ore, Blocks.rail, Blocks.detector_rail, Blocks.golden_rail, Blocks.activator_rail});
+	
+	private String[] names = {"IronPickaxe", "IronSword", "IronShovel", "IronAxe", 
+			"BronzePickaxe", "BronzeSword", "BronzeShovel", "BronzeAxe",
+			"BronzeHammer", "IronHammer"};
 	
 	public ItemBETool()
 	{
+		super(3, ToolMaterial.IRON, field_150915_c);
 		this.setHasSubtypes(true);
         this.setMaxDamage(0);
 	}
@@ -84,11 +112,15 @@ public class ItemBETool extends Item
     public boolean canHarvestBlock(Block par1Block, ItemStack itemStack)
     {
     	if(itemStack.getTagCompound() == null)
-    		itemStack.setTagCompound(new NBTTagCompound());
+    		return false;
     	NBTTagCompound tag = itemStack.getTagCompound();
     	switch(tag.getInteger("Type"))
     	{
     	case PICK:
+    		if(par1Block.isToolEffective("pickaxe", 2))
+    			return true;
+    		break;
+    	case HAMMER:
     		if(par1Block.isToolEffective("pickaxe", 2))
     			return true;
     		break;
@@ -190,6 +222,10 @@ public class ItemBETool extends Item
     		if(block.isToolEffective("pickaxe", 2))
     			return 10F;
     		break;
+    	case HAMMER:
+    		if(block.isToolEffective("pickaxe", 2))
+    			return 10F;
+    		break;
     	case SWORD:
     		if(block.isToolEffective("sword", 2))
     		return 10F;
@@ -246,12 +282,12 @@ public class ItemBETool extends Item
     	}
     }
     
-    public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int p_150894_4_, int p_150894_5_, int p_150894_6_, EntityLivingBase player)
+    public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase player)
     {
     	NBTTagCompound tag = stack.getTagCompound();
     	if(tag.getInteger("Type") == PICK)
     	{
-    		if(block.isToolEffective("pickaxe", 2) && tag.getInteger("CurrentDamage") >= 1)
+			if(block.isToolEffective("pickaxe", 2) && tag.getInteger("CurrentDamage") >= 1)
 	      	 {
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
 		      	if(tag.getInteger("CurrentDamage") <= 0)
@@ -260,9 +296,31 @@ public class ItemBETool extends Item
 		      	}
 		      	 return true;
 	      	 }
-   		if(!block.isToolEffective("pickaxe", 2) && tag.getInteger("CurrentDamage") >= 2)
+	   		if(!block.isToolEffective("pickaxe", 2) && tag.getInteger("CurrentDamage") >= 2)
 	      	 {
-		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+		      	tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+		      	if(tag.getInteger("CurrentDamage") <= 0)
+		      	{
+		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
+		      	}
+		      	 return true;
+	      	 }
+	        return false;
+    	}
+    	if(tag.getInteger("Type") == HAMMER)
+    	{
+    		if(block.isToolEffective("pickaxe", 2) && tag.getInteger("CurrentDamage") >= 1)
+	      	 {
+		      	tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+		      	if(tag.getInteger("CurrentDamage") <= 0)
+		      	{
+		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
+		      	}
+		      	 return true;
+	      	 }
+	   		if(!block.isToolEffective("pickaxe", 2) && tag.getInteger("CurrentDamage") >= 2)
+	      	 {
+		      	tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
@@ -344,13 +402,13 @@ public class ItemBETool extends Item
      * @return True to prevent harvesting, false to continue as normal
      */
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
+    public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player)
     {
-    	if(itemstack.getTagCompound()==null)
+    	if(stack.getTagCompound()==null)
 		  {
-			  itemstack.setTagCompound(new NBTTagCompound());
+			  stack.setTagCompound(new NBTTagCompound());
 		  }
-    	NBTTagCompound tag = itemstack.getTagCompound();
+    	NBTTagCompound tag = stack.getTagCompound();
     	
     	if(tag.getInteger("Type")==SWORD)
     	{
@@ -359,6 +417,60 @@ public class ItemBETool extends Item
 		      	 return false;
 	     	 }
 	    	 else return true;
+    	}
+    	if(tag.getInteger("Type") == HAMMER)
+    	{
+    		if(tag.getInteger("CurrentDamage") >= 9)
+    		{
+    			Block block = player.worldObj.getBlock(x,y,z);
+    	        int meta = player.worldObj.getBlockMetadata(x,y,z);
+    	        
+    	        if(block == null || !this.canHarvestBlock(block, stack))
+    	            return super.onBlockStartBreak(stack, x,y,z, player);
+    	        
+    	        MovingObjectPosition mop = HelperLibrary.raytraceFromEntity(player.worldObj, player, false,  4.5d);
+    	        if(mop == null)
+    	            return super.onBlockStartBreak(stack, x,y,z, player);
+    	        int sideHit = mop.sideHit;
+    	        
+    	        int xRange = hamBreakRadius;
+    	        int yRange = hamBreakRadius;
+    	        int zRange = hamBreakDepth;
+    	        switch (sideHit) 
+    	        {
+    	            case 0:
+    	            case 1:
+    	                yRange = hamBreakDepth;
+    	                zRange = hamBreakRadius;
+    	                break;
+    	            case 2:
+    	            case 3:
+    	                xRange = hamBreakRadius;
+    	                zRange = hamBreakDepth;
+    	                break;
+    	            case 4:
+    	            case 5:
+    	                xRange = hamBreakDepth;
+    	                zRange = hamBreakRadius;
+    	                break;
+    	        }
+    	        
+    	        for (int xPos = x - xRange; xPos <= x + xRange; xPos++)
+    	            for (int yPos = y - yRange; yPos <= y + yRange; yPos++)
+    	                for (int zPos = z - zRange; zPos <= z + zRange; zPos++) {
+    	                    // don't break the originally already broken block, duh
+    	                    if (xPos == x && yPos == y && zPos == z)
+    	                    {
+    	                    	continue;
+    	                    }
+    	                    	
+    	                        breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x,y,z);
+    	                }
+    	        
+    			return false;
+    		}
+    		else
+    		return true;
     	}
     	else
     	{
@@ -433,6 +545,59 @@ public class ItemBETool extends Item
     		tag.setInteger("Type", AXE);
     		tag.setInteger("Attack", 3);
     	}
+    	if(stack.getItemDamage() == 24 || stack.getItemDamage() == 25 || stack.getItemDamage() == 26)
+    	{
+    		tag.setInteger("Type", HAMMER);
+    		tag.setInteger("Attack", 7);
+    	}
+    	if(stack.getItemDamage() == 27 || stack.getItemDamage() == 28 || stack.getItemDamage() == 29)
+    	{
+    		tag.setInteger("Type", HAMMER);
+    		tag.setInteger("Attack", 7);
+    	}
+    	if(stack.getItemDamage() == 24)
+    	{
+    		tag.setInteger("MaxDamage", BRONZEHAM+WOODB);
+    		tag.setInteger("CurrentDamage", BRONZEHAM+WOODB);
+    	}
+    	if(stack.getItemDamage() == 25)
+    	{
+    		tag.setInteger("MaxDamage", BRONZEHAM+IRONB);
+    		tag.setInteger("CurrentDamage", BRONZEHAM+IRONB);
+    	}
+    	if(stack.getItemDamage() == 26)
+    	{
+    		tag.setInteger("MaxDamage", BRONZEHAM+BRONZEB);
+    		tag.setInteger("CurrentDamage", BRONZEHAM+BRONZEB);
+    	}
+    	if(stack.getItemDamage() == 27)
+    	{
+    		tag.setInteger("MaxDamage", IRONHAM+WOODB);
+    		tag.setInteger("CurrentDamage", IRONHAM+WOODB);
+    	}
+    	if(stack.getItemDamage() == 28)
+    	{
+    		tag.setInteger("MaxDamage", IRONHAM+BRONZEB);
+    		tag.setInteger("CurrentDamage", IRONHAM+BRONZEB);
+    	}
+    	if(stack.getItemDamage() == 29)
+    	{
+    		tag.setInteger("MaxDamage", IRONHAM+IRONB);
+    		tag.setInteger("CurrentDamage", IRONHAM+IRONB);
+    	}
+    	if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, stack) == 1)
+		{
+    		tag.setInteger("Attack", tag.getInteger("Attack")+2);
+		}
+    	if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, stack) == 2)
+		{
+    		tag.setInteger("Attack", tag.getInteger("Attack")+6);
+		}
+    	if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, stack) == 3)
+		{
+    		tag.setInteger("Attack", tag.getInteger("Attack")+10);
+		}
+
     }
 	
 	/**
@@ -441,7 +606,7 @@ public class ItemBETool extends Item
      */
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
-        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 23);
+        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 30);
         switch(i)
         {
         case 0:
@@ -492,6 +657,18 @@ public class ItemBETool extends Item
         	return names[7];
         case 23:
         	return names[7];
+        case 24:
+        	return names[8];
+        case 25:
+        	return names[8];
+        case 26:
+        	return names[8];
+        case 27:
+        	return names[9];
+        case 28:
+        	return names[9];
+        case 29:
+        	return names[9];
         default: return "";
         }
     }
@@ -513,7 +690,7 @@ public class ItemBETool extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List list)
     {
-        for (int i = 0; i < 24; ++i)
+        for (int i = 0; i < 30; ++i)
         {
             list.add(new ItemStack(item, 1, i));
             item.setCreativeTab(AdvancedUtilities.advancedBEToolsTab);
@@ -535,6 +712,9 @@ public class ItemBETool extends Item
         this.icons[9] = Items.iron_axe.getIconFromDamage(0);
         this.icons[10] = par1IconRegister.registerIcon("advancedutilities:ironaxeirod");
         this.icons[11] = par1IconRegister.registerIcon("advancedutilities:ironaxebrod");
+        this.icons[27] = par1IconRegister.registerIcon("advancedutilities:ironham");
+        this.icons[28] = par1IconRegister.registerIcon("advancedutilities:ironhamirod");
+        this.icons[29] = par1IconRegister.registerIcon("advancedutilities:ironhambrod");
         
         this.icons[12] = par1IconRegister.registerIcon("advancedutilities:bronzepick");
         this.icons[13] = par1IconRegister.registerIcon("advancedutilities:bronzepickirod");
@@ -548,5 +728,97 @@ public class ItemBETool extends Item
         this.icons[21] = par1IconRegister.registerIcon("advancedutilities:bronzeaxe");
         this.icons[22] = par1IconRegister.registerIcon("advancedutilities:bronzeaxeirod");
         this.icons[23] = par1IconRegister.registerIcon("advancedutilities:bronzeaxebrod");
+        this.icons[24] = par1IconRegister.registerIcon("advancedutilities:bronzeham");
+        this.icons[25] = par1IconRegister.registerIcon("advancedutilities:bronzehamirod");
+        this.icons[26] = par1IconRegister.registerIcon("advancedutilities:bronzehambrod");
+        
     }
+	public void func_150999_a(World world, Block block, int x, int y, int z, EntityPlayer player)
+    {
+		NBTTagCompound tag = player.getCurrentEquippedItem().getTagCompound();
+		tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+    }
+	
+	protected void breakExtraBlock(World world, int x, int y, int z, int sidehit, EntityPlayer player, int refX, int refY, int refZ) {
+        // prevent calling that stuff for air blocks, could lead to unexpected behaviour since it fires events
+        if (world.isAirBlock(x, y, z))
+            return;
+
+        // check if the block can be broken, since extra block breaks shouldn't instantly break stuff like obsidian
+        // or precious ores you can't harvest while mining stone
+        Block block = world.getBlock(x, y, z);
+        int meta = world.getBlockMetadata(x, y, z);
+
+        // only effective materials
+        if (!this.canHarvestBlock(block, player.getCurrentEquippedItem()))
+            return;
+
+        Block refBlock = world.getBlock(refX, refY, refZ);
+        float refStrength = ForgeHooks.blockStrength(refBlock, player, world, refX, refY, refZ);
+        float strength = ForgeHooks.blockStrength(block, player, world, x,y,z);
+
+        // only harvestable blocks that aren't impossibly slow to harvest
+        if (!this.canHarvestBlock(block, player.getCurrentEquippedItem()) || refStrength/strength > 10f)
+            return;
+
+        if (player.capabilities.isCreativeMode) {
+            block.onBlockHarvested(world, x, y, z, meta, player);
+            if (block.removedByPlayer(world, player, x, y, z, false))
+                block.onBlockDestroyedByPlayer(world, x, y, z, meta);
+
+            // send update to client
+            if (!world.isRemote) {
+                ((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
+            }
+            return;
+        }
+
+        // callback to the tool the player uses. Called on both sides. This damages the tool n stuff.
+        player.getCurrentEquippedItem().func_150999_a(world, block, x, y, z, player);
+
+        // server sided handling
+        if (!world.isRemote) {
+            // serverside we reproduce ItemInWorldManager.tryHarvestBlock
+
+            // ItemInWorldManager.removeBlock
+            block.onBlockHarvested(world, x,y,z, meta, player);
+
+            if(block.removedByPlayer(world, player, x,y,z, true)) // boolean is if block can be harvested, checked above
+            {
+                block.onBlockDestroyedByPlayer( world, x,y,z, meta);
+                block.harvestBlock(world, player, x,y,z, meta);
+            }
+
+            // always send block update to client
+            EntityPlayerMP mpPlayer = (EntityPlayerMP) player;
+            mpPlayer.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
+        }
+        // client sided handling
+        else {
+            PlayerControllerMP pcmp = Minecraft.getMinecraft().playerController;
+            // clientside we do a "this clock has been clicked on long enough to be broken" call. This should not send any new packets
+            // the code above, executed on the server, sends a block-updates that give us the correct state of the block we destroy.
+
+            // following code can be found in PlayerControllerMP.onPlayerDestroyBlock
+            world.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
+            if(block.removedByPlayer(world, player, x,y,z, true))
+            {
+                block.onBlockDestroyedByPlayer(world, x,y,z, meta);
+            }
+            // callback to the tool
+            ItemStack itemstack = player.getCurrentEquippedItem();
+            if (itemstack != null)
+            {
+                itemstack.func_150999_a(world, block, x, y, z, player);
+
+                if (itemstack.stackSize == 0)
+                {
+                    player.destroyCurrentEquippedItem();
+                }
+            }
+
+            // send an update to the server, so we get an update back
+                Minecraft.getMinecraft().getNetHandler().addToSendQueue(new C07PacketPlayerDigging(2, x,y,z, Minecraft.getMinecraft().objectMouseOver.sideHit));
+        }
+	}
 }

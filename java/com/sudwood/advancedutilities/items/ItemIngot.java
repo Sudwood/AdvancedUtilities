@@ -59,6 +59,9 @@ public class ItemIngot extends Item
 			break;
 		case 12:
 			 this.itemIcon = par1IconRegister.registerIcon("advancedutilities:steelingot"+AdvancedUtilities.textureSize);
+			 break;
+		case 13:
+			this.itemIcon = par1IconRegister.registerIcon("advancedutilities:nickelingot");
 			break;
 		}
        

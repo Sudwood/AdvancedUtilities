@@ -20,7 +20,7 @@ public class BlockOre extends Block
 	{
 		super(mat);
 		this.type = type;
-		if(type == 0 || type == 1 || type == 2)
+		if(type == 0 || type == 1 || type == 2 || type == 9)
 			this.setHarvestLevel("pickaxe", 1);
 		if(type == 3 || type == 4 || type == 5)
 			this.setHarvestLevel("pickaxe", 2);
@@ -70,6 +70,8 @@ public class BlockOre extends Block
         	break;
         case 8:
         	this.blockIcon = icon.registerIcon("advancedutilities:bronzemachine");
+        case 9:
+        	this.blockIcon = icon.registerIcon("advancedutilities:nickel");
         	break;
         }
     }

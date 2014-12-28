@@ -49,7 +49,7 @@ public class GuiToolForge extends GuiContainer
     {
 	    if(button.id == 0)
 	    {
-	    	AdvancedUtilities.packetPipeline.sendToServer(new PacketForge(tile.getWorldObj().provider.dimensionId, tile.xCoord, tile.yCoord, tile.zCoord, 0));
+	    	AdvancedUtilities.network.sendToServer(new PacketForge(tile.getWorldObj().provider.dimensionId, tile.xCoord, tile.yCoord, tile.zCoord, 0));
 	    }
     }
 
@@ -89,13 +89,13 @@ public class GuiToolForge extends GuiContainer
 		}
         if(par1 >= 42+var5 && par2 >= 27+var6 && par1 <= 57+var5 && par2 <= 42+var6)
 		{
-			String[] text = {"Tool Head / Tool to Repair"};
+			String[] text = {"Tool Head / Tool to Repair/Upgrade"};
 			List temp = Arrays.asList(text);
 			drawHoveringText(temp, par1-40, par2-15, fontRendererObj);
 		}
         if(par1 >= 42+var5 && par2 >= 45+var6 && par1 <= 57+var5 && par2 <= 60+var6)
 		{
-			String[] text = {"Tool Rod / Ingot for Repair"};
+			String[] text = {"Tool Rod / Ingot for Repair / Upgrade"};
 			List temp = Arrays.asList(text);
 			drawHoveringText(temp, par1-40, par2-15, fontRendererObj);
 		}

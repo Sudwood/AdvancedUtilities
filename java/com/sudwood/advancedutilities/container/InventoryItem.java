@@ -36,6 +36,77 @@ public class InventoryItem implements IInventory
         return -1;
     }
 	
+	public int getMaxSizeInventory(Item invItem)
+	{
+		int total = this.INV_SIZE;
+		if(invItem == null)
+		{
+			return total;
+		}
+		else
+		{
+			for (int i = 0; i < this.INV_SIZE; ++i)
+	        {
+	        	if (this.inventory[i] != null && this.inventory[i].getItem() == invItem)
+	            {
+	        		total--;
+	        		InventoryItem temp = new InventoryItem(inventory[i]);
+	        		total+=temp.getSizeInventory();
+	        		
+	            }
+	        }
+		}
+		return total;
+	}
+	
+	public void decreaseStackedItem(Item item, Item invItem)
+	{
+		for (int i = 0; i < this.INV_SIZE; ++i)
+        {
+        	if (this.inventory[i] != null && this.inventory[i].getItem() == invItem)
+            {
+        		InventoryItem temp = new InventoryItem(inventory[i]);
+                for(int ix = 0; ix < temp.getSizeInventory(); ix++)
+                {
+             	   if(temp.getStackInSlot(ix)!=null && temp.getStackInSlot(ix).getItem() == item)
+             	   {
+             		   temp.decrStackSize(ix, 1);
+             		   return;
+             	   }
+                }
+            }
+            if (this.inventory[i] != null && this.inventory[i].getItem() == item)
+            {
+                this.decrStackSize(i, 1);
+                return;
+            }
+        }
+	}
+	
+	public int checkItemWithInvItems(Item item, Item invItem)
+    {
+        for (int i = 0; i < this.INV_SIZE; ++i)
+        {
+        	if (this.inventory[i] != null && this.inventory[i].getItem() == invItem)
+            {
+        		InventoryItem temp = new InventoryItem(inventory[i]);
+                for(int ix = 0; ix < temp.getSizeInventory(); ix++)
+                {
+             	   if(temp.getStackInSlot(ix)!=null && temp.getStackInSlot(ix).getItem() == item)
+             	   {
+             		   return i;
+             	   }
+                }
+            }
+            if (this.inventory[i] != null && this.inventory[i].getItem() == item)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+	
 	public int getTotalItems(Item item)
 	{
 		int total = 0;
@@ -49,11 +120,41 @@ public class InventoryItem implements IInventory
 		return total;
 	}
 	
-	 public boolean hasItem(Item item)
-	    {
-	        int i = this.checkItem(item);
-	        return i >= 0;
-	    }
+	public int getTotalItemsWithInventoryItems(Item item, Item invItem)
+	{
+		int total = 0;
+		for (int i = 0; i < this.INV_SIZE; ++i)
+        {
+            if (this.inventory[i] != null && this.inventory[i].getItem() == invItem)
+            {
+               InventoryItem temp = new InventoryItem(inventory[i]);
+               for(int ix = 0; ix < temp.getSizeInventory(); ix++)
+               {
+            	   if(temp.getStackInSlot(ix)!=null && temp.getStackInSlot(ix).getItem() == item)
+            	   {
+            		   total+= temp.getStackInSlot(ix).stackSize;
+            	   }
+               }
+            }
+            if (this.inventory[i] != null && this.inventory[i].getItem() == item)
+            {
+            	total+=inventory[i].stackSize;
+            }
+        }
+		return total;
+	}
+	
+	public boolean hasItem(Item item)
+    {
+        int i = this.checkItem(item);
+        return i >= 0;
+    }
+	
+	public boolean hasItemWithInvItem(Item item, Item invItem)
+    {
+		int i = this.checkItemWithInvItems(item, invItem);
+		return i>=0;
+    }
 	
 	/**
 	* @param itemstack - the ItemStack to which this inventory belongs

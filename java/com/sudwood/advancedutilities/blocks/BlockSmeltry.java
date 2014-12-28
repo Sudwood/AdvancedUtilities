@@ -103,7 +103,7 @@ public class BlockSmeltry extends BlockContainer
 
         super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, p_149749_5_, p_149749_6_);
     }
-	
+	@SideOnly(Side.CLIENT)
 	public int getRenderType()
     {
         return ClientRegistering.smeltryId;
