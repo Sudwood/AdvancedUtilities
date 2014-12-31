@@ -205,7 +205,10 @@ public class AdvancedUtilitiesBlocks
 		GameRegistry.registerBlock(tomatoPlant, "tomatoplant");
 		
 		
-		
+		OreDictionary.registerOre("treeWood", blockRubberLog);
+		OreDictionary.registerOre("plankWood", blockRubberPlanks);
+		OreDictionary.registerOre("treeLeaves", blockRubberLeaves);
+		OreDictionary.registerOre("rubberWood", blockRubberLog);
 
 		OreDictionary.registerOre("oreCopper", blockCopperOre);
 		OreDictionary.registerOre("oreTin", blockTinOre);

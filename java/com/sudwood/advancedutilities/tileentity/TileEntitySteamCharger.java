@@ -17,7 +17,6 @@ import net.minecraftforge.fluids.IFluidHandler;
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.client.SoundHandler;
-import com.sudwood.advancedutilities.config.ServerOptions;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.items.ItemArmorSteamJetpack;
 import com.sudwood.advancedutilities.items.ItemJackHammer;
@@ -99,15 +98,15 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	    	inventory = item.copy();
 	    	if(isGun())
             {
-            	//AdvancedUtilities.network.sendToAll(new PacketSteamCharger(true, false, false, xCoord, yCoord, zCoord));
+            	AdvancedUtilities.network.sendToAll(new PacketSteamCharger(true, false, false, xCoord, yCoord, zCoord));
             }
             if(isJetpack())
             {
-            	//AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, true, false, xCoord, yCoord, zCoord));
+            	AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, true, false, xCoord, yCoord, zCoord));
             }
             if(isJackHammer())
             {
-            	//AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, false, true, xCoord, yCoord, zCoord));
+            	AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, false, true, xCoord, yCoord, zCoord));
             }
 	    }
 	    
@@ -117,7 +116,7 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	    	inventory = null;
 	    	isDone = false;
 	    	hasPlayed = false;
-          //  AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, false, false, xCoord, yCoord, zCoord));
+            AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, false, false, xCoord, yCoord, zCoord));
 
 	    	return temp;
 	    }
@@ -219,7 +218,7 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	    public String getFluidName()
 	    {
 	    	if(this.tank.getFluidAmount() > 0)
-	    		return this.tank.getFluid().getFluid().getLocalizedName();
+	    		return this.tank.getFluid().getFluid().getLocalizedName(tank.getFluid());
 	    	else
 	    		return "Empty";
 	    }

@@ -18,8 +18,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.oredict.OreDictionary;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
+import com.sudwood.advancedutilities.CrushRecipes;
+import com.sudwood.advancedutilities.HelperLibrary;
 import com.sudwood.advancedutilities.TransferHelper;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.config.ServerOptions;
@@ -178,9 +181,9 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    	else if(canSmelt() == 2)
 	    	{
 	    		ItemStack output;
-	    		if(inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper)
+	    		if(inventory[0].getItem() == AdvancedUtilitiesItems.ingotCopper || HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER))
 	    		{
-	    			if(inventory[1].getItem() == AdvancedUtilitiesItems.ingotTin)
+	    			if(inventory[1].getItem() == AdvancedUtilitiesItems.ingotTin || HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_TIN))
 	    			{
 	    				output = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 3);
 	    				
@@ -209,7 +212,7 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    		    	}
 	    				return;
 	    			}
-	    			if(inventory[1].getItem() == AdvancedUtilitiesItems.ingotZinc)
+	    			if(inventory[1].getItem() == AdvancedUtilitiesItems.ingotZinc || HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_ZINC))
 	    			{
 	    				output = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 3);
 	    				if(inventory[2] == null)
@@ -238,117 +241,132 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    				return;
 	    			}
 	    		}
-	    		if(inventory[0].getItem() == AdvancedUtilitiesItems.ingotTin)
+	    		if(inventory[0].getItem() == AdvancedUtilitiesItems.ingotTin || HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_TIN))
 	    		{
-	    			output = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 3);
-	    			if(inventory[2] == null)
-    			    {
-    			    		inventory[2] = output;
-    			    		inventory[0].stackSize-=1;
-    			    		if(inventory[0].stackSize <= 0)
-    			    			inventory[0] = null;
-    			    		inventory[1].stackSize-=3;
-    			    		if(inventory[1].stackSize <= 0)
-    			    			inventory[1] = null;
-    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-    			    		
-    			    }
-    		    	else if(inventory[2].stackSize + output.stackSize < 64)
-    		    	{
-    		    		inventory[2].stackSize+=output.stackSize;
-    		    		inventory[0].stackSize-=1;
-    		    		if(inventory[0].stackSize <= 0)
-    		    			inventory[0] = null;
-    		    		inventory[1].stackSize-=3;
-			    		if(inventory[1].stackSize <= 0)
-			    			inventory[1] = null;
-    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-    		    	}
-    				return;
+	    			if(HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER))
+	    			{
+		    			output = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 3);
+		    			if(inventory[2] == null)
+	    			    {
+	    			    		inventory[2] = output;
+	    			    		inventory[0].stackSize-=1;
+	    			    		if(inventory[0].stackSize <= 0)
+	    			    			inventory[0] = null;
+	    			    		inventory[1].stackSize-=3;
+	    			    		if(inventory[1].stackSize <= 0)
+	    			    			inventory[1] = null;
+	    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+	    			    		
+	    			    }
+	    		    	else if(inventory[2].stackSize + output.stackSize < 64)
+	    		    	{
+	    		    		inventory[2].stackSize+=output.stackSize;
+	    		    		inventory[0].stackSize-=1;
+	    		    		if(inventory[0].stackSize <= 0)
+	    		    			inventory[0] = null;
+	    		    		inventory[1].stackSize-=3;
+				    		if(inventory[1].stackSize <= 0)
+				    			inventory[1] = null;
+	    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+	    		    	}
+	    				return;
+	    			}
+	    			return;
 	    		}
 	    		if(inventory[0].getItem() == AdvancedUtilitiesItems.ingotZinc)
 	    		{
-	    			output = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 3);
-	    			if(inventory[2] == null)
-    			    {
-    			    		inventory[2] = output;
-    			    		inventory[0].stackSize-=1;
-    			    		if(inventory[0].stackSize <= 0)
-    			    			inventory[0] = null;
-    			    		inventory[1].stackSize-=3;
-    			    		if(inventory[1].stackSize <= 0)
-    			    			inventory[1] = null;
-    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-    			    		
-    			    }
-    		    	else if(inventory[2].stackSize + output.stackSize < 64)
-    		    	{
-    		    		inventory[2].stackSize+=output.stackSize;
-    		    		inventory[0].stackSize-=1;
-    		    		if(inventory[0].stackSize <= 0)
-    		    			inventory[0] = null;
-    		    		inventory[1].stackSize-=3;
-			    		if(inventory[1].stackSize <= 0)
-			    			inventory[1] = null;
-    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-    		    	}
-    				return;
+	    			if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER))
+	    			{
+		    			output = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 3);
+		    			if(inventory[2] == null)
+	    			    {
+	    			    		inventory[2] = output;
+	    			    		inventory[0].stackSize-=1;
+	    			    		if(inventory[0].stackSize <= 0)
+	    			    			inventory[0] = null;
+	    			    		inventory[1].stackSize-=3;
+	    			    		if(inventory[1].stackSize <= 0)
+	    			    			inventory[1] = null;
+	    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+	    			    		
+	    			    }
+	    		    	else if(inventory[2].stackSize + output.stackSize < 64)
+	    		    	{
+	    		    		inventory[2].stackSize+=output.stackSize;
+	    		    		inventory[0].stackSize-=1;
+	    		    		if(inventory[0].stackSize <= 0)
+	    		    			inventory[0] = null;
+	    		    		inventory[1].stackSize-=3;
+				    		if(inventory[1].stackSize <= 0)
+				    			inventory[1] = null;
+	    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+	    		    	}
+	    				return;
+	    			}
+	    			return;
 	    		}
 	    		if(inventory[0].getItem() == Items.coal)
 	    		{
-	    			output = new ItemStack(AdvancedUtilitiesItems.ingotSteel, 1);
-	    			if(inventory[2] == null)
-    			    {
-    			    		inventory[2] = output;
-    			    		inventory[0].stackSize-=8;
-    			    		if(inventory[0].stackSize <= 0)
-    			    			inventory[0] = null;
-    			    		inventory[1].stackSize-=1;
-    			    		if(inventory[1].stackSize <= 0)
-    			    			inventory[1] = null;
-    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-    			    		
-    			    }
-    		    	else if(inventory[2].stackSize + output.stackSize < 64)
-    		    	{
-    		    		inventory[2].stackSize+=output.stackSize;
-    		    		inventory[0].stackSize-=8;
-    		    		if(inventory[0].stackSize <= 0)
-    		    			inventory[0] = null;
-    		    		inventory[1].stackSize-=1;
-			    		if(inventory[1].stackSize <= 0)
-			    			inventory[1] = null;
-    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-    		    	}
-    				return;
+	    			if(inventory[1].getItem() == Items.iron_ingot)
+	    			{
+		    			output = new ItemStack(AdvancedUtilitiesItems.ingotSteel, 1);
+		    			if(inventory[2] == null)
+	    			    {
+	    			    		inventory[2] = output;
+	    			    		inventory[0].stackSize-=8;
+	    			    		if(inventory[0].stackSize <= 0)
+	    			    			inventory[0] = null;
+	    			    		inventory[1].stackSize-=1;
+	    			    		if(inventory[1].stackSize <= 0)
+	    			    			inventory[1] = null;
+	    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+	    			    		
+	    			    }
+	    		    	else if(inventory[2].stackSize + output.stackSize < 64)
+	    		    	{
+	    		    		inventory[2].stackSize+=output.stackSize;
+	    		    		inventory[0].stackSize-=8;
+	    		    		if(inventory[0].stackSize <= 0)
+	    		    			inventory[0] = null;
+	    		    		inventory[1].stackSize-=1;
+				    		if(inventory[1].stackSize <= 0)
+				    			inventory[1] = null;
+	    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+	    		    	}
+	    				return;
+	    			}
+	    			return;
 	    		}
 	    		if(inventory[0].getItem() == Items.iron_ingot)
 	    		{
-	    			output = new ItemStack(AdvancedUtilitiesItems.ingotSteel, 1);
-	    			if(inventory[2] == null)
-    			    {
-    			    		inventory[2] = output;
-    			    		inventory[0].stackSize-=1;
-    			    		if(inventory[0].stackSize <= 0)
-    			    			inventory[0] = null;
-    			    		inventory[1].stackSize-=8;
-    			    		if(inventory[1].stackSize <= 0)
-    			    			inventory[1] = null;
-    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-    			    		
-    			    }
-    		    	else if(inventory[2].stackSize + output.stackSize < 64)
-    		    	{
-    		    		inventory[2].stackSize+=output.stackSize;
-    		    		inventory[0].stackSize-=1;
-    		    		if(inventory[0].stackSize <= 0)
-    		    			inventory[0] = null;
-    		    		inventory[1].stackSize-=8;
-			    		if(inventory[1].stackSize <= 0)
-			    			inventory[1] = null;
-    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-    		    	}
-    				return;
+	    			if(inventory[1].getItem() == Items.coal)
+	    			{
+		    			output = new ItemStack(AdvancedUtilitiesItems.ingotSteel, 1);
+		    			if(inventory[2] == null)
+	    			    {
+	    			    		inventory[2] = output;
+	    			    		inventory[0].stackSize-=1;
+	    			    		if(inventory[0].stackSize <= 0)
+	    			    			inventory[0] = null;
+	    			    		inventory[1].stackSize-=8;
+	    			    		if(inventory[1].stackSize <= 0)
+	    			    			inventory[1] = null;
+	    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+	    			    		
+	    			    }
+	    		    	else if(inventory[2].stackSize + output.stackSize < 64)
+	    		    	{
+	    		    		inventory[2].stackSize+=output.stackSize;
+	    		    		inventory[0].stackSize-=1;
+	    		    		if(inventory[0].stackSize <= 0)
+	    		    			inventory[0] = null;
+	    		    		inventory[1].stackSize-=8;
+				    		if(inventory[1].stackSize <= 0)
+				    			inventory[1] = null;
+	    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
+	    		    	}
+	    				return;
+	    			}
 	    		}
 	    		
 
@@ -418,6 +436,27 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    				return 1;
 	    			}
 	    			
+	    		}
+	    		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER))
+	    		{
+	    			if(HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_TIN) || HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_ZINC))
+	    			{
+	    				return 2;
+	    			}
+	    		}
+	    		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_TIN))
+	    		{
+	    			if(HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER))
+	    			{
+	    				return 2;
+	    			}
+	    		}
+	    		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_ZINC))
+	    		{
+	    			if(HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER))
+	    			{
+	    				return 2;
+	    			}
 	    		}
 	    	}
 	    	return 0;

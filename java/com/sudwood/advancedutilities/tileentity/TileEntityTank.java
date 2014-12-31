@@ -59,6 +59,7 @@ public class TileEntityTank extends TileEntity implements IFluidHandler, ISteamT
     		if(redstoneTime == 0)
     		{
     			block.power = false;
+    			notifyNeighbors(block);
     		}
     		notifyNeighbors(block);
     	}
@@ -67,12 +68,6 @@ public class TileEntityTank extends TileEntity implements IFluidHandler, ISteamT
     public void notifyNeighbors(Block block)
     {
     	worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
-    	worldObj.notifyBlocksOfNeighborChange(xCoord-1, yCoord, zCoord, worldObj.getBlock(xCoord-1, yCoord, zCoord));
-    	worldObj.notifyBlocksOfNeighborChange(xCoord+1, yCoord, zCoord, worldObj.getBlock(xCoord+1, yCoord, zCoord));
-    	worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord-1, zCoord, worldObj.getBlock(xCoord, yCoord-1, zCoord));
-    	worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord+1, zCoord, worldObj.getBlock(xCoord, yCoord+1, zCoord));
-    	worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord-1, worldObj.getBlock(xCoord, yCoord, zCoord-1));
-    	worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord+1, worldObj.getBlock(xCoord, yCoord, zCoord+1));
     	
     }
     

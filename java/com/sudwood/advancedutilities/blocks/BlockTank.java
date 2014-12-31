@@ -67,6 +67,23 @@ public class BlockTank extends BlockContainer
       return power;
   }
   
+  /**
+   * If this returns true, then comparators facing away from this block will use the value from
+   * getComparatorInputOverride instead of the actual redstone signal strength.
+   */
+  public boolean hasComparatorInputOverride()
+  {
+      return false;
+  }
+
+  /**
+   * If hasComparatorInputOverride returns true, the return value from this is used instead of the redstone signal
+   * strength when this block inputs to a comparator.
+   */
+  public int getComparatorInputOverride(World p_149736_1_, int p_149736_2_, int p_149736_3_, int p_149736_4_, int p_149736_5_)
+  {
+      return 0;
+  }
   
   public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_)
   {
@@ -116,7 +133,7 @@ public class BlockTank extends BlockContainer
   public int isProvidingWeakPower(IBlockAccess p_149709_1_, int p_149709_2_, int p_149709_3_, int p_149709_4_, int p_149709_5_)
   {
 	  if(this.canProvidePower())
-	  return 15;
+		  return 15;
 	  else
 		  return 0;
   }

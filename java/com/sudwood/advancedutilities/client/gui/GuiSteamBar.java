@@ -158,6 +158,7 @@ public class GuiSteamBar extends Gui
     	boolean isJetpack = false;
     	boolean isJackHammer = false;
     	boolean isRebreather = false;
+    	boolean isPnGun = false;
     	int jackSteam = 0;
     	int jetSteam = 0;
     	int numBullets = 0;
@@ -166,7 +167,7 @@ public class GuiSteamBar extends Gui
     	int numrender = 0;
     	if(HudOptions.displaySteamHud && ((mc.thePlayer.getCurrentEquippedItem() != null&& mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.pnumaticGun) || (mc.thePlayer.getCurrentEquippedItem() != null&& mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.jackHammer) || (mc.thePlayer.getCurrentArmor(2)!=null && mc.thePlayer.getCurrentArmor(2).getItem() == AdvancedUtilitiesItems.steamJetpack) || (mc.thePlayer.getCurrentArmor(3)!=null && mc.thePlayer.getCurrentArmor(3).getItem() == AdvancedUtilitiesItems.rebreather)))
     	{
-    		this.drawTexturedModalRect(width-(width-HudOptions.steamBarX), height-(height-HudOptions.steamBarY), 1, 1, 9, 30);
+    		
 	    	if(mc.thePlayer.getCurrentEquippedItem()!=null && mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.pnumaticGun)
 	    	{
 	    		if(mc.thePlayer.getCurrentEquippedItem().getTagCompound()!=null)
@@ -174,6 +175,7 @@ public class GuiSteamBar extends Gui
 		    		NBTTagCompound tag = mc.thePlayer.getCurrentEquippedItem().getTagCompound();
 		    		steam += tag.getInteger("tankAmount");
 		    		maxSteam += tag.getInteger("maxTankAmount");
+		    		isPnGun = true;
 	    		}
 	    		InventoryItem inv = new InventoryItem(mc.thePlayer.getCurrentEquippedItem());
 	    		if(inv.hasItemWithInvItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine))
@@ -211,12 +213,17 @@ public class GuiSteamBar extends Gui
 	    		food = inv.getFoodTotal();
 	    		isRebreather = true;
 	    	}
-	    	if(maxSteam > 0)
+	    	if(isJackHammer || isJetpack || isPnGun)
+	    	{
+	    		this.drawTexturedModalRect(width-(width-HudOptions.steamBarX), height-(height-HudOptions.steamBarY), 1, 1, 9, 30);
+	    		this.drawString(mc.fontRenderer, "Steam: "+steam+" / "+maxSteam+" mB", width-(width-HudOptions.steamStringX), height-(height-HudOptions.steamStringY), 0xFFFFFF);
+	    	}
+	    	if(maxSteam > 0  && (isJackHammer || isJetpack || isPnGun))
 	    	{
 	    		int scaled = steam * 30/ maxSteam;
 	    		this.drawTexturedModalRect(width-(width-HudOptions.steamBarX), height-(height-(HudOptions.steamBarY+30-scaled)), 17, 30-scaled, 9, scaled+1);
 	    	}
-	    	this.drawString(mc.fontRenderer, "Steam: "+steam+" / "+maxSteam+" mB", width-(width-15), height-(height-2), 0xFFFFFF);
+	    	
 	    	if(isJackHammer && !isJetpack)
 	    	{
 	    		this.drawString(mc.fontRenderer, "Blocks Remaining: "+jackSteam / ItemJackHammer.steamUse, width-(width-HudOptions.steamToolX), height-(height-HudOptions.steamToolY), 0xFFFFFF);

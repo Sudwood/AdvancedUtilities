@@ -29,6 +29,7 @@ import com.sudwood.advancedutilities.packets.PacketDrinkQuickPotion;
 import com.sudwood.advancedutilities.packets.PacketForge;
 import com.sudwood.advancedutilities.packets.PacketJetpack;
 import com.sudwood.advancedutilities.packets.PacketRunningShoes;
+import com.sudwood.advancedutilities.packets.PacketSkillMenu;
 import com.sudwood.advancedutilities.packets.PacketSteamCharger;
 import com.sudwood.advancedutilities.packets.SyncPlayerPropsPacket;
 import com.sudwood.advancedutilities.tileentity.TileEntityArmorForge;
@@ -194,6 +195,7 @@ public class AdvancedUtilities
     	network.registerMessage(PacketRunningShoes.Handler.class, PacketRunningShoes.class, 3, Side.SERVER);
     	network.registerMessage(PacketSteamCharger.Handler.class, PacketSteamCharger.class, 4, Side.CLIENT);
     	network.registerMessage(SyncPlayerPropsPacket.Handler.class, SyncPlayerPropsPacket.class, 5, Side.CLIENT);
+    	network.registerMessage(PacketSkillMenu.Handler.class, PacketSkillMenu.class, 6, Side.SERVER);
     }
     
     public void registerTiles()

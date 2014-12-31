@@ -3,10 +3,12 @@ package com.sudwood.advancedutilities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class HelperLibrary 
 {
@@ -43,4 +45,38 @@ public class HelperLibrary
         Vec3 vec31 = vec3.addVector((double) f7 * d3, (double) f6 * d3, (double) f8 * d3);
         return world.func_147447_a(vec3, vec31, par3, !par3, par3);
     }
+	
+	/**
+	 * Returns true if the item is OreDictionary the same - false if not
+	 * @param stack the item stack that is being checked
+	 * @param oreDicID the OreDictionary ID of the Item that you are looking for
+	 * @return
+	 */
+	public static boolean isOreDicItem(ItemStack stack, int oreDicID)
+	{
+		if(stack!=null && OreDictionary.getOreIDs(stack)!= null && OreDictionary.getOreIDs(stack).length > 0 && OreDictionary.getOreIDs(stack)[0] == oreDicID)
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Returns true if the item is OreDictionary the same - false if not
+	 * @param stack the item stack that is being checked
+	 * @param compare the item stack of the Item that you are looking for
+	 * @return
+	 */
+	public static boolean isOreDicItem(ItemStack stack, ItemStack compare)
+	{
+		if(stack!=null && OreDictionary.getOreIDs(stack)!= null && OreDictionary.getOreIDs(stack).length > 0)
+		{
+			if(compare!= null && OreDictionary.getOreIDs(compare)!= null && OreDictionary.getOreIDs(compare).length > 0)
+			{
+				if(OreDictionary.getOreIDs(stack)[0] == OreDictionary.getOreIDs(compare)[0])
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

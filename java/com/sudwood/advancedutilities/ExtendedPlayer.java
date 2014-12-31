@@ -38,7 +38,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		isJetpack = false;
 		isRunning = false;
 		toggleJetpack = false;
-		skills = new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		skills = new byte[]{0, 0, 0};
 	}
 	
 	/**

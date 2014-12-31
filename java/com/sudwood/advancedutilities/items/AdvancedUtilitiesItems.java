@@ -262,6 +262,8 @@ public class AdvancedUtilitiesItems
 		OreDictionary.registerOre("dustIridium", new ItemStack(dust, 1, 14));
 		OreDictionary.registerOre("dustPalidium", new ItemStack(dust, 1, 15));
 		OreDictionary.registerOre("dustNickel", new ItemStack(dust, 1, 20));
+		OreDictionary.registerOre("materialRubber", rubber);
+		OreDictionary.registerOre("itemRubber", rubber);
 	}
 	
 	public static void addRecipies()
