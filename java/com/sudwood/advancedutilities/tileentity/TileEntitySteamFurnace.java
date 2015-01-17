@@ -305,69 +305,6 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    			}
 	    			return;
 	    		}
-	    		if(inventory[0].getItem() == Items.coal)
-	    		{
-	    			if(inventory[1].getItem() == Items.iron_ingot)
-	    			{
-		    			output = new ItemStack(AdvancedUtilitiesItems.ingotSteel, 1);
-		    			if(inventory[2] == null)
-	    			    {
-	    			    		inventory[2] = output;
-	    			    		inventory[0].stackSize-=8;
-	    			    		if(inventory[0].stackSize <= 0)
-	    			    			inventory[0] = null;
-	    			    		inventory[1].stackSize-=1;
-	    			    		if(inventory[1].stackSize <= 0)
-	    			    			inventory[1] = null;
-	    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-	    			    		
-	    			    }
-	    		    	else if(inventory[2].stackSize + output.stackSize < 64)
-	    		    	{
-	    		    		inventory[2].stackSize+=output.stackSize;
-	    		    		inventory[0].stackSize-=8;
-	    		    		if(inventory[0].stackSize <= 0)
-	    		    			inventory[0] = null;
-	    		    		inventory[1].stackSize-=1;
-				    		if(inventory[1].stackSize <= 0)
-				    			inventory[1] = null;
-	    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-	    		    	}
-	    				return;
-	    			}
-	    			return;
-	    		}
-	    		if(inventory[0].getItem() == Items.iron_ingot)
-	    		{
-	    			if(inventory[1].getItem() == Items.coal)
-	    			{
-		    			output = new ItemStack(AdvancedUtilitiesItems.ingotSteel, 1);
-		    			if(inventory[2] == null)
-	    			    {
-	    			    		inventory[2] = output;
-	    			    		inventory[0].stackSize-=1;
-	    			    		if(inventory[0].stackSize <= 0)
-	    			    			inventory[0] = null;
-	    			    		inventory[1].stackSize-=8;
-	    			    		if(inventory[1].stackSize <= 0)
-	    			    			inventory[1] = null;
-	    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-	    			    		
-	    			    }
-	    		    	else if(inventory[2].stackSize + output.stackSize < 64)
-	    		    	{
-	    		    		inventory[2].stackSize+=output.stackSize;
-	    		    		inventory[0].stackSize-=1;
-	    		    		if(inventory[0].stackSize <= 0)
-	    		    			inventory[0] = null;
-	    		    		inventory[1].stackSize-=8;
-				    		if(inventory[1].stackSize <= 0)
-				    			inventory[1] = null;
-	    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-	    		    	}
-	    				return;
-	    			}
-	    		}
 	    		
 
 	    	}
@@ -395,20 +332,6 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    		if(inventory[0]!=null && inventory[0].getItem() == AdvancedUtilitiesItems.ingotZinc && inventory[0].stackSize >=1)
 	    		{
 	    			if(inventory[1]!=null&& inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && inventory[1].stackSize >= 3)
-	    			{
-	    				return 2;
-	    			}
-	    		}
-	    		if(inventory[0]!=null && inventory[0].getItem() == Items.iron_ingot && inventory[0].stackSize >=1)
-	    		{
-	    			if(inventory[1]!=null&& inventory[1].getItem() == Items.coal && inventory[1].stackSize >= 8)
-	    			{
-	    				return 2;
-	    			}
-	    		}
-	    		if(inventory[0]!=null && inventory[0].getItem() == Items.coal && inventory[0].stackSize >=8)
-	    		{
-	    			if(inventory[1]!=null&& inventory[1].getItem() == Items.iron_ingot && inventory[1].stackSize >= 1)
 	    			{
 	    				return 2;
 	    			}

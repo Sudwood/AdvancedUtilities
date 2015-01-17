@@ -4,6 +4,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -42,6 +45,9 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	        tank.readFromNBT(tag);
 	        isDone = tag.getBoolean("isDone");
 	        hasPlayed = tag.getBoolean("hasPlayed");
+	        this.renderGun = tag.getBoolean("renderGun");
+	        this.renderJackHammer = tag.getBoolean("renderJackHammer");
+	        this.renderJetpack = tag.getBoolean("renderJetpack");
 	        
 	        NBTTagCompound nbttagcompound1 = (NBTTagCompound) tag.getTag("inventory");
             this.inventory = ItemStack.loadItemStackFromNBT(nbttagcompound1);
@@ -54,6 +60,9 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	        tank.writeToNBT(tag);
 	        tag.setBoolean("isDone", isDone);
 	        tag.setBoolean("hasPlayed", hasPlayed);
+	        tag.setBoolean("renderGun", renderGun);
+	        tag.setBoolean("renderJackHammer", renderJackHammer);
+	        tag.setBoolean("renderJetpack", renderJetpack);
 	        NBTTagCompound tag2 = new NBTTagCompound();
 	        if(inventory!=null)
 	        	inventory.writeToNBT(tag2);
@@ -98,15 +107,21 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	    	inventory = item.copy();
 	    	if(isGun())
             {
-            	AdvancedUtilities.network.sendToAll(new PacketSteamCharger(true, false, false, xCoord, yCoord, zCoord));
+            	this.renderGun = true;
+            	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        		this.markDirty();
             }
             if(isJetpack())
             {
-            	AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, true, false, xCoord, yCoord, zCoord));
+            	this.renderJetpack = true;
+            	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        		this.markDirty();
             }
             if(isJackHammer())
             {
-            	AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, false, true, xCoord, yCoord, zCoord));
+            	this.renderJackHammer = true;
+            	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        		this.markDirty();
             }
 	    }
 	    
@@ -116,7 +131,11 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	    	inventory = null;
 	    	isDone = false;
 	    	hasPlayed = false;
-            AdvancedUtilities.network.sendToAll(new PacketSteamCharger(false, false, false, xCoord, yCoord, zCoord));
+	    	this.renderGun = false;
+	    	this.renderJetpack = false;
+	    	this.renderJackHammer = false;
+	    	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+    		this.markDirty();
 
 	    	return temp;
 	    }
@@ -341,6 +360,33 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 			// TODO Auto-generated method stub
 			return false;
 		}
+		@Override
+		   public Packet getDescriptionPacket()
+		   {
+			   super.getDescriptionPacket();
+		       NBTTagCompound syncData = new NBTTagCompound();
+		       this.writeSyncableDataToNBT(syncData);
+		       return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, syncData);
+		   }
+		   public void writeSyncableDataToNBT(NBTTagCompound tag)
+		   {
+			   tag.setBoolean("renderGun", renderGun);
+		        tag.setBoolean("renderJackHammer", renderJackHammer);
+		        tag.setBoolean("renderJetpack", renderJetpack);
+		   }
+		   public void readSyncableDataFromNBT(NBTTagCompound tag)
+		   {
+			   this.renderGun = tag.getBoolean("renderGun");
+		        this.renderJackHammer = tag.getBoolean("renderJackHammer");
+		        this.renderJetpack = tag.getBoolean("renderJetpack");
+		   }
+		   @Override
+		   public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+		   {
+			   super.onDataPacket(net, pkt);
+		       readSyncableDataFromNBT(pkt.func_148857_g());
+		   }
+		   
 
 
 }

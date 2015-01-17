@@ -51,6 +51,7 @@ public class AdvancedUtilitiesItems
 	public static Item plate;
 	public static Item brassRivets;
 	public static Item stoneRivets;
+	public static Item steelRivets;
 	public static Item bronzeHelm;
 	public static Item bronzeChest;
 	public static Item bronzeLegs;
@@ -120,6 +121,7 @@ public class AdvancedUtilitiesItems
 		plate = new ItemPlate().setUnlocalizedName("Plate");
 		brassRivets = new ItemRivets(0).setUnlocalizedName("BrassRivets").setCreativeTab(AdvancedUtilities.advancedTab);
 		stoneRivets = new ItemRivets(1).setUnlocalizedName("StoneRivets").setCreativeTab(AdvancedUtilities.advancedTab);
+		steelRivets = new ItemRivets(2).setUnlocalizedName("SteelRivets").setCreativeTab(AdvancedUtilities.advancedTab);
 		
 		ArmorMaterial armorBronze = EnumHelper.addArmorMaterial("BRONZEAU", 40, new int[]{2, 6, 5, 2}, 9);
 		bronzeHelm = new ItemArmorBE(armorBronze, 0, 0).setUnlocalizedName("BronzeHelm").setCreativeTab(AdvancedUtilities.advancedBEToolsTab);
@@ -193,6 +195,7 @@ public class AdvancedUtilitiesItems
 		GameRegistry.registerItem(plate, "plate");
 		GameRegistry.registerItem(brassRivets, "brassfittings");
 		GameRegistry.registerItem(stoneRivets, "stonefittings");
+		GameRegistry.registerItem(steelRivets, "steelrivets");
 		
 		GameRegistry.registerItem(bronzeHelm, "bronzehelm");
 		GameRegistry.registerItem(bronzeChest, "bronzechest");

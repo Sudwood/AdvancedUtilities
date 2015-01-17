@@ -43,6 +43,7 @@ public class AdvancedUtilitiesBlocks
     public static Block blockPalidiumBlock;
     public static Block blockSteelBlock;
     public static Block blockNickelBlock;
+    public static Block blockIronBlock;
     
     public static Block blockRubberLog;
     public static Block blockRubberLeaves;
@@ -57,7 +58,9 @@ public class AdvancedUtilitiesBlocks
     public static Fluid fluidSteam;
     public static Block blockFluidSteam;
     public static Block steamBoiler;
+    public static Block hpBoiler;
     public static Block bronzeMachineCase;
+    public static Block steelMachineCase;
     public static Block steamCrusher;
     public static Block steamFurnace;
     public static Block steamSmeltry;
@@ -65,9 +68,13 @@ public class AdvancedUtilitiesBlocks
     public static Block steamCompressor;
     public static Block itemTube;
     public static Block restrictedItemTube;
+    public static Block splitterItemTube;
     public static Block steamCharger;
     public static Block fluidTube;
+    public static Block splitterFluidTube;
     public static Block blockTank;
+    public static Block blockSteelOven;
+    public static Block blockSteelController;
     
     public static Block blockBreaker;
     public static Block blockSpeedyGrowing;
@@ -109,6 +116,7 @@ public class AdvancedUtilitiesBlocks
 		blockPalidiumBlock = new BlockIngotBlock(Material.iron, 12).setBlockName("PalidiumBlock").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		blockSteelBlock = new BlockIngotBlock(Material.iron, 13).setBlockName("SteelBlock").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		blockNickelBlock = new BlockIngotBlock(Material.iron, 14).setBlockName("NickelBlock").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
+		blockIronBlock = new BlockIngotBlock(Material.iron, 15).setBlockName("IronBlock").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		
 		blockRubberLog = new BlockWood(Material.wood, 0).setBlockName("RubberLog").setHardness(2F).setStepSound(Block.soundTypeWood).setCreativeTab(AdvancedUtilities.advancedTab);
 		blockRubberPlanks = new BlockWood(Material.wood, 1).setBlockName("RubberPlanks").setHardness(2F).setStepSound(Block.soundTypeWood).setCreativeTab(AdvancedUtilities.advancedTab);
@@ -121,7 +129,9 @@ public class AdvancedUtilitiesBlocks
 		blockArmorForge = new BlockArmorForge(Material.anvil).setBlockName("ArmorForge").setHardness(2F).setStepSound(Block.soundTypeAnvil).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		
 		bronzeMachineCase = new BlockIngotBlock(Material.iron, 5).setBlockName("BronzeMachine").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
+		steelMachineCase = new BlockOre(Material.iron, 10).setBlockName("SteelMachine").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
 		steamBoiler = new BlockSteamMachine(Material.iron, 0).setBlockName("SteamBoiler").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
+		hpBoiler = new BlockSteamMachine(Material.iron, 7).setBlockName("HPBoiler").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
 		steamCrusher = new BlockSteamMachine(Material.iron, 1).setBlockName("SteamCrusher").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
 		steamFurnace = new BlockSteamMachine(Material.iron, 2).setBlockName("SteamFurnace").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
 		steamSmeltry = new BlockSteamMachine(Material.iron, 3).setBlockName("SteamSmeltry").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
@@ -129,8 +139,12 @@ public class AdvancedUtilitiesBlocks
 		steamCompressor = new BlockSteamMachine(Material.iron, 5).setBlockName("SteamCompressor").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
 		itemTube = new BlockTube(Material.iron, 0).setBlockName("ItemTube").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		restrictedItemTube = new BlockTube(Material.iron, 2).setBlockName("RestrictedItemTube").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
+		splitterItemTube = new BlockTube(Material.iron, 3).setBlockName("SplitterItemTube").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		steamCharger = new BlockSteamMachine(Material.iron, 6).setBlockName("SteamCharger").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
 		fluidTube = new BlockTube(Material.iron, 1).setBlockName("FluidTube").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
+		splitterFluidTube = new BlockTube(Material.iron, 4).setBlockName("SplitterFluidTube").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
+		blockSteelOven = new BlockSteelOven(Material.iron, 0).setBlockName("SteelOvenBlock").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
+		blockSteelController = new BlockSteelOven(Material.iron, 1).setBlockName("SteelOvenController").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedBEMachinesTab);
 		
 		blockBreaker = new BlockBlockBreaker(Material.piston).setBlockName("BlockBreaker").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
 		blockSpeedyGrowing = new BlockSpeedyGrowing(Material.clay).setBlockName("SpeedyGrowing").setHardness(2F).setResistance(100F).setCreativeTab(AdvancedUtilities.advancedTab);
@@ -176,6 +190,7 @@ public class AdvancedUtilitiesBlocks
 		GameRegistry.registerBlock(blockPalidiumBlock, "palidiumblock");
 		GameRegistry.registerBlock(blockSteelBlock, "steelblock");
 		GameRegistry.registerBlock(blockNickelBlock, "nickelblock");
+		GameRegistry.registerBlock(blockIronBlock, "ironblock");
 		
 		GameRegistry.registerBlock(blockRubberLog, "rubberlog");
 		GameRegistry.registerBlock(blockRubberPlanks, "rubberplanks");
@@ -188,6 +203,7 @@ public class AdvancedUtilitiesBlocks
 		GameRegistry.registerBlock(blockArmorForge, "armorforge");
 		
 		GameRegistry.registerBlock(steamBoiler, "steamboiler");
+		GameRegistry.registerBlock(hpBoiler, "hpboiler");
 		GameRegistry.registerBlock(steamCrusher, "steamcrusher");
 		GameRegistry.registerBlock(steamFurnace, "steamfurnace");
 		GameRegistry.registerBlock(steamSmeltry, "steamsmeltry");
@@ -195,10 +211,15 @@ public class AdvancedUtilitiesBlocks
 		GameRegistry.registerBlock(steamCharger, "steamcharger");
 		GameRegistry.registerBlock(itemTube, "itemtube");
 		GameRegistry.registerBlock(restrictedItemTube, "restricteditemtube");
+		GameRegistry.registerBlock(splitterItemTube, "splitteritemtube");
 		GameRegistry.registerBlock(fluidTube, "fluidtube");
+		GameRegistry.registerBlock(splitterFluidTube, "splitterfluidtube");
 		GameRegistry.registerBlock(bellows, "bellows");
 		GameRegistry.registerBlock(bronzeMachineCase, "bronzemachinecase");
+		GameRegistry.registerBlock(steelMachineCase, "steelmachinecase");
 		GameRegistry.registerBlock(blockTank, ItemTank.class, "blocktank");
+		GameRegistry.registerBlock(blockSteelOven, "blocksteeloveny");
+		GameRegistry.registerBlock(blockSteelController, "blocksteelovencontroller");
 		
 		GameRegistry.registerBlock(blockBreaker, "blockbreaker");
 		GameRegistry.registerBlock(blockSpeedyGrowing, "speedygrowing");
@@ -237,6 +258,7 @@ public class AdvancedUtilitiesBlocks
 		OreDictionary.registerOre("blockPalidium", blockPalidiumBlock);
 		OreDictionary.registerOre("blockSteel", blockSteelBlock);
 		OreDictionary.registerOre("blockNickel", blockNickelBlock);
+		OreDictionary.registerOre("blockIron", blockIronBlock);
 		
 		
 		
@@ -299,12 +321,26 @@ public class AdvancedUtilitiesBlocks
 			"   ", " IS", " A ", 'A', Blocks.anvil, 'I', AdvancedUtilitiesItems.ingotBronze, 'S', Items.stick
 		});
 		GameRegistry.addShapelessRecipe(new ItemStack(restrictedItemTube, 1), new Object[]{itemTube, Items.redstone});
-		
+		GameRegistry.addShapelessRecipe(new ItemStack(splitterItemTube, 1), new Object[]{itemTube});
 		GameRegistry.addShapelessRecipe(new ItemStack(blockRubberSapling, 1), new Object[]{blockRubberLeaves});
 		GameRegistry.addShapelessRecipe(new ItemStack(blockRubberPlanks, 4), new Object[]{blockRubberLog});
 		
 		GameRegistry.addRecipe(new ItemStack(bronzeMachineCase, 1), new Object[]{
 			"RPR", "P P", "RPR", 'R', AdvancedUtilitiesItems.brassRivets, 'P', new ItemStack(AdvancedUtilitiesItems.plate, 1, 1)
+		});
+		
+		GameRegistry.addRecipe(new ItemStack(steelMachineCase, 1), new Object[]{
+			"RPR", "P P", "RPR", 'R', AdvancedUtilitiesItems.steelRivets, 'P', new ItemStack(AdvancedUtilitiesItems.plate, 1, 4)
+		});
+		GameRegistry.addRecipe(new ItemStack(hpBoiler, 1), new Object[]{
+			"IBI", "WMW", "IBI", 'I', AdvancedUtilitiesItems.ingotSteel, 'M', steelMachineCase, 'B', Items.bucket, 'W', Items.water_bucket
+		});
+		
+		GameRegistry.addRecipe(new ItemStack(blockSteelOven, 1), new Object[]{
+			"III", "IMI", "III", 'I', AdvancedUtilitiesItems.ingotBronze, 'M', new ItemStack(bronzeMachineCase, 1)
+		});
+		GameRegistry.addRecipe(new ItemStack(blockSteelController, 1), new Object[]{
+			"III", "IMI", "III", 'I', AdvancedUtilitiesItems.ingotBrass, 'M', new ItemStack(bronzeMachineCase, 1)
 		});
 		
 		GameRegistry.addRecipe(new ItemStack(steamCharger, 1), new Object[]{
@@ -356,6 +392,8 @@ public class AdvancedUtilitiesBlocks
 		GameRegistry.addRecipe(new ItemStack(blockNickelBlock, 1), new Object[]{
 			"III", "III", "III", 'I', AdvancedUtilitiesItems.ingotNickel
 		});
+		GameRegistry.addShapelessRecipe(new ItemStack(blockIronBlock, 1), new Object[]{Blocks.iron_block, Blocks.glass});
+		GameRegistry.addShapelessRecipe(new ItemStack(Blocks.iron_block, 1), new Object[]{blockIronBlock});
 		
 		GameRegistry.addShapelessRecipe(new ItemStack(AdvancedUtilitiesItems.ingotCopper, 9), new Object[]{blockCopperBlock});
 		GameRegistry.addShapelessRecipe(new ItemStack(AdvancedUtilitiesItems.ingotTin, 9), new Object[]{blockTinBlock});

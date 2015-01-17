@@ -127,6 +127,7 @@ public class ItemDevTool extends Item {
 		    		 {
 		    			 return par1ItemStack;
 		    		 }
+		    		 par3EntityPlayer.travelToDimension(tag.getInteger("Dimension"));
 		    		 par3EntityPlayer.setPositionAndUpdate(x, y, z);
 		    		 par3EntityPlayer.fallDistance = 0;
 		    		 par3EntityPlayer.swingItem();

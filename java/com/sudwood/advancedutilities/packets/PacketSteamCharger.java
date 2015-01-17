@@ -39,12 +39,15 @@ public class PacketSteamCharger implements IMessage
         @Override
         public IMessage onMessage(PacketSteamCharger message, MessageContext ctx) 
         {
-        	EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        	TileEntitySteamCharger tile = (TileEntitySteamCharger) player.worldObj.getTileEntity(message.x, message.y, message.z);
-    		//tile.renderGun = message.isGun;
-    		tile.renderJetpack = message.isJetpack;
-    		tile.renderJackHammer = message.isJackHammer;
-        	
+        	if(Minecraft.getMinecraft().thePlayer != null)
+        	{
+	        	EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+	        	TileEntitySteamCharger tile = (TileEntitySteamCharger) player.worldObj.getTileEntity(message.x, message.y, message.z);
+	    		//tile.renderGun = message.isGun;
+	    		tile.renderJetpack = message.isJetpack;
+	    		tile.renderJackHammer = message.isJackHammer;
+	    		tile.renderGun = message.isGun;
+        	}
             return null; // no response in this case
         }
     }

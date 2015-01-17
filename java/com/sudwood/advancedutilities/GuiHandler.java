@@ -20,6 +20,7 @@ import com.sudwood.advancedutilities.client.gui.GuiSmeltry;
 import com.sudwood.advancedutilities.client.gui.GuiSteamCrusher;
 import com.sudwood.advancedutilities.client.gui.GuiSteamFurnace;
 import com.sudwood.advancedutilities.client.gui.GuiSteamSmeltry;
+import com.sudwood.advancedutilities.client.gui.GuiSteelOven;
 import com.sudwood.advancedutilities.client.gui.GuiToolForge;
 import com.sudwood.advancedutilities.container.ContainerArmorForge;
 import com.sudwood.advancedutilities.container.ContainerBag;
@@ -35,6 +36,7 @@ import com.sudwood.advancedutilities.container.ContainerSteamBoiler;
 import com.sudwood.advancedutilities.container.ContainerSteamCrusher;
 import com.sudwood.advancedutilities.container.ContainerSteamFurnace;
 import com.sudwood.advancedutilities.container.ContainerSteamSmeltry;
+import com.sudwood.advancedutilities.container.ContainerSteelOven;
 import com.sudwood.advancedutilities.container.ContainerToolForge;
 import com.sudwood.advancedutilities.container.InventoryBag;
 import com.sudwood.advancedutilities.container.InventoryItem;
@@ -53,6 +55,7 @@ import com.sudwood.advancedutilities.tileentity.TileEntitySmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamFurnace;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamSmeltry;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteelController;
 import com.sudwood.advancedutilities.tileentity.TileEntityToolForge;
 
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -156,6 +159,12 @@ public class GuiHandler implements IGuiHandler
 				{
 					return new ContainerRebreather(player, player.inventory, new RebreatherInv(player.getCurrentEquippedItem()));
 				}
+			case AdvancedUtilities.steelOvenGui:
+				TileEntity tile211111 = world.getTileEntity(x, y, z);
+				if(tile211111 instanceof TileEntitySteelController)
+				{
+					return new ContainerSteelOven(player.inventory, (TileEntitySteelController)tile211111);
+				}
 				
 			default: return null;
 		}
@@ -254,6 +263,12 @@ public class GuiHandler implements IGuiHandler
 				if(player.getCurrentEquippedItem().getItem() instanceof ItemArmorRebreather)
 				{
 					return new GuiRebreather(new ContainerRebreather(player, player.inventory, new RebreatherInv(player.getCurrentEquippedItem())), player.getCurrentEquippedItem());
+				}
+			case AdvancedUtilities.steelOvenGui:
+				TileEntity tile211111 = world.getTileEntity(x, y, z);
+				if(tile211111 instanceof TileEntitySteelController)
+				{
+					return new GuiSteelOven(player.inventory, (TileEntitySteelController)tile211111);
 				}
 			default: return null;
 		}

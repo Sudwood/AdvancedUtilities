@@ -518,7 +518,6 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     				{
     					result.addEnchantment(Enchantment.sharpness, 1);
     					NBTTagCompound tag = result.getTagCompound();
-    					tag.setInteger("Attack", tag.getInteger("Attack")+2);
     				}
     				break;
     			case 14:
@@ -526,7 +525,6 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     				{
     					result.addEnchantment(Enchantment.sharpness, 2);
     					NBTTagCompound tag = result.getTagCompound();
-    					tag.setInteger("Attack", tag.getInteger("Attack")+6);
     				}
     				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, result) < 2)
     				{
@@ -534,7 +532,6 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     					map.put(Enchantment.sharpness.effectId, 2);
     					EnchantmentHelper.setEnchantments(map, result);
     					NBTTagCompound tag = result.getTagCompound();
-    					tag.setInteger("Attack", tag.getInteger("Attack")+4);
     				}
     				break;
     			case 15:
@@ -542,7 +539,6 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     				{
     					result.addEnchantment(Enchantment.sharpness, 3);
     					NBTTagCompound tag = result.getTagCompound();
-    					tag.setInteger("Attack", tag.getInteger("Attack")+10);
     				}
     				else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, result) < 3)
     				{
@@ -550,7 +546,6 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     					map.put(Enchantment.sharpness.effectId, 3);
     					EnchantmentHelper.setEnchantments(map, result);
     					NBTTagCompound tag = result.getTagCompound();
-    					tag.setInteger("Attack", tag.getInteger("Attack")+4);
     				}
     				break;
     			}
@@ -600,6 +595,13 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     			NBTTagCompound tag = result.getTagCompound();
     			tag.setInteger("maxTankAmount", tag.getInteger("maxTankAmount")+16*FluidContainerRegistry.BUCKET_VOLUME);
     		}
+    		return result;
+    	}
+    	if(rod.getItem() == Items.enchanted_book)
+    	{
+    		ItemStack result = top.copy();
+    		Map map = EnchantmentHelper.getEnchantments(rod);
+    		EnchantmentHelper.setEnchantments(map, result);
     		return result;
     	}
     	

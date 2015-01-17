@@ -24,6 +24,9 @@ public class ItemRivets extends Item
 		case 1:
 			this.itemIcon = par1IconRegister.registerIcon("advancedutilities:stonefittings");
 			break;
+		case 2:
+			this.itemIcon = par1IconRegister.registerIcon("advancedutilities:steelrivets");
+			break;
 		}
         
     }

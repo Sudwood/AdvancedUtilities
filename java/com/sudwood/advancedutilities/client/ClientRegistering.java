@@ -18,6 +18,7 @@ import com.sudwood.advancedutilities.client.models.ModelRebreatherArmor;
 import com.sudwood.advancedutilities.client.models.ModelRunningShoes;
 import com.sudwood.advancedutilities.client.models.ModelRunningShoesArmor;
 import com.sudwood.advancedutilities.client.models.ModelSmeltryHeld;
+import com.sudwood.advancedutilities.client.models.ModelSplitterTube;
 import com.sudwood.advancedutilities.client.models.ModelSteamCharger;
 import com.sudwood.advancedutilities.client.models.ModelSteamCompressor;
 import com.sudwood.advancedutilities.client.models.ModelSteamCrusher;
@@ -42,6 +43,7 @@ import com.sudwood.advancedutilities.client.renders.RenderRestrictedItemTube;
 import com.sudwood.advancedutilities.client.renders.RenderRunningShoesItem;
 import com.sudwood.advancedutilities.client.renders.RenderSmeltry;
 import com.sudwood.advancedutilities.client.renders.RenderSpeedyMinecart;
+import com.sudwood.advancedutilities.client.renders.RenderSplitterTube;
 import com.sudwood.advancedutilities.client.renders.RenderSteamCharger;
 import com.sudwood.advancedutilities.client.renders.RenderSteamCompressor;
 import com.sudwood.advancedutilities.client.renders.RenderSteamCrusher;
@@ -68,10 +70,13 @@ import com.sudwood.advancedutilities.tileentity.TileEntityArmorForge;
 import com.sudwood.advancedutilities.tileentity.TileEntityBellows;
 import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
+import com.sudwood.advancedutilities.tileentity.TileEntityHPBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityKiln;
 import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySmeltry;
+import com.sudwood.advancedutilities.tileentity.TileEntitySplitterFluidTube;
+import com.sudwood.advancedutilities.tileentity.TileEntitySplitterItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCharger;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCompressor;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
@@ -100,6 +105,7 @@ public class ClientRegistering
 	public static KeyHandler keyhandle;
 	public static int tankId;
 	public static int tomatoPlantId;
+	public static int splitterTubeId;
 	
 	public static final ModelJetpackArmor jetpackArmor = new ModelJetpackArmor(1.0F);
 	public static final ModelRebreatherArmor rebreatherArmor = new ModelRebreatherArmor(1.0F);
@@ -120,6 +126,7 @@ public class ClientRegistering
 		steamChargerId = RenderingRegistry.getNextAvailableRenderId();
 		tankId = RenderingRegistry.getNextAvailableRenderId();
 		tomatoPlantId = RenderingRegistry.getNextAvailableRenderId();
+		splitterTubeId = RenderingRegistry.getNextAvailableRenderId();
 		keyhandle = new KeyHandler();
 		
 		RenderingRegistry.registerEntityRenderingHandler(EntityBullet.class, new RenderBullet());
@@ -146,8 +153,10 @@ public class ClientRegistering
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityArmorForge.class, new RenderArmorForge());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.blockArmorForge), new RenderTileEntityBase(new ModelToolForge(), new ResourceLocation("advancedutilities","textures/blocks/armorforge.png")));
 		
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBoiler.class, new RenderBoiler());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBoiler.class, new RenderBoiler(0));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.steamBoiler), new RenderTileEntityBase(new ModelBoiler(), new ResourceLocation("advancedutilities","textures/blocks/boiler.png")));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHPBoiler.class, new RenderBoiler(1));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.hpBoiler), new RenderTileEntityBase(new ModelBoiler(), new ResourceLocation("advancedutilities","textures/blocks/hpboiler.png")));
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySteamCrusher.class, new RenderSteamCrusher());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.steamCrusher), new RenderTileEntityBase(new ModelSteamCrusher(), new ResourceLocation("advancedutilities","textures/blocks/steamcrusher.png")));
@@ -168,8 +177,13 @@ public class ClientRegistering
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.itemTube), new RenderTileEntityBase(new ModelTube(), new ResourceLocation("advancedutilities","textures/blocks/itemtube.png")));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRestrictedItemTube.class, new RenderRestrictedItemTube());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.restrictedItemTube), new RenderTileEntityBase(new ModelTube(), new ResourceLocation("advancedutilities","textures/blocks/restricteditemtube.png")));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySplitterItemTube.class, new RenderSplitterTube());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.splitterItemTube), new RenderTileEntityBase(new ModelSplitterTube(), new ResourceLocation("advancedutilities","textures/blocks/itemtube.png")));
+		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTube.class, new RenderFluidTube());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.fluidTube), new RenderTileEntityBase(new ModelTube(), new ResourceLocation("advancedutilities","textures/blocks/fluidtube.png")));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySplitterFluidTube.class, new RenderSplitterTube());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.splitterFluidTube), new RenderTileEntityBase(new ModelSplitterTube(), new ResourceLocation("advancedutilities","textures/blocks/fluidtube.png")));
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySteamCharger.class, new RenderSteamCharger());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.steamCharger), new RenderTileEntityBase(new ModelSteamCharger(), new ResourceLocation("advancedutilities","textures/blocks/steamcharger.png")));

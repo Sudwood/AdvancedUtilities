@@ -16,8 +16,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemPlate extends Item
 {
-	private IIcon[] icons = new IIcon[4];
-	private String[] names = {"IronPlate", "BronzePlate", "BrassPlate", "StonePlate"};
+	private IIcon[] icons = new IIcon[5];
+	private String[] names = {"IronPlate", "BronzePlate", "BrassPlate", "StonePlate", "SteelPlate"};
 	
 	public ItemPlate()
 	{
@@ -32,6 +32,7 @@ public class ItemPlate extends Item
 			this.icons[1] = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":bronzeplate");
 			this.icons[2] = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":brassplate");
 			this.icons[3] = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":stoneplate");
+			this.icons[4] = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":steelplate");
     }
 	
 	/**
@@ -40,7 +41,7 @@ public class ItemPlate extends Item
      */
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
-        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 3);
+        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 4);
         return super.getUnlocalizedName() + "." + names[i];
     }
     
@@ -56,7 +57,7 @@ public class ItemPlate extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List list)
     {
-        for (int i = 0; i < 4; ++i)
+        for (int i = 0; i < 5; ++i)
         {
             list.add(new ItemStack(item, 1, i));
             item.setCreativeTab(AdvancedUtilities.advancedTab);

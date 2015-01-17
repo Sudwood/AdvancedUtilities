@@ -9,6 +9,7 @@ import java.util.List;
 
 
 
+
 import com.sudwood.advancedutilities.TransferHelper;
 
 import net.minecraft.command.IEntitySelector;
@@ -144,6 +145,22 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
     	return false;
     	
     }
+    public boolean isWrongTile(ForgeDirection dir)
+    {
+    	if(worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) instanceof TileEntityRestrictedItemTube)
+    	{
+    		return true;
+    	}
+    	if(worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) instanceof TileEntitySplitterItemTube)
+    	{
+    		return true;
+    	}
+    	if(worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) instanceof TileEntityItemTube)
+    	{
+    		return true;
+    	}
+    	return false;
+    }
      
     public void pullItem()
     {
@@ -156,7 +173,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	    		try
 	    		{
 	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord, yCoord+ForgeDirection.UP.offsetY, zCoord);
-	    			if(!(worldObj.getTileEntity(xCoord, yCoord+ForgeDirection.UP.offsetY, zCoord) instanceof TileEntityRestrictedItemTube) && !(worldObj.getTileEntity(xCoord, yCoord+ForgeDirection.UP.offsetY, zCoord) instanceof TileEntityItemTube))
+	    			if(!isWrongTile(ForgeDirection.UP))
 	    			{
 		    			if(slot[1] == 0)
 		    			{
@@ -198,7 +215,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	    		try
 	    		{
 	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord, yCoord+ForgeDirection.DOWN.offsetY, zCoord);
-	    			if(!(worldObj.getTileEntity(xCoord, yCoord+ForgeDirection.DOWN.offsetY, zCoord) instanceof TileEntityRestrictedItemTube) && !(worldObj.getTileEntity(xCoord, yCoord+ForgeDirection.DOWN.offsetY, zCoord) instanceof TileEntityItemTube))
+	    			if(!isWrongTile(ForgeDirection.DOWN))
 	    			{
 		    			if(slot1[1] == 0)
 		    			{
@@ -240,7 +257,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	    		try
 	    		{
 	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ);
-	    			if(!(worldObj.getTileEntity(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ) instanceof TileEntityRestrictedItemTube) && !(worldObj.getTileEntity(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ) instanceof TileEntityItemTube))
+	    			if(!isWrongTile(ForgeDirection.SOUTH))
 	    			{
 		    			if(slot11[1] == 0)
 		    			{
@@ -282,7 +299,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	    		try
 	    		{
 	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ);
-	    			if(!(worldObj.getTileEntity(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ) instanceof TileEntityRestrictedItemTube) && !(worldObj.getTileEntity(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ) instanceof TileEntityItemTube))
+	    			if(!isWrongTile(ForgeDirection.NORTH))
 	    			{
 		    			if(slot111[1] == 0)
 		    			{
@@ -324,7 +341,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	    		try
 	    		{
 	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ);
-	    			if(!(worldObj.getTileEntity(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ) instanceof TileEntityRestrictedItemTube) && !(worldObj.getTileEntity(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ) instanceof TileEntityItemTube))
+	    			if(!isWrongTile(ForgeDirection.WEST))
 	    			{
 		    			if(slot1111[1] == 0)
 		    			{
@@ -366,7 +383,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	    		try
 	    		{
 	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ);
-	    			if(!(worldObj.getTileEntity(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ) instanceof TileEntityRestrictedItemTube) && !(worldObj.getTileEntity(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ) instanceof TileEntityItemTube))
+	    			if(!isWrongTile(ForgeDirection.EAST))
 	    			{
 		    			if(slot11111[1] == 0)
 		    			{

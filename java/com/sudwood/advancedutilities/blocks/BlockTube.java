@@ -18,19 +18,15 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.common.util.RotationHelper;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.client.ClientRegistering;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
-import com.sudwood.advancedutilities.tileentity.TileEntitySteamCharger;
-import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
-import com.sudwood.advancedutilities.tileentity.TileEntitySteamFurnace;
-import com.sudwood.advancedutilities.tileentity.TileEntitySteamSmeltry;
+import com.sudwood.advancedutilities.tileentity.TileEntitySplitterFluidTube;
+import com.sudwood.advancedutilities.tileentity.TileEntitySplitterItemTube;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -79,7 +75,10 @@ public class BlockTube extends BlockContainer
 	@SideOnly(Side.CLIENT)
 	public int getRenderType()
     {
-		return ClientRegistering.tubeId;
+		if(Type <= 2)
+			return ClientRegistering.tubeId;
+		else
+			return ClientRegistering.splitterTubeId;
     }
 
     /**
@@ -164,6 +163,10 @@ public class BlockTube extends BlockContainer
 			return new TileEntityFluidTube();
 		if(Type == 2)
 			return new TileEntityRestrictedItemTube();
+		if(Type == 3)
+			return new TileEntitySplitterItemTube();
+		if(Type == 4)
+			return new TileEntitySplitterFluidTube();
 		return null;
 	}
 	@Override
@@ -190,6 +193,10 @@ public class BlockTube extends BlockContainer
 				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.fluidTube, 1)));
 			if(Type == 2)
 				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.restrictedItemTube, 1)));
+			if(Type == 3)
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.splitterItemTube, 1)));
+			if(Type == 4)
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.splitterFluidTube, 1)));
 			this.breakBlock(world, x, y, z, this, world.getBlockMetadata(x, y, z));
 		}
 		this.removedByPlayer(world, player, x, y, z);
@@ -217,6 +224,16 @@ public class BlockTube extends BlockContainer
 			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.restrictedItemTubeGui, world, x, y, z);
 			return true;
 		}
+		if(Type == 3 && !player.isSneaking() && (player.getCurrentEquippedItem() == null || player.getCurrentEquippedItem().getItem() != AdvancedUtilitiesItems.bronzeWrench))
+		{
+			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.itemTubeGui, world, x, y, z);
+			return true;
+		}
+		if(Type == 4 && !player.isSneaking() && (player.getCurrentEquippedItem() == null || player.getCurrentEquippedItem().getItem() != AdvancedUtilitiesItems.bronzeWrench))
+		{
+			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.fluidTubeGui, world, x, y, z);
+			return true;
+		}
 		return false;
     }
 	
@@ -230,9 +247,17 @@ public class BlockTube extends BlockContainer
         	case 0:
         		tileentityfurnace = (TileEntityItemTube)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
         		break;
+        	case 1:
+        		return;
     		case 2:
     			tileentityfurnace = (TileEntityRestrictedItemTube)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
     			break;
+    		case 3:
+    			tileentityfurnace = (TileEntitySplitterItemTube)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
+    			break;
+    		case 4:
+    			return;
+    			
 
     			default:
     				tileentityfurnace = (TileEntityItemTube)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);

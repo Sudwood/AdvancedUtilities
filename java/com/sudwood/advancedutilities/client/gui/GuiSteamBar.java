@@ -28,6 +28,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.ExtendedPlayer;
+import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.config.HudOptions;
 import com.sudwood.advancedutilities.container.InventoryItem;
 import com.sudwood.advancedutilities.container.RebreatherInv;
@@ -36,6 +37,7 @@ import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.items.ItemArmorSteamJetpack;
 import com.sudwood.advancedutilities.items.ItemJackHammer;
 import com.sudwood.advancedutilities.tileentity.ISteamTank;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteelOven;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -129,7 +131,13 @@ public class GuiSteamBar extends Gui
 	    	{
 	    		if(look instanceof BlockContainer && world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ) instanceof ISteamTank)
 	    			lower = true;
-	    		fluids.add(StatCollector.translateToLocal(look.getUnlocalizedName().substring(5)+":"+world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ)));
+	    		if(look == AdvancedUtilitiesBlocks.blockSteelOven)
+	    		{
+	    			TileEntitySteelOven tile = (TileEntitySteelOven) world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+	    			fluids.add(StatCollector.translateToLocal(look.getUnlocalizedName().substring(5)+":"+tile.getPiece()));
+	    		}
+	    		else
+	    			fluids.add(StatCollector.translateToLocal(look.getUnlocalizedName().substring(5)+":"+world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ)));
 	    	}
     		for(int i = 0; i < fluids.size(); i++)
 			{

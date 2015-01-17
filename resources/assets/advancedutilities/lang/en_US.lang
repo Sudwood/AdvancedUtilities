@@ -29,6 +29,7 @@ tile.IridiumBlock.name=Iridium Block
 tile.PalidiumBlock.name=Palidium Block
 tile.SteelBlock.name=Steel Block
 tile.NickelBlock.name=Nickel Block
+tile.IronBlock.name=Iron Block
 
 tile.RubberLog.name=Rubber Wood Log
 tile.RubberPlanks.name=Rubber Wood Planks
@@ -80,6 +81,7 @@ item.Plate.IronPlate.name=Iron Plate
 item.Plate.BronzePlate.name=Bronze Plate
 item.Plate.BrassPlate.name=Brass Plate
 item.Plate.StonePlate.name=Stone Plate
+item.Plate.SteelPlate.name=Steel Plate
 
 item.BronzeHelm.name=Bronze Helm
 item.BronzeChest.name=BronzeChest
@@ -88,6 +90,9 @@ item.BronzeBoots.name=Bronze Boots
 
 item.BrassRivets.name=Brass Rivets
 item.StoneRivets.name=Stone Rivets
+item.SteelRivets.name=Steel Rivets
+
+item.DevTele.name=Dev Tele
 
 item.Wire.Stone.name=Stone Wire Blank
 item.Wire.Copper.name=Copper Wire
@@ -174,17 +179,21 @@ item.Bag.YellowBag.name=Yellow Bag
 fluid.steam=Steam
 fluid.Steam=Steam
 tile.SteamBoiler.name=Steam Boiler
+tile.HPBoiler.name=High Pressure Boiler
 tile.SteamCrusher.name=Steam Crusher
 tile.SteamFurnace.name=Steam Furnace
 tile.SteamSmeltry.name=Steam Smeltry
 tile.SteamCompressor.name=Steam Compressor
 tile.Bellows.name=Bellows
 tile.BronzeMachine.name=Bronze Machine Block
+tile.SteelMachine.name=Steel Machine Block
 tile.SteamCharger.name=Steam Charger
 tile.ItemTube.name=Item Tube
 tile.FluidTube.name=Fluid Tube
 tile.RestrictedItemTube.name=Restricted Item Tube
 tile.BlockBreaker.name=Block Breaker
+tile.SteelOvenController.name=Steel Oven Controller
+tile.SteelOvenBlock.name=Steel Oven Block
 
 item.Dust.CopperDust.name=Copper Dust
 item.Dust.IronDust.name=Iron Dust

@@ -1,8 +1,5 @@
 package com.sudwood.advancedutilities.container;
 
-import com.sudwood.advancedutilities.CrushRecipes;
-import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -10,25 +7,31 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+
+import com.sudwood.advancedutilities.CrushRecipes;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteelController;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ContainerSteamCrusher extends Container
+public class ContainerSteelOven extends Container
 {
-    private TileEntitySteamCrusher tileFurnace;
+    private TileEntitySteelController tileFurnace;
     private int lastTankAmount;
     private int lastProgressTime;
 
-    public ContainerSteamCrusher(InventoryPlayer par1InventoryPlayer, TileEntitySteamCrusher par2TileEntitySteamBoiler)
+    public ContainerSteelOven(InventoryPlayer par1InventoryPlayer, TileEntitySteelController par2TileEntitySteamBoiler)
     {
         this.tileFurnace = par2TileEntitySteamBoiler;
-        this.addSlotToContainer(new Slot(par2TileEntitySteamBoiler, 0, 14, 35));
-        this.addSlotToContainer(new SlotFurnace(par1InventoryPlayer.player, par2TileEntitySteamBoiler, 1, 75, 35));
+        this.addSlotToContainer(new Slot(par2TileEntitySteamBoiler, 0, 32, 36));
+        this.addSlotToContainer(new Slot(par2TileEntitySteamBoiler, 1, 50, 18));
+        this.addSlotToContainer(new Slot(par2TileEntitySteamBoiler, 2, 14, 54));
+        this.addSlotToContainer(new Slot(par2TileEntitySteamBoiler, 3, 50, 54));
+        this.addSlotToContainer(new Slot(par2TileEntitySteamBoiler, 4, 14, 18));
+        this.addSlotToContainer(new SlotFurnace(par1InventoryPlayer.player, par2TileEntitySteamBoiler, 5, 108, 35));
         int i;
 
         for (i = 0; i < 3; ++i)
@@ -93,7 +96,7 @@ public class ContainerSteamCrusher extends Container
 
     public boolean canInteractWith(EntityPlayer par1EntityPlayer)
     {
-        return this.tileFurnace.isUseableByPlayer(par1EntityPlayer);
+      return true;
     }
 
 

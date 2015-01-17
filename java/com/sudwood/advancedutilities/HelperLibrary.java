@@ -1,5 +1,6 @@
 package com.sudwood.advancedutilities;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -74,6 +75,30 @@ public class HelperLibrary
 				if(OreDictionary.getOreIDs(stack)[0] == OreDictionary.getOreIDs(compare)[0])
 				{
 					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static boolean is3x3(Block looking, int x, int y, int z, World world)
+	{
+		if(world.getBlock(x+1, y+1, z+1) == looking && world.getBlock(x+1, y+1, z) == looking && world.getBlock(x+1, y+1, z-1) == looking && world.getBlock(x, y+1, z+1) == looking && world.getBlock(x, y+1, z) == looking)
+		{
+			if(world.getBlock(x, y+1, z-1) == looking && world.getBlock(x-1, y+1, z+1) == looking && world.getBlock(x-1, y+1, z) == looking && world.getBlock(x-1, y+1, z-1) == looking)
+			{
+				if(world.getBlock(x+1, y, z+1) == looking && world.getBlock(x+1, y, z) == looking && world.getBlock(x+1, y, z-1) == looking && world.getBlock(x, y, z+1) == looking)
+				{
+					if(world.getBlock(x, y, z-1) == looking && world.getBlock(x-1, y, z+1) == looking && world.getBlock(x-1, y, z) == looking && world.getBlock(x-1, y, z-1) == looking)
+					{
+						if(world.getBlock(x+1, y-1, z+1) == looking && world.getBlock(x+1, y-1, z) == looking && world.getBlock(x+1, y-1, z-1) == looking && world.getBlock(x, y-1, z+1) == looking && world.getBlock(x, y-1, z) == looking)
+						{
+							if(world.getBlock(x, y-1, z-1) == looking && world.getBlock(x-1, y-1, z+1) == looking && world.getBlock(x-1, y-1, z) == looking && world.getBlock(x-1, y-1, z-1) == looking)
+							{
+								return true;
+							}
+						}
+					}
 				}
 			}
 		}

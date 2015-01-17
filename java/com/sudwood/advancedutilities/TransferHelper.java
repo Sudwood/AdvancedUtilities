@@ -37,7 +37,7 @@ public class TransferHelper
 				slots = new int[]{2};
 			for(int i = 0; i < slots.length; i++)
 			{
-				if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null)
+				if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null  && ((ISidedInventory)tile).canExtractItem(i, ((ISidedInventory)tile).getStackInSlot(slots[i]), 0))
 				{
 					for(int ix = 0; ix < inventory.length; ix++)
 					{
@@ -123,6 +123,7 @@ public class TransferHelper
 	 * @param z of the block being checked
 	 * @param inventory the inventory that the stack is going into - ei the tile entity of the hopper
 	 * @param worldObj the world of the block
+	 * @param the side that is being pulled from
 	 * @return
 	 */
 	public static int[] getFirstStackThatFits(int x, int y, int z, ItemStack[] inventory, World worldObj, int numTransfered, int side)
@@ -144,7 +145,7 @@ public class TransferHelper
 				slots = new int[]{2};
 			for(int i = 0; i < slots.length; i++)
 			{
-				if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null)
+				if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null  && ((ISidedInventory)tile).canExtractItem(i, ((ISidedInventory)tile).getStackInSlot(slots[i]), side))
 				{
 					for(int ix = 0; ix < inventory.length; ix++)
 					{
@@ -252,7 +253,7 @@ public class TransferHelper
 				slots = new int[]{2};
 			for(int i = 0; i < slots.length; i++)
 			{
-				if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null)
+				if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null && ((ISidedInventory)tile).canExtractItem(i, ((ISidedInventory)tile).getStackInSlot(slots[i]), 0))
 				{
 					for(int ix = 0; ix < inventory.length; ix++)
 					{
@@ -339,6 +340,7 @@ public class TransferHelper
 	 * @param inventory the inventory that the stack is going into - ei the tile entity of the hopper
 	 * @param worldObj the world of the block
 	 * @param The tile entity calling this method for isitemvalidforslot checking
+	 * @param the side that is being pulled from
 	 * @return
 	 */
 	public static int[] getFirstStackThatFits(int x, int y, int z, ItemStack[] inventory, World worldObj, int numTransfered, IInventory tileen, int side)
@@ -360,7 +362,7 @@ public class TransferHelper
 				slots = new int[]{2};
 			for(int i = 0; i < slots.length; i++)
 			{
-				if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null)
+				if(((ISidedInventory)tile).getStackInSlot(slots[i]) != null && ((ISidedInventory)tile).canExtractItem(i, ((ISidedInventory)tile).getStackInSlot(slots[i]), side))
 				{
 					for(int ix = 0; ix < inventory.length; ix++)
 					{

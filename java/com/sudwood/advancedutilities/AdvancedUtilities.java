@@ -6,9 +6,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.client.ClientRegistering;
@@ -37,15 +34,20 @@ import com.sudwood.advancedutilities.tileentity.TileEntityBellows;
 import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityChunkLoader;
 import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
+import com.sudwood.advancedutilities.tileentity.TileEntityHPBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityKiln;
 import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySmeltry;
+import com.sudwood.advancedutilities.tileentity.TileEntitySplitterFluidTube;
+import com.sudwood.advancedutilities.tileentity.TileEntitySplitterItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCharger;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCompressor;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamFurnace;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamSmeltry;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteelController;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteelOven;
 import com.sudwood.advancedutilities.tileentity.TileEntityTank;
 import com.sudwood.advancedutilities.tileentity.TileEntityToolForge;
 
@@ -88,6 +90,7 @@ public class AdvancedUtilities
     public static final int bagGui = 13;
     public static final int skillsGui = 14;
     public static final int rebreatherGui = 15;
+    public static final int steelOvenGui = 16;
     
     public static String steamName = "Steam";
     
@@ -215,7 +218,12 @@ public class AdvancedUtilities
     	GameRegistry.registerTileEntity(TileEntitySteamCharger.class, "AdvancedUtilities:TileEntitySteamCharger");
     	GameRegistry.registerTileEntity(TileEntityFluidTube.class, "AdvancedUtilities:TileEntityFluidTube");
     	GameRegistry.registerTileEntity(TileEntityRestrictedItemTube.class, "AdvancedUtilities:TileEntityRestrictedItemTube");
+    	GameRegistry.registerTileEntity(TileEntitySplitterItemTube.class, "AdvancedUtilities:TileEntitySplitterItemTube");
+    	GameRegistry.registerTileEntity(TileEntitySplitterFluidTube.class, "AdvancedUtilities:TileEntitySplitterFluidTube");
     	GameRegistry.registerTileEntity(TileEntityTank.class, "AdvancedUtilities:TileEntityTank");
+    	GameRegistry.registerTileEntity(TileEntitySteelOven.class, "AdvancedUtilities:TileEntitySteelOven");
+    	GameRegistry.registerTileEntity(TileEntitySteelController.class, "AdvancedUtilities:TileEntitySteelController");
+    	GameRegistry.registerTileEntity(TileEntityHPBoiler.class, "AdvancedUtilities:TileEntityHPBoiler");
     }
     
     public void registerEntities()

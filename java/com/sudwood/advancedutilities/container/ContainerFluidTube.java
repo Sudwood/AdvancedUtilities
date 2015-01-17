@@ -1,6 +1,7 @@
 package com.sudwood.advancedutilities.container;
 
 import com.sudwood.advancedutilities.CrushRecipes;
+import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -73,9 +74,9 @@ public class ContainerFluidTube extends Container
     @SideOnly(Side.CLIENT)
     public void updateProgressBar(int par1, int par2)
     {
-        if(par1 == 3)
+    	if( par1 == 3)
         {
-        	this.tileFurnace.tank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), par2));
+        	this.tileFurnace.tank.setFluid(new FluidStack(AdvancedUtilitiesBlocks.fluidSteam, par2));
         }
     }
 

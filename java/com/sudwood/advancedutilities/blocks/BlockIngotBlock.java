@@ -28,7 +28,10 @@ public class BlockIngotBlock extends Block{
     {
        return 1;
     }
-
+    public boolean isOpaqueCube()
+    {
+        return false;
+    }
     
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister icon)
@@ -81,6 +84,9 @@ public class BlockIngotBlock extends Block{
         	break;
         case 14:
         	this.blockIcon = icon.registerIcon("advancedutilities:nickelblock"+AdvancedUtilities.textureSize);
+        	break;
+        case 15:
+        	this.blockIcon = icon.registerIcon("advancedutilities:ironblock"+AdvancedUtilities.textureSize);
         	break;
         }
     }

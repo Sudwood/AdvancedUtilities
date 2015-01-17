@@ -36,13 +36,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFluidHandler, ISteamTank
 {
 
-	private static final int[] slotsTop = new int[] {};
-    private static final int[] slotsBottom = new int[] {};
-    private static final int[] slotsSides = new int[] {0};
+	protected static final int[] slotsTop = new int[] {};
+	protected static final int[] slotsBottom = new int[] {};
+	protected static final int[] slotsSides = new int[] {0};
     /**
      * The ItemStacks that hold the items currently being used in the furnace
      */
-    private ItemStack[] inventory = new ItemStack[1];
+    protected ItemStack[] inventory = new ItemStack[1];
+    protected int fuelUseage = 1;
     public FluidTank tank = new FluidTank(64*FluidContainerRegistry.BUCKET_VOLUME);
     public FluidTank waterTank = new FluidTank(64*FluidContainerRegistry.BUCKET_VOLUME);
     
@@ -55,13 +56,13 @@ public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFl
      */
     public int currentItemBurnTime;
     
-    private int steamMulti = 1;
+    protected int steamMulti = 1;
     /**
      * The number of ticks that the current item has been cooking for
      */
     public int furnaceCookTime;
-    private String field_145958_o;
-    private static final String __OBFID = "CL_00000357";
+    protected String field_145958_o;
+    protected static final String __OBFID = "CL_00000357";
 
     /**
      * Returns the number of slots in the inventory.
@@ -294,6 +295,11 @@ public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFl
         return this.furnaceBurnTime * p_145955_1_ / this.currentItemBurnTime;
     }
     
+    public int getFuelUseage()
+    {
+    	return this.fuelUseage;
+    }
+    
     @SideOnly(Side.CLIENT)
     public int getFluidScaled(int p_145955_1_)
     {
@@ -321,7 +327,7 @@ public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFl
 
         if (this.furnaceBurnTime > 0 && this.canSmelt())
         {
-            this.furnaceBurnTime-=steamMulti;
+            this.furnaceBurnTime-=steamMulti*this.fuelUseage;
         }
 
         if (!this.worldObj.isRemote)
@@ -406,7 +412,7 @@ public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFl
     /**
      * Returns true if the furnace can smelt an item, i.e. has a source item, destination stack isn't full, etc.
      */
-    private boolean canSmelt()
+    protected boolean canSmelt()
     {
     	if(tank.getFluidAmount() < tank.getCapacity() && waterTank.getFluidAmount() >= 5*steamMulti)
     		return true;
@@ -414,7 +420,7 @@ public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFl
     		return false;
     }
     
-    private void getWater()
+    protected void getWater()
     {
     	if(this.waterTank.getFluidAmount() + 1000 < this.waterTank.getCapacity())
     	{

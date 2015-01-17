@@ -1,5 +1,6 @@
 package com.sudwood.advancedutilities.tileentity;
 
+import com.sudwood.advancedutilities.CrushRecipes;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 
 import net.minecraft.block.Block;
@@ -331,6 +332,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
             {
             	if(OreDictionary.getOreIDs(inventory[0]) != null && OreDictionary.getOreIDs(inventory[1]) != null && OreDictionary.getOreIDs(inventory[2]) != null && OreDictionary.getOreIDs(inventory[3]) != null)
             	{
+            		
             		if(OreDictionary.getOreIDs(inventory[0]).length > 0 && OreDictionary.getOreIDs(inventory[1]).length > 0 && OreDictionary.getOreIDs(inventory[2]).length > 0 && OreDictionary.getOreIDs(inventory[3]).length > 0)
             		{
 			            if(OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
@@ -860,6 +862,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
         		int tin = OreDictionary.getOreID("oreTin");
         		if(OreDictionary.getOreIDs(inventory[0])!=null&& OreDictionary.getOreIDs(inventory[0]).length>0 && OreDictionary.getOreIDs(inventory[0])[0] == copper)
         		{
+        			
         			if(this.inventory[5] == null)
             		{
             			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotCopper, 1);

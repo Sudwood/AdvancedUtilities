@@ -5,6 +5,7 @@ import java.util.Map;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -347,6 +348,13 @@ public class TileEntityArmorForge extends TileEntity implements IInventory
     			NBTTagCompound tag = result.getTagCompound();
     			tag.setInteger("maxTankAmount", tag.getInteger("maxTankAmount")+16*FluidContainerRegistry.BUCKET_VOLUME);
     		}
+    		return result;
+    	}
+    	if(rod.getItem() == Items.enchanted_book)
+    	{
+    		ItemStack result = top.copy();
+    		Map map = EnchantmentHelper.getEnchantments(rod);
+    		EnchantmentHelper.setEnchantments(map, result);
     		return result;
     	}
     	

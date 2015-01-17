@@ -72,6 +72,8 @@ public class BlockOre extends Block
         	this.blockIcon = icon.registerIcon("advancedutilities:bronzemachine");
         case 9:
         	this.blockIcon = icon.registerIcon("advancedutilities:nickel");
+        case 10:
+        	this.blockIcon = icon.registerIcon("advancedutilities:steelmachine");
         	break;
         }
     }

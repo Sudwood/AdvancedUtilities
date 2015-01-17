@@ -1,5 +1,6 @@
 package com.sudwood.advancedutilities.tileentity;
 
+import com.sudwood.advancedutilities.SmeltryRecipes;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -327,7 +328,7 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
         }
         else
         {
-            ItemStack itemstack = this.getSmeltryResult(inventory[0], inventory[1]);
+            ItemStack itemstack = SmeltryRecipes.getSmeltryResult(inventory[0], inventory[1], 0);
             if (itemstack == null) return false;
             if (this.inventory[3] == null) return true;
             if (!this.inventory[3].isItemEqual(itemstack)) return false;
@@ -336,142 +337,6 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
         }
     }
 
-    public ItemStack getSmeltryResult(ItemStack melt, ItemStack mould)
-    {
-    	if(melt == null || mould == null)
-    		return null;
-    	
-    	if(melt.getItem() ==Item.getItemFromBlock(Blocks.clay))
-    	{
-    		if(mould.getItem() == Items.stick)
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 0);
-    		}
-    		if(mould.getItem() == Items.stone_pickaxe)
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 1);
-    		}
-    		if(mould.getItem() == Items.stone_sword)
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 2);
-    		}
-    		if(mould.getItem() == Items.stone_shovel)
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 3);
-    		}
-    		if(mould.getItem() == Items.stone_axe)
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 4);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.plate, 1, 3)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 5);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.stoneRivets, 1)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 6);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.itemCasing, 1, 0)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 8);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.itemBulletHead, 1, 0)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 7);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 10)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.cast, 1, 9);
-    		}
-    	}
-    	if(melt.getItem() == Items.iron_ingot)
-    	{
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 0)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 1);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 1)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 2);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 2)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 3);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 3)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 4);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 4)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 5);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 5)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.plate, 1, 0);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 9)) && melt.stackSize >= 8)
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 12);
-    		}
-    	}
-    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 && OreDictionary.getOreIDs(melt)[0] == OreDictionary.getOreIDs(new ItemStack(AdvancedUtilitiesItems.ingotBronze, 1))[0])
-    	{
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 0)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 0);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 1)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 6);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 2)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 7);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 3)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 8);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 4)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 9);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 5)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.plate, 1, 1);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 7)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.itemCasing, 16, 1);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 9)) && melt.stackSize >= 8)
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 11);
-    		}
-    	}
-    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 && OreDictionary.getOreIDs(melt)[0] == OreDictionary.getOreIDs(new ItemStack(AdvancedUtilitiesItems.ingotBrass, 1))[0])
-    	{
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 5)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.plate, 1, 2);
-    		}
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 6)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.brassRivets, 1);
-    		}
-    	}
-    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 && OreDictionary.getOreIDs(melt)[0] == OreDictionary.getOreIDs(new ItemStack(AdvancedUtilitiesItems.ingotLead, 1))[0])
-    	{
-    		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 8)))
-    		{
-    			return new ItemStack(AdvancedUtilitiesItems.itemBulletHead, 16, 1);
-    		}
-    	}
-    	return null;
-    }
-    
-    
     /**
      * Turn one item from the furnace source stack into the appropriate smelted item in the furnace result stack
      */
@@ -479,7 +344,7 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
     {
         if (this.canSmelt())
         {
-            ItemStack itemstack = this.getSmeltryResult(inventory[0], inventory[1]);
+            ItemStack itemstack = SmeltryRecipes.getSmeltryResult(inventory[0], inventory[1], 0);
 
             if (this.inventory[3] == null)
             {

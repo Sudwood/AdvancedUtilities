@@ -24,6 +24,7 @@ import com.sudwood.advancedutilities.client.ClientRegistering;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.tileentity.TileEntityBellows;
 import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
+import com.sudwood.advancedutilities.tileentity.TileEntityHPBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCharger;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCompressor;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
@@ -61,6 +62,8 @@ public class BlockSteamMachine extends BlockContainer
 			return new TileEntitySteamCompressor();
 		case 6:
 			return new TileEntitySteamCharger();
+		case 7:
+			return new TileEntityHPBoiler();
 		default:
 				return null;
 		}
@@ -87,6 +90,9 @@ public class BlockSteamMachine extends BlockContainer
     			break;
     		case 6:
     			tileentityfurnace = (TileEntitySteamCharger)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
+    			break;
+    		case 7:
+    			tileentityfurnace = (TileEntityHPBoiler)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
     			break;
 
     			default:
@@ -210,6 +216,9 @@ public class BlockSteamMachine extends BlockContainer
 			case 6:
 				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.steamCharger, 1)));
 				break;
+			case 7:
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.hpBoiler, 1)));
+				break;
 			}
 
 			this.breakBlock(world, x, y, z, this, world.getBlockMetadata(x, y, z));
@@ -296,6 +305,9 @@ public class BlockSteamMachine extends BlockContainer
 				return true;
 			}
 			return true;
+		case 7:
+			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.steamBoilerGui, world, x, y, z);
+			return true;
 		default:
 				return false;
 		}
@@ -341,6 +353,8 @@ public class BlockSteamMachine extends BlockContainer
 			return ClientRegistering.steamCompressorId;
 		case 6:
 			return ClientRegistering.steamChargerId;
+		case 7:
+			return ClientRegistering.boilerId;
 		}
         return ClientRegistering.kilnId;
     }

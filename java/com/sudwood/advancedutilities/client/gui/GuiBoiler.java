@@ -76,7 +76,7 @@ public class GuiBoiler extends GuiContainer
         int var6 = (this.height - this.ySize) / 2;
         if(par1 >= 56+var5 && par2 >= 53+var6 && par1 <= 71+var5 && par2 <= 68+var6)
 		{
-			String[] text = {"Burn Time: " + tile.getScaledBurnTime() + " s"};
+			String[] text = {"Burn Time: " + tile.getScaledBurnTime()/tile.getFuelUseage() + " s"};
 			List temp = Arrays.asList(text);
 			drawHoveringText(temp, par1, par2, fontRendererObj);
 		}
