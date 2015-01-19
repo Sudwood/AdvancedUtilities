@@ -90,7 +90,7 @@ public class ItemBETool extends ItemTool
     		stack.setTagCompound(new NBTTagCompound());
     	NBTTagCompound tag = stack.getTagCompound();
     	par3List.add("Damage: "+tag.getInteger("CurrentDamage")+" / "+tag.getInteger("MaxDamage"));
-    	par3List.add("Attack: "+tag.getInteger("Attack")/2+" Hearts");
+    	par3List.add("Attack: "+((tag.getInteger("Attack")+2*EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, stack))/2)+" Hearts");
     	if(tag.getInteger("CurrentDamage")<=0)
     	{
     		par3List.add("BROKEN!");
@@ -257,7 +257,12 @@ public class ItemBETool extends ItemTool
 	      	 if(tag.getInteger("CurrentDamage") >= 1)
 	      	 {
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
-		      	par2EntityLivingBase.attackEntityFrom(DamageSource.generic, tag.getInteger("Attack"));
+		      	int damage = tag.getInteger("Attack");
+			     if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack) > 0)
+			     {
+			    	 damage+=EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack)*2;
+			     }
+		      	par2EntityLivingBase.attackEntityFrom(DamageSource.generic, damage);
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		par3EntityLivingBase.worldObj.playSoundAtEntity(par3EntityLivingBase, "minecraft:random.break", 1F, 1F);
@@ -271,7 +276,12 @@ public class ItemBETool extends ItemTool
     		if(tag.getInteger("CurrentDamage") >= 2)
 	      	 {
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
-		      	par2EntityLivingBase.attackEntityFrom(DamageSource.generic, tag.getInteger("Attack"));
+		      	int damage = tag.getInteger("Attack");
+			     if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack) > 0)
+			     {
+			    	 damage+=EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack)*2;
+			     }
+		      	par2EntityLivingBase.attackEntityFrom(DamageSource.generic, damage);
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		par3EntityLivingBase.worldObj.playSoundAtEntity(par3EntityLivingBase, "minecraft:random.break", 1F, 1F);

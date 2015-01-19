@@ -48,7 +48,7 @@ public class PacketRunningShoes implements IMessage
     		props.isRunning = message.isRunningShoes;
     		props.saveProxyData(player);
     		props.loadProxyData(player);
-    		return new SyncPlayerPropsPacket(player);
+    		return null;
         }
     }
 

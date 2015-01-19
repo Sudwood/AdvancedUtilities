@@ -179,7 +179,6 @@ public class AUEventHandler
 			IAttributeInstance atinstDamage = player.getEntityAttribute(SharedMonsterAttributes.attackDamage);//enter the attribute speed without triggering any calculation
 			IAttributeInstance atinstHealth = player.getEntityAttribute(SharedMonsterAttributes.maxHealth);//enter the attribute speed without triggering any calculation
 			
-			System.out.println(atinstDamage.getBaseValue()+" base val");
 			AttributeModifier ss1 = new AttributeModifier(SpeedSkill1, "AdvancedUtilities:SpeedSkill1", atinst.getBaseValue()*2, 2);
 			AttributeModifier ss2 = new AttributeModifier(SpeedSkill2, "AdvancedUtilities:SpeedSkill2", atinst.getBaseValue()*3, 2);
 			AttributeModifier ss3 = new AttributeModifier(SpeedSkill3, "AdvancedUtilities:SpeedSkill3", atinst.getBaseValue()*4, 2);

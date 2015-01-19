@@ -9,6 +9,7 @@ import com.sudwood.advancedutilities.ExtendedPlayer;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.items.ItemQuickPotion;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -58,7 +59,7 @@ public class PacketJetpack implements IMessage
     		}
     		props.saveProxyData(player);
     		props.loadProxyData(player);
-            return null; // no response in this case
+    		return null;
         }
     }
 

@@ -79,6 +79,8 @@ public class GuiSteamBar extends Gui
     {      
       return;
     }
+    if(mc.currentScreen == null && !mc.gameSettings.showDebugInfo && mc.thePlayer != null)
+    {
     if(HudOptions.displayFluidHud){
     	ArrayList fluids = new ArrayList();
     	MovingObjectPosition mop = Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F);
@@ -113,7 +115,7 @@ public class GuiSteamBar extends Gui
 	    	}
     		for(int i = 0; i < fluids.size(); i++)
 			{
-				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((String)fluids.get(i), HudOptions.fluidX, HudOptions.fluidY+12*i, 0xEEEEEE);
+				Minecraft.getMinecraft().fontRenderer.drawString((String)fluids.get(i), HudOptions.fluidX, HudOptions.fluidY+12*i, 0xEEEEEE);
 				
 			}
     	}
@@ -145,10 +147,11 @@ public class GuiSteamBar extends Gui
 				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((String)fluids.get(i), HudOptions.fluidX, HudOptions.fluidY+12*i, 0xEEEEEE);
     			else
     			{
-    				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((String)fluids.get(i), HudOptions.fluidX, HudOptions.fluidY+12, 0xEEEEEE);
+    				Minecraft.getMinecraft().fontRenderer.drawString((String)fluids.get(i), HudOptions.fluidX, HudOptions.fluidY+12, 0xEEEEEE);
     			}
 			}
     	}
+    }
     }
     // Starting position for the buff bar - 2 pixels from the top left corner.
     int xPos = 2;
@@ -228,6 +231,7 @@ public class GuiSteamBar extends Gui
 	    	}
 	    	if(maxSteam > 0  && (isJackHammer || isJetpack || isPnGun))
 	    	{
+	    		 this.mc.getTextureManager().bindTexture(texture); 
 	    		int scaled = steam * 30/ maxSteam;
 	    		this.drawTexturedModalRect(width-(width-HudOptions.steamBarX), height-(height-(HudOptions.steamBarY+30-scaled)), 17, 30-scaled, 9, scaled+1);
 	    	}

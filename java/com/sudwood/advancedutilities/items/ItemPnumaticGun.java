@@ -106,7 +106,7 @@ public class ItemPnumaticGun extends ItemBow
 	     int damage = 10;
 	     if(EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, par1ItemStack) > 0)
 	     {
-	    	 damage+=EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, par1ItemStack);
+	    	 damage+=EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, par1ItemStack)*2;
 	     }
 	
 	     bullet.setDamage(damage);

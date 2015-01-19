@@ -67,25 +67,34 @@ public class AUFMLEventHandler
 	@SubscribeEvent
 	public void ClientEvent(TickEvent.ClientTickEvent event)
 	{
+		if(Minecraft.getMinecraft().thePlayer != null)
+		{
+			EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+			ExtendedPlayer props = ExtendedPlayer.get(player);
 		if(Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode()) && Minecraft.getMinecraft().thePlayer != null && !ExtendedPlayer.get(Minecraft.getMinecraft().thePlayer).isJetpack && ExtendedPlayer.get(Minecraft.getMinecraft().thePlayer).toggleJetpack && Minecraft.getMinecraft().currentScreen == null)
 		{
 			AdvancedUtilities.network.sendToServer(new PacketJetpack(true, 0));
 
 		}
-		if(Keyboard.isKeyDown(KeyHandler.run.getKeyCode()) && Minecraft.getMinecraft().thePlayer != null && !ExtendedPlayer.get(Minecraft.getMinecraft().thePlayer).isRunning  && Minecraft.getMinecraft().currentScreen == null)
+		if(Keyboard.isKeyDown(KeyHandler.run.getKeyCode())&& !props.isRunning  && Minecraft.getMinecraft().currentScreen == null)
 		{
 			AdvancedUtilities.network.sendToServer(new PacketRunningShoes(true));
 
 		}
-		if(Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(2) !=null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(2).getItem() == AdvancedUtilitiesItems.steamJetpack && (ExtendedPlayer.get(Minecraft.getMinecraft().thePlayer).isJetpack ||  !ExtendedPlayer.get(Minecraft.getMinecraft().thePlayer).toggleJetpack) && ( Minecraft.getMinecraft().currentScreen != null) || !Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode()) )
+		if(props.isJetpack && !Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode()))
 		{
 			AdvancedUtilities.network.sendToServer(new PacketJetpack(false, 0));
-
 		}
-		if(Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(0) !=null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(0).getItem() == AdvancedUtilitiesItems.runningShoes && ExtendedPlayer.get(Minecraft.getMinecraft().thePlayer).isRunning && ( Minecraft.getMinecraft().currentScreen != null) || !Keyboard.isKeyDown(KeyHandler.run.getKeyCode()) )
+		if( props.isJetpack  && !props.toggleJetpack)
+		{
+			AdvancedUtilities.network.sendToServer(new PacketJetpack(false, 0));
+		}
+		
+		if( player.getCurrentArmor(0) !=null && player.getCurrentArmor(0).getItem() == AdvancedUtilitiesItems.runningShoes && props.isRunning && ( Minecraft.getMinecraft().currentScreen != null) || !Keyboard.isKeyDown(KeyHandler.run.getKeyCode()) )
 		{
 			AdvancedUtilities.network.sendToServer(new PacketRunningShoes(false));
 
+		}
 		}
 	}
 	@SubscribeEvent

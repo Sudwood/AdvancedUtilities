@@ -58,9 +58,9 @@ public class PacketSkillMenu implements IMessage
         			System.out.println(props.skills[0]+" speed");
         		}
         	}
-    		props.saveProxyData(player);
+        	props.saveProxyData(player);
     		props.loadProxyData(player);
-            return null; // no response in this case
+    		return null;
         }
     }
 

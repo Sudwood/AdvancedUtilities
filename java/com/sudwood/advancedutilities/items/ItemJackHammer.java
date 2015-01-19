@@ -48,6 +48,7 @@ public class ItemJackHammer extends ItemPickaxe
 		}
 		par3List.add("Steam: "+tag.getInteger("tankAmount")+" / "+tag.getInteger("maxTankAmount")+" mB");
 		par3List.add("Blocks Remaining: "+ (tag.getInteger("tankAmount") / (this.steamUse)));
+		par3List.add("Attack: "+(8+2*EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack))/2+" Hearts");
 	}
 	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister icon)
@@ -159,7 +160,12 @@ public class ItemJackHammer extends ItemPickaxe
     	 if(tag.getInteger("tankAmount") >= 2*this.steamUse)
       	 {
 	      	 tag.setInteger("tankAmount", tag.getInteger("tankAmount")-2*this.steamUse);
-	      	par2EntityLivingBase.attackEntityFrom(DamageSource.generic, 8);
+	      	int damage = 8;
+		     if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack) > 0)
+		     {
+		    	 damage+=EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack)*2;
+		     }
+	      	par2EntityLivingBase.attackEntityFrom(DamageSource.generic, damage);
 	      	if(tag.getInteger("tankAmount") <= 0)
 	      	{
 	      		SoundHandler.playAtEntity(player.worldObj, player, "steam",1F, 1F);

@@ -6,10 +6,13 @@ import io.netty.channel.ChannelHandlerContext;
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.ExtendedPlayer;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -40,11 +43,15 @@ public class SyncPlayerPropsPacket implements IMessage
 	
 	public static class Handler implements IMessageHandler<SyncPlayerPropsPacket, IMessage> 
 	{
+		@SideOnly(Side.CLIENT)
         @Override
         public IMessage onMessage(SyncPlayerPropsPacket message, MessageContext ctx) 
         {
+        	if(FMLCommonHandler.instance().getSide() == Side.CLIENT)
+        	{
         	EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         	ExtendedPlayer.get(player).loadNBTData(message.data);
+        	}
             return null; // no response in this case
         }
     }

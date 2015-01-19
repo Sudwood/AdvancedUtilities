@@ -18,7 +18,6 @@ import net.minecraft.world.World;
 
 public class ItemBag extends Item
 {
-	@SideOnly(Side.CLIENT)
 	IIcon[] icons = new IIcon[16];
 	
 	private String[] names = {"WhiteBag", "OrangeBag", "MagentaBag", "LightBlueBag", "YellowBag", "LimeGreenBag", "PinkBag", "GreyBag", "LightGreyBag", "CyanBag", "PurpleBag", "BlueBag", "BrownBag", "GreenBag", "RedBag", "BlackBag"};

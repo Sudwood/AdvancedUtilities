@@ -69,7 +69,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class AdvancedUtilities
 {
     public static final String MODID = "advancedutilities";
-    public static final String VERSION = "A-0.477";
+    public static final String VERSION = "A-0.511";
     public static final String textureSize = "";
     public static SimpleNetworkWrapper network;
     OreGenerator oregen = new OreGenerator();
@@ -196,9 +196,9 @@ public class AdvancedUtilities
     	network.registerMessage(PacketForge.Handler.class, PacketForge.class, 1, Side.SERVER);
     	network.registerMessage(PacketJetpack.Handler.class, PacketJetpack.class, 2, Side.SERVER);
     	network.registerMessage(PacketRunningShoes.Handler.class, PacketRunningShoes.class, 3, Side.SERVER);
-    	network.registerMessage(PacketSteamCharger.Handler.class, PacketSteamCharger.class, 4, Side.CLIENT);
-    	network.registerMessage(SyncPlayerPropsPacket.Handler.class, SyncPlayerPropsPacket.class, 5, Side.CLIENT);
     	network.registerMessage(PacketSkillMenu.Handler.class, PacketSkillMenu.class, 6, Side.SERVER);
+    	//network.registerMessage(PacketSteamCharger.Handler.class, PacketSteamCharger.class, 4, Side.CLIENT);
+    	network.registerMessage(SyncPlayerPropsPacket.Handler.class, SyncPlayerPropsPacket.class, 5, Side.CLIENT);
     }
     
     public void registerTiles()

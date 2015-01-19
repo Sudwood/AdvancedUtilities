@@ -70,8 +70,10 @@ public class BlockOre extends Block
         	break;
         case 8:
         	this.blockIcon = icon.registerIcon("advancedutilities:bronzemachine");
+        	break;
         case 9:
         	this.blockIcon = icon.registerIcon("advancedutilities:nickel");
+        	break;
         case 10:
         	this.blockIcon = icon.registerIcon("advancedutilities:steelmachine");
         	break;
