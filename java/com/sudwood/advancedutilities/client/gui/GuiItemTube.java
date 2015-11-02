@@ -1,7 +1,5 @@
 package com.sudwood.advancedutilities.client.gui;
 
-import java.util.Arrays;
-import java.util.List;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -11,9 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.sudwood.advancedutilities.container.ContainerItemTube;
-import com.sudwood.advancedutilities.container.ContainerKiln;
 import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
-import com.sudwood.advancedutilities.tileentity.TileEntityKiln;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

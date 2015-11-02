@@ -1,5 +1,7 @@
 package com.sudwood.advancedutilities;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -12,8 +14,9 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
@@ -26,6 +29,8 @@ import com.sudwood.advancedutilities.packets.PacketJetpack;
 import com.sudwood.advancedutilities.packets.PacketRunningShoes;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -34,6 +39,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class AUFMLEventHandler 
 {
 	 public static final UUID MovementSpeed = UUID.fromString("36EFE1D0-C964-11E3-9C1A-0800200C9A66");
+	 public static final UUID SteamLegs = UUID.fromString("a6dfcd60-2db4-11e5-9184-feff819cdc9f");
 	Random random = new Random();
 	
 	@SideOnly(Side.CLIENT)
@@ -106,6 +112,7 @@ public class AUFMLEventHandler
 			ExtendedPlayer props = ExtendedPlayer.get(player);
 			IAttributeInstance atinst = player.getEntityAttribute(SharedMonsterAttributes.movementSpeed);//enter the attribute speed without triggering any calculation
 			AttributeModifier mod = new AttributeModifier(MovementSpeed, "AdvancedUtilities:MovementSpeed", atinst.getBaseValue()*8, 2);
+			AttributeModifier sleg = new AttributeModifier(SteamLegs, "AdvancedUtilities:SteamLegs", atinst.getBaseValue()*4, 1);
 			if(player.getCurrentArmor(2) != null && player.getCurrentArmor(2).getItem() == AdvancedUtilitiesItems.steamJetpack && props.isJetpack)
 			{
 				ItemStack jetpack = player.getCurrentArmor(2).copy();
@@ -142,7 +149,7 @@ public class AUFMLEventHandler
 				player.stepHeight = 1F;
 				if(random.nextInt(20) <= 0 && player.onGround)
 					player.addExhaustion(1);
-				return;
+				//return;
 			}
 			if(player.getCurrentArmor(0) !=null && player.getCurrentArmor(0).getItem() == AdvancedUtilitiesItems.runningShoes && !props.isRunning)
 			{
@@ -154,15 +161,57 @@ public class AUFMLEventHandler
 					player.fallDistance = player.getHealth()+2;
 				}
 				player.jumpMovementFactor = 0.02F;
-				return;
+				//return;
+			}
+			if(player.getCurrentArmor(1) !=null && player.getCurrentArmor(1).getItem() == AdvancedUtilitiesItems.steamLegs)
+			{
+				NBTTagCompound tag = player.getCurrentArmor(1).stackTagCompound;
+				if(tag == null)
+				{
+					tag = new NBTTagCompound();
+				}
+				if(tag.getInteger("tankAmount") > 0)
+				{
+					if(atinst.getModifier(SteamLegs) == null)
+					atinst.applyModifier(sleg);
+					player.jumpMovementFactor = 0.08F;
+					player.stepHeight = 1F;
+					if(player.motionX != 0 || player.motionZ != 0)
+					{
+						if(random.nextInt(5) <= 0 && player.onGround && !player.capabilities.isCreativeMode)
+						tag.setInteger("tankAmount", tag.getInteger("tankAmount")-1);
+					}
+				}
+				//return;
+			}
+			if((player.getCurrentArmor(0) == null && player.getCurrentArmor(1) == null))
+			{
+				if(atinst.getModifier(MovementSpeed) != null)
+					atinst.removeModifier(mod);
+				if(atinst.getModifier(SteamLegs) != null)
+					atinst.removeModifier(sleg);
+				player.jumpMovementFactor = 0.02F;
+				player.stepHeight = 0.5F;
+			}
+			if((player.getCurrentArmor(0) != null && player.getCurrentArmor(1) != null) && (player.getCurrentArmor(0).getItem() != AdvancedUtilitiesItems.runningShoes && player.getCurrentArmor(1).getItem() != AdvancedUtilitiesItems.steamLegs))
+			{
+				if(atinst.getModifier(MovementSpeed) != null)
+					atinst.removeModifier(mod);
+				if(atinst.getModifier(SteamLegs) != null)
+					atinst.removeModifier(sleg);
+				player.jumpMovementFactor = 0.02F;
+				player.stepHeight = 0.5F;
 			}
 			if(player.getCurrentArmor(0) == null)
 			{
 				if(atinst.getModifier(MovementSpeed) != null)
 				atinst.removeModifier(mod);
-				player.jumpMovementFactor = 0.02F;
-				player.stepHeight = 0.5F;
-				return;
+			}
+			
+			if(player.getCurrentArmor(1) == null)
+			{
+				if(atinst.getModifier(SteamLegs) != null)
+				atinst.removeModifier(sleg);
 			}
 		}
 	}

@@ -11,7 +11,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.client.models.ModelTube;
-import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
 
 public class RenderRestrictedItemTube extends TileEntitySpecialRenderer

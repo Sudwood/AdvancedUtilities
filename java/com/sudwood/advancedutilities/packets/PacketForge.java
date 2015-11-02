@@ -1,14 +1,9 @@
 package com.sudwood.advancedutilities.packets;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-import com.sudwood.advancedutilities.items.ItemQuickPotion;
 import com.sudwood.advancedutilities.tileentity.TileEntityArmorForge;
 import com.sudwood.advancedutilities.tileentity.TileEntityToolForge;
 

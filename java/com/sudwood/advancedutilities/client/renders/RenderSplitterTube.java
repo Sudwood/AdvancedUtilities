@@ -5,14 +5,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.client.models.ModelSplitterTube;
-import com.sudwood.advancedutilities.client.models.ModelTube;
-import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySplitterFluidTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySplitterItemTube;
 

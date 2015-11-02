@@ -1,12 +1,8 @@
 package com.sudwood.advancedutilities.tileentity;
 
-import com.sudwood.advancedutilities.TransferHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -234,10 +230,10 @@ public class TileEntitySplitterFluidTube extends TileEntityFluidTube implements 
 	    	int sideAttached = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) ^ 1;
 		    if(this.tank.getFluidAmount()>= 1000)
 		    	{
-		    		lastDir[worldObj.getBlockMetadata(xCoord, yCoord, zCoord)^1] = 0;
+		    		lastDir[worldObj.getBlockMetadata(xCoord, yCoord, zCoord)] = 0;
 		    		for(int ix = 0; ix < 6; ix++)
 		    		{
-		    			if(lastDir[0] == 0 && lastDir[1] == 0 && lastDir[0] == 0 && lastDir[2] == 0 && lastDir[3] == 0 && lastDir[4] == 0 && lastDir[0] == 0)
+		    			if(lastDir[0] == 0 && lastDir[1] == 0 &&  lastDir[2] == 0 && lastDir[3] == 0 && lastDir[4] == 0 && lastDir[5] == 0)
 		    			{
 		    				
 		    				lastDir[0] = 1;
@@ -246,7 +242,7 @@ public class TileEntitySplitterFluidTube extends TileEntityFluidTube implements 
 		    				lastDir[3] = 1;
 		    				lastDir[4] = 1;
 		    				lastDir[5] = 1;
-		    				lastDir[worldObj.getBlockMetadata(xCoord, yCoord, zCoord)^1] = 0;
+		    				lastDir[worldObj.getBlockMetadata(xCoord, yCoord, zCoord)] = 0;
 		    			}
 		    			ForgeDirection dir = ForgeDirection.getOrientation(ix);
 		    			if(lastDir[ix] == 0 || worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) == null || !(worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) instanceof IFluidHandler))
@@ -266,10 +262,14 @@ public class TileEntitySplitterFluidTube extends TileEntityFluidTube implements 
 			    						if(tile.getTankInfo(dir)[0].fluid.amount+this.transferAmount <= tile.getTankInfo(dir)[0].capacity)
 			    						{
 			    							tile.fill(dir, this.drain(dir.getOpposite(), new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+			    							lastDir[ix] = 0;
 			    						}
 			    					}
 			    					else
+			    					{
+			    						lastDir[ix] = 0;
 			    						tile.fill(dir, this.drain(dir.getOpposite(), new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+			    					}
 			    				}
 			    			}
 			    			catch(Exception e)

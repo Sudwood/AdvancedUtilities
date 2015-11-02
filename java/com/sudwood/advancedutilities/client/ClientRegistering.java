@@ -13,6 +13,9 @@ import com.sudwood.advancedutilities.client.models.ModelJackHammer;
 import com.sudwood.advancedutilities.client.models.ModelJetpack;
 import com.sudwood.advancedutilities.client.models.ModelJetpackArmor;
 import com.sudwood.advancedutilities.client.models.ModelKilnHeld;
+import com.sudwood.advancedutilities.client.models.ModelPowerLegs;
+import com.sudwood.advancedutilities.client.models.ModelPowerLegsArmor;
+import com.sudwood.advancedutilities.client.models.ModelQuarryFrame;
 import com.sudwood.advancedutilities.client.models.ModelRebreather;
 import com.sudwood.advancedutilities.client.models.ModelRebreatherArmor;
 import com.sudwood.advancedutilities.client.models.ModelRunningShoes;
@@ -23,6 +26,7 @@ import com.sudwood.advancedutilities.client.models.ModelSteamCharger;
 import com.sudwood.advancedutilities.client.models.ModelSteamCompressor;
 import com.sudwood.advancedutilities.client.models.ModelSteamCrusher;
 import com.sudwood.advancedutilities.client.models.ModelSteamFurnace;
+import com.sudwood.advancedutilities.client.models.ModelSteamQuarry;
 import com.sudwood.advancedutilities.client.models.ModelSteamSmeltry;
 import com.sudwood.advancedutilities.client.models.ModelTank;
 import com.sudwood.advancedutilities.client.models.ModelTomato;
@@ -38,6 +42,7 @@ import com.sudwood.advancedutilities.client.renders.RenderItemTube;
 import com.sudwood.advancedutilities.client.renders.RenderJackHammer;
 import com.sudwood.advancedutilities.client.renders.RenderJetpackItem;
 import com.sudwood.advancedutilities.client.renders.RenderKiln;
+import com.sudwood.advancedutilities.client.renders.RenderQuarryFrame;
 import com.sudwood.advancedutilities.client.renders.RenderRebreather;
 import com.sudwood.advancedutilities.client.renders.RenderRestrictedItemTube;
 import com.sudwood.advancedutilities.client.renders.RenderRunningShoesItem;
@@ -48,6 +53,7 @@ import com.sudwood.advancedutilities.client.renders.RenderSteamCharger;
 import com.sudwood.advancedutilities.client.renders.RenderSteamCompressor;
 import com.sudwood.advancedutilities.client.renders.RenderSteamCrusher;
 import com.sudwood.advancedutilities.client.renders.RenderSteamFurnace;
+import com.sudwood.advancedutilities.client.renders.RenderSteamQuarry;
 import com.sudwood.advancedutilities.client.renders.RenderSteamSmeltry;
 import com.sudwood.advancedutilities.client.renders.RenderTank;
 import com.sudwood.advancedutilities.client.renders.RenderTileEntityBase;
@@ -73,6 +79,7 @@ import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityHPBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityKiln;
+import com.sudwood.advancedutilities.tileentity.TileEntityQuarryFrame;
 import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySplitterFluidTube;
@@ -81,6 +88,7 @@ import com.sudwood.advancedutilities.tileentity.TileEntitySteamCharger;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCompressor;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamFurnace;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteamQuarry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamSmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntityTank;
 import com.sudwood.advancedutilities.tileentity.TileEntityTomatoPlant;
@@ -106,10 +114,13 @@ public class ClientRegistering
 	public static int tankId;
 	public static int tomatoPlantId;
 	public static int splitterTubeId;
+	public static int steamQuarryId;
+	public static int quarryFrameId;
 	
 	public static final ModelJetpackArmor jetpackArmor = new ModelJetpackArmor(1.0F);
 	public static final ModelRebreatherArmor rebreatherArmor = new ModelRebreatherArmor(1.0F);
 	public static final ModelRunningShoesArmor shoesArmor = new ModelRunningShoesArmor(1.3F);
+	public static final ModelPowerLegsArmor legsArmor = new ModelPowerLegsArmor(1.0F);
 	
 	public static void registerRendering()
 	{
@@ -127,6 +138,8 @@ public class ClientRegistering
 		tankId = RenderingRegistry.getNextAvailableRenderId();
 		tomatoPlantId = RenderingRegistry.getNextAvailableRenderId();
 		splitterTubeId = RenderingRegistry.getNextAvailableRenderId();
+		steamQuarryId = RenderingRegistry.getNextAvailableRenderId();
+		quarryFrameId = RenderingRegistry.getNextAvailableRenderId();
 		keyhandle = new KeyHandler();
 		
 		RenderingRegistry.registerEntityRenderingHandler(EntityBullet.class, new RenderBullet());
@@ -194,11 +207,18 @@ public class ClientRegistering
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTomatoPlant.class, new RenderTomatoPlant());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.tomatoPlant), new RenderTileEntityBase(new ModelTank(), new ResourceLocation("advancedutilities","textures/blocks/tomatoplant.png")));
 		
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySteamQuarry.class, new RenderSteamQuarry());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.steamQuarry), new RenderTileEntityBase(new ModelSteamQuarry(), new ResourceLocation("advancedutilities","textures/blocks/steamquarry.png")));
+		
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityQuarryFrame.class, new RenderQuarryFrame());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.quarryFrame), new RenderTileEntityBase(new ModelQuarryFrame(), new ResourceLocation("advancedutilities","textures/blocks/quarryframe.png")));
+		
 		MinecraftForgeClient.registerItemRenderer(AdvancedUtilitiesItems.pnumaticGun, new RenderItem(new ModelGun(), new ResourceLocation("advancedutilities","textures/items/gun.png")));
 		MinecraftForgeClient.registerItemRenderer(AdvancedUtilitiesItems.jackHammer, new RenderJackHammer(new ModelJackHammer(), new ResourceLocation("advancedutilities","textures/items/jackhammer.png")));
 		MinecraftForgeClient.registerItemRenderer(AdvancedUtilitiesItems.steamJetpack, new RenderJetpackItem(new ModelJetpack(), new ResourceLocation("advancedutilities","textures/items/jetpack.png")));
 		MinecraftForgeClient.registerItemRenderer(AdvancedUtilitiesItems.rebreather, new RenderRebreather(new ModelRebreather(), new ResourceLocation("advancedutilities","textures/items/rebreather.png")));
 		MinecraftForgeClient.registerItemRenderer(AdvancedUtilitiesItems.runningShoes, new RenderRunningShoesItem(new ModelRunningShoes(), new ResourceLocation("advancedutilities","textures/items/runningshoes.png")));
+		MinecraftForgeClient.registerItemRenderer(AdvancedUtilitiesItems.steamLegs, new RenderRunningShoesItem(new ModelPowerLegs(), new ResourceLocation("advancedutilities","textures/items/powerlegs.png")));
 		MinecraftForgeClient.registerItemRenderer(AdvancedUtilitiesItems.tomato, new RenderTomato(new ModelTomato(), new ResourceLocation("advancedutilities","textures/items/tomato.png")));
 	}
 }

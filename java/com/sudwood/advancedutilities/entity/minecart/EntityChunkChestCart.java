@@ -18,7 +18,6 @@ import net.minecraftforge.common.ForgeChunkManager.Type;
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.AdvancedUtilitiesChunkLoadCallback;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 
 public class EntityChunkChestCart extends EntityMinecartChest implements IChunkCart
 {

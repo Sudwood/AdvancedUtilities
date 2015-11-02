@@ -350,6 +350,16 @@ public class TileEntityArmorForge extends TileEntity implements IInventory
     		}
     		return result;
     	}
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.steamLegs, 1)))
+    	{
+    		ItemStack result = top.copy();
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.itemCasing, 1, 2)))
+    		{
+    			NBTTagCompound tag = result.getTagCompound();
+    			tag.setInteger("maxTankAmount", tag.getInteger("maxTankAmount")+16*FluidContainerRegistry.BUCKET_VOLUME);
+    		}
+    		return result;
+    	}
     	if(rod.getItem() == Items.enchanted_book)
     	{
     		ItemStack result = top.copy();

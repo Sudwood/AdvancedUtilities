@@ -2,30 +2,24 @@ package com.sudwood.advancedutilities.tileentity;
 
 import java.util.Map;
 
+import com.sudwood.advancedutilities.CrushRecipes;
+import com.sudwood.advancedutilities.HelperLibrary;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.items.ItemBETool;
+import com.sudwood.advancedutilities.items.ItemIngot;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockFurnace;
-import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -432,7 +426,7 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     	}
     	if(top.getItem() == AdvancedUtilitiesItems.toolBE && (top.getItemDamage() > 11|| top.getItemDamage() == 24 || top.getItemDamage() == 25 || top.getItemDamage() == 26))
     	{
-    		if(rod.getItem() == AdvancedUtilitiesItems.ingotBronze)
+    		if(HelperLibrary.isOreDicItem(rod, CrushRecipes.INGOT_BRONZE))
     		{
     			ItemStack result = top.copy();
     			NBTTagCompound tag = result.getTagCompound();
@@ -604,7 +598,23 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     		EnchantmentHelper.setEnchantments(map, result);
     		return result;
     	}
-    	
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1,ItemIngot.BRONZE)) && top.stackSize >= 6)
+    	{
+    		if(rod.isItemEqual(new ItemStack(Items.stick, 1)))
+    		{
+    			ItemStack result = new ItemStack(Blocks.rail, 48);
+    			return result;
+    		}
+    	}
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1,ItemIngot.BRASS)) && top.stackSize >= 6)
+    	{
+    		if(rod.isItemEqual(new ItemStack(Items.stick, 1)))
+    		{
+    			ItemStack result = new ItemStack(Blocks.golden_rail, 32);
+    			return result;
+    		}
+    	}
+    		
     	
     	return null;
     }
@@ -617,15 +627,20 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     {
         if (this.canSmelt())
         {
-            ItemStack itemstack = this.getToolResult(inventory[0], inventory[1]);
+            ItemStack result = this.getToolResult(inventory[0], inventory[1]);
 
             if (this.inventory[2] == null)
             {
-                this.inventory[2] = itemstack.copy();
+                this.inventory[2] = result.copy();
             }
-            
-            ItemBETool.checkCreated(inventory[2]);
+            if(result.getItem() instanceof ItemBETool)
+            	ItemBETool.checkCreated(inventory[2]);
 
+            
+            if(result.getItem() != Item.getItemFromBlock(Blocks.rail) && result.getItem() != Item.getItemFromBlock(Blocks.golden_rail))
+            {
+            	
+            
             --this.inventory[0].stackSize;
 
             if (this.inventory[0].stackSize <= 0)
@@ -639,6 +654,27 @@ public class TileEntityToolForge extends TileEntity implements IInventory
             {
                 this.inventory[1] = null;
             }
+            }
+            else
+            {
+            	 if(result.getItem() == Item.getItemFromBlock(Blocks.rail) || result.getItem() == Item.getItemFromBlock(Blocks.golden_rail))
+            	 {
+            		 this.inventory[0].stackSize-=6;
+
+                     if (this.inventory[0].stackSize <= 0)
+                     {
+                         this.inventory[0] = null;
+                     }
+
+                 	--this.inventory[1].stackSize;
+
+                     if (this.inventory[1].stackSize <= 0)
+                     {
+                         this.inventory[1] = null;
+                     }
+            	 }
+            }
+            
             
         }
     }

@@ -1,14 +1,9 @@
 package com.sudwood.advancedutilities.packets;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 
-import com.sudwood.advancedutilities.ExtendedPlayer;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-import com.sudwood.advancedutilities.items.ItemQuickPotion;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCharger;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;

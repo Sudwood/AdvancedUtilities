@@ -1,8 +1,6 @@
 package com.sudwood.advancedutilities.slot;
 
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemFood;

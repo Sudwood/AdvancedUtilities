@@ -1,12 +1,5 @@
 package com.sudwood.advancedutilities;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.client.ClientRegistering;
 import com.sudwood.advancedutilities.client.gui.GuiSteamBar;
@@ -27,16 +20,17 @@ import com.sudwood.advancedutilities.packets.PacketForge;
 import com.sudwood.advancedutilities.packets.PacketJetpack;
 import com.sudwood.advancedutilities.packets.PacketRunningShoes;
 import com.sudwood.advancedutilities.packets.PacketSkillMenu;
-import com.sudwood.advancedutilities.packets.PacketSteamCharger;
 import com.sudwood.advancedutilities.packets.SyncPlayerPropsPacket;
 import com.sudwood.advancedutilities.tileentity.TileEntityArmorForge;
 import com.sudwood.advancedutilities.tileentity.TileEntityBellows;
 import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityChunkLoader;
+import com.sudwood.advancedutilities.tileentity.TileEntityCompressor;
 import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityHPBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityKiln;
+import com.sudwood.advancedutilities.tileentity.TileEntityQuarryFrame;
 import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySplitterFluidTube;
@@ -45,11 +39,14 @@ import com.sudwood.advancedutilities.tileentity.TileEntitySteamCharger;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCompressor;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamFurnace;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteamQuarry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamSmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteelController;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteelOven;
+import com.sudwood.advancedutilities.tileentity.TileEntityStoneMill;
 import com.sudwood.advancedutilities.tileentity.TileEntityTank;
 import com.sudwood.advancedutilities.tileentity.TileEntityToolForge;
+import com.sudwood.advancedutilities.tileentity.TileEntityWoodenCrate;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -64,6 +61,12 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = AdvancedUtilities.MODID, version = AdvancedUtilities.VERSION)
 public class AdvancedUtilities
@@ -91,6 +94,10 @@ public class AdvancedUtilities
     public static final int skillsGui = 14;
     public static final int rebreatherGui = 15;
     public static final int steelOvenGui = 16;
+    public static final int steamQuaryGui = 17;
+    public static final int stoneMillGui = 18;
+    public static final int compressorGui = 19;
+    public static final int woodenCrateGui = 20;
     
     public static String steamName = "Steam";
     
@@ -153,6 +160,7 @@ public class AdvancedUtilities
     	AdvancedUtilitiesItems.init();
     	AdvancedUtilitiesBlocks.addRecipies();
     	AdvancedUtilitiesItems.addRecipies();
+    	CrushRecipes.loadRecipes();
     	this.registerEntities();
     	this.registerTiles();
     	ConfigHandler.init(event.getSuggestedConfigurationFile());
@@ -224,6 +232,11 @@ public class AdvancedUtilities
     	GameRegistry.registerTileEntity(TileEntitySteelOven.class, "AdvancedUtilities:TileEntitySteelOven");
     	GameRegistry.registerTileEntity(TileEntitySteelController.class, "AdvancedUtilities:TileEntitySteelController");
     	GameRegistry.registerTileEntity(TileEntityHPBoiler.class, "AdvancedUtilities:TileEntityHPBoiler");
+    	GameRegistry.registerTileEntity(TileEntitySteamQuarry.class, "AdvancedUtilities:TileEntitySteamQuarry");
+    	GameRegistry.registerTileEntity(TileEntityQuarryFrame.class, "AdvancedUtilities:TileEntityQuarryFrame");
+    	GameRegistry.registerTileEntity(TileEntityStoneMill.class, "AdvancedUtilities:TileEntityStoneMill");
+    	GameRegistry.registerTileEntity(TileEntityCompressor.class, "AdvancedUtilities:TileEntityCompressor");
+    	GameRegistry.registerTileEntity(TileEntityWoodenCrate.class, "AdvancedUtilities:TileEntityWoodenCrate");
     }
     
     public void registerEntities()

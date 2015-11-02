@@ -1,27 +1,13 @@
 package com.sudwood.advancedutilities.tileentity;
-
-import java.util.List;
-
-
-
-
-
-
-
 import com.sudwood.advancedutilities.TransferHelper;
 
-import net.minecraft.command.IEntitySelector;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
 
 public class TileEntityItemTube extends TileEntity implements IInventory
 {

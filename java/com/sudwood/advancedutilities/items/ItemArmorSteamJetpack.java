@@ -5,7 +5,6 @@ import java.util.List;
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.client.ClientRegistering;
 import com.sudwood.advancedutilities.client.SoundHandler;
-import com.sudwood.advancedutilities.container.InventoryItem;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;

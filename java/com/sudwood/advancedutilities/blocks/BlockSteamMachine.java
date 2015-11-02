@@ -13,10 +13,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
@@ -293,7 +291,7 @@ public class BlockSteamMachine extends BlockContainer
 				player.addChatMessage(new ChatComponentText(tile.getTankAmount()+" mB Steam"));
 				return true;
 			}
-			if(tile.canAddItem() && (player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.pnumaticGun || player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.steamJetpack || player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.jackHammer))
+			if(tile.canAddItem() && (player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.pnumaticGun || player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.steamJetpack || player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.jackHammer || player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.steamLegs))
 			{
 				tile.addItem(player.getCurrentEquippedItem());
 				player.setCurrentItemOrArmor(0, null);

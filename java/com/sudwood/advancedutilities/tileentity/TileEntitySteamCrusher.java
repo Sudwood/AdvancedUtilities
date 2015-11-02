@@ -17,7 +17,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.CrushRecipes;
 import com.sudwood.advancedutilities.TransferHelper;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
@@ -134,7 +133,7 @@ public class TileEntitySteamCrusher extends TileEntity implements ISidedInventor
 		    	}
 		    	else if(inventory[1].stackSize + output.stackSize < 64)
 		    	{
-		    		inventory[1].stackSize+=output.stackSize;
+		    		this.setInventorySlotContents(1, new ItemStack(output.getItem(), output.stackSize+inventory[1].stackSize, output.getItemDamage()));
 		    		inventory[0].stackSize--;
 		    		if(inventory[0].stackSize <= 0)
 		    			inventory[0] = null;
@@ -352,16 +351,17 @@ public class TileEntitySteamCrusher extends TileEntity implements ISidedInventor
 	     */
 	    public int[] getAccessibleSlotsFromSide(int par1)
 	    {
-	        return par1 == 0 ? slotsBottom : (par1 == 1 ? slotsTop : slotsSides);
+	        return new int[]{0,1};
 	    }
 
 	    /**
 	     * Returns true if automation can insert the given item in the given slot from the given side. Args: Slot, item,
 	     * side
 	     */
+	    @Override
 	    public boolean canInsertItem(int par1, ItemStack par2ItemStack, int par3)
 	    {
-	        return par3 == 1 && par1 == 0;
+	        return par1 == 0;
 	    }
 	    
 	    @Override
@@ -369,8 +369,9 @@ public class TileEntitySteamCrusher extends TileEntity implements ISidedInventor
 			// TODO Auto-generated method stub
 			if(var1 == 1)
 				return false;
-			else
+			else if(CrushRecipes.getCrushResult(var2)!= null && var1==0)
 				return true;
+			return false;
 		}
 
 	    /**
@@ -379,7 +380,7 @@ public class TileEntitySteamCrusher extends TileEntity implements ISidedInventor
 	     */
 	    public boolean canExtractItem(int par1, ItemStack par2ItemStack, int par3)
 	    {
-	        return par1!= 0;
+	        return par1==1;
 	    }
 
 	    @Override

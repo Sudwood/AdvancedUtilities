@@ -1,5 +1,7 @@
 package com.sudwood.advancedutilities;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -10,6 +12,8 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -19,10 +23,9 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
+import net.minecraftforge.event.world.WorldEvent;
 
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.client.SoundHandler;
-import com.sudwood.advancedutilities.entity.minecart.EntityChunkLoadingCart;
 import com.sudwood.advancedutilities.entity.minecart.IChunkCart;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 
@@ -56,10 +59,10 @@ public class AUEventHandler
 	public void serverChat(ServerChatEvent event)
 	    {
 	        String chatMessage = event.message;
-	        if(chatMessage.startsWith("test") && chatMessage.endsWith("sound"))
+	        /*if(chatMessage.startsWith("test") && chatMessage.endsWith("sound"))
 	        {
 	        	SoundHandler.playAtEntity(event.player.worldObj, event.player, "gunshot", 1.4F, 0.6F);
-	        }
+	        }*/
 	    }
 	
 	@SubscribeEvent
@@ -152,6 +155,17 @@ public class AUEventHandler
 			if(player.getCurrentArmor(0) != null && player.getCurrentArmor(0).getItem() == AdvancedUtilitiesItems.runningShoes)
 			{
 				player.motionY+=0.05D;
+			}
+			if(player.getCurrentArmor(1) != null && player.getCurrentArmor(1).getItem() == AdvancedUtilitiesItems.steamLegs)
+			{
+				if(player.inventory.armorItemInSlot(1).stackTagCompound != null)
+				{
+					NBTTagCompound tag = player.inventory.armorItemInSlot(1).stackTagCompound;
+					if(tag.getInteger("tankAmount") > 0)
+					{
+						player.motionY+=0.05D;
+					}
+				}
 			}
 		}
 	}
@@ -293,6 +307,44 @@ public class AUEventHandler
 				}
 				
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onWorldLoad(WorldEvent.Load event)
+	{
+		if(event.world.getWorldInfo().getAdditionalProperty("AdvancedUtilities:WorldLoaded") != null)
+		{
+			Map<String,NBTBase> additionalProperties = new HashMap<String,NBTBase>();
+			NBTTagByte tag = new NBTTagByte((byte) 1);
+			additionalProperties.put("AdvancedUtilities:WorldLoaded", tag);
+			event.world.getWorldInfo().setAdditionalProperties(additionalProperties);
+		}
+		if(event.world.getWorldInfo().getAdditionalProperty("AdvancedUtilities:WorldLoaded") == null)
+		{
+			Map<String,NBTBase> additionalProperties = new HashMap<String,NBTBase>();
+			NBTTagByte tag = new NBTTagByte((byte) 1);
+			additionalProperties.put("AdvancedUtilities:WorldLoaded", tag);
+			event.world.getWorldInfo().setAdditionalProperties(additionalProperties);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onWorldClose(WorldEvent.Unload event)
+	{
+		if(event.world.getWorldInfo().getAdditionalProperty("AdvancedUtilities:WorldLoaded") != null)
+		{
+			Map<String,NBTBase> additionalProperties = new HashMap<String,NBTBase>();
+			NBTTagByte tag = new NBTTagByte((byte) 0);
+			additionalProperties.put("AdvancedUtilities:WorldLoaded", tag);
+			event.world.getWorldInfo().setAdditionalProperties(additionalProperties);
+		}
+		if(event.world.getWorldInfo().getAdditionalProperty("AdvancedUtilities:WorldLoaded") == null)
+		{
+			Map<String,NBTBase> additionalProperties = new HashMap<String,NBTBase>();
+			NBTTagByte tag = new NBTTagByte((byte) 0);
+			additionalProperties.put("AdvancedUtilities:WorldLoaded", tag);
+			event.world.getWorldInfo().setAdditionalProperties(additionalProperties);
 		}
 	}
 	

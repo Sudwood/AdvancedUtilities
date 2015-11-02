@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.entity.minecart.EntityChunkLoadingCart;
-import com.sudwood.advancedutilities.entity.minecart.EntitySpeedyChestcart;
 import com.sudwood.advancedutilities.entity.minecart.EntitySpeedyChunkLoadCart;
 
 import cpw.mods.fml.relauncher.Side;

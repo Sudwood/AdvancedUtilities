@@ -6,7 +6,6 @@ import com.sudwood.advancedutilities.AdvancedUtilities;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -17,6 +16,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemPlate extends Item
 {
 	private IIcon[] icons = new IIcon[5];
+	public static final int IRONPLATE = 0;
+	public static final int BRONZEPLATE = 1;
+	public static final int BRASSPLATE = 2;
+	public static final int STONEPLATE = 3;
+	public static final int STEELPLATE = 4;
+	
 	private String[] names = {"IronPlate", "BronzePlate", "BrassPlate", "StonePlate", "SteelPlate"};
 	
 	public ItemPlate()

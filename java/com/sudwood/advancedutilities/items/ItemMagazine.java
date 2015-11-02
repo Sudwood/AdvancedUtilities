@@ -3,9 +3,7 @@ package com.sudwood.advancedutilities.items;
 import java.util.List;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
-import com.sudwood.advancedutilities.client.SoundHandler;
 import com.sudwood.advancedutilities.container.InventoryItem;
-import com.sudwood.advancedutilities.entity.EntityBullet;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

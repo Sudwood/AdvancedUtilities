@@ -2,7 +2,6 @@ package com.sudwood.advancedutilities.items.minecart;
 
 import java.util.List;
 
-import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.entity.minecart.EntityChunkLoadingCart;
 
 import cpw.mods.fml.relauncher.Side;

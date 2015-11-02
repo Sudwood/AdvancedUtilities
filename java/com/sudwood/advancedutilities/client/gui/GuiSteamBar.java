@@ -84,6 +84,9 @@ public class GuiSteamBar extends Gui
     if(HudOptions.displayFluidHud){
     	ArrayList fluids = new ArrayList();
     	MovingObjectPosition mop = Minecraft.getMinecraft().renderViewEntity.rayTrace(200, 1.0F);
+    	/*double motx =  Math.round(Minecraft.getMinecraft().thePlayer.motionX*100);
+    	double motz =  Math.round(Minecraft.getMinecraft().thePlayer.motionZ*100);
+    	fluids.add(motx +" X Motion, : "+motz+" Motion Z.");*/
     	if(mop != null)
     	{
 	    	int blockHitSide = mop.sideHit;
@@ -98,7 +101,7 @@ public class GuiSteamBar extends Gui
 	    			{
 	    				if(info[i].fluid != null)
 	    				{
-	    					fluids.add(info[i].fluid.getFluid().getName()+": "+info[i].fluid.amount+" / "+info[i].capacity+" mB");
+	    					//fluids.add(info[i].fluid.getFluid().getName()+": "+info[i].fluid.amount+" / "+info[i].capacity+" mB");
 	    				}
 	    			}
 	    			
@@ -115,7 +118,7 @@ public class GuiSteamBar extends Gui
 	    	}
     		for(int i = 0; i < fluids.size(); i++)
 			{
-				Minecraft.getMinecraft().fontRenderer.drawString((String)fluids.get(i), HudOptions.fluidX, HudOptions.fluidY+12*i, 0xEEEEEE);
+				Minecraft.getMinecraft().fontRenderer.drawString((String)fluids.get(i), HudOptions.fluidX, HudOptions.fluidY+12*(i), 0xEEEEEE);
 				
 			}
     	}
@@ -143,7 +146,7 @@ public class GuiSteamBar extends Gui
 	    	}
     		for(int i = 0; i < fluids.size(); i++)
 			{
-    			if(lower == false)
+    			if(!lower)
 				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((String)fluids.get(i), HudOptions.fluidX, HudOptions.fluidY+12*i, 0xEEEEEE);
     			else
     			{
@@ -170,13 +173,14 @@ public class GuiSteamBar extends Gui
     	boolean isJackHammer = false;
     	boolean isRebreather = false;
     	boolean isPnGun = false;
+    	boolean isLegs = false;
     	int jackSteam = 0;
     	int jetSteam = 0;
     	int numBullets = 0;
     	int maxBullets = 0;
     	int food = 0;
     	int numrender = 0;
-    	if(HudOptions.displaySteamHud && ((mc.thePlayer.getCurrentEquippedItem() != null&& mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.pnumaticGun) || (mc.thePlayer.getCurrentEquippedItem() != null&& mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.jackHammer) || (mc.thePlayer.getCurrentArmor(2)!=null && mc.thePlayer.getCurrentArmor(2).getItem() == AdvancedUtilitiesItems.steamJetpack) || (mc.thePlayer.getCurrentArmor(3)!=null && mc.thePlayer.getCurrentArmor(3).getItem() == AdvancedUtilitiesItems.rebreather)))
+    	if(HudOptions.displaySteamHud && ((mc.thePlayer.getCurrentEquippedItem() != null&& mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.pnumaticGun) || (mc.thePlayer.getCurrentEquippedItem() != null&& mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.jackHammer) || (mc.thePlayer.getCurrentArmor(2)!=null && mc.thePlayer.getCurrentArmor(2).getItem() == AdvancedUtilitiesItems.steamJetpack) || (mc.thePlayer.getCurrentArmor(3)!=null && mc.thePlayer.getCurrentArmor(3).getItem() == AdvancedUtilitiesItems.rebreather)|| (mc.thePlayer.getCurrentArmor(1)!=null && mc.thePlayer.getCurrentArmor(1).getItem() == AdvancedUtilitiesItems.steamLegs)))
     	{
     		
 	    	if(mc.thePlayer.getCurrentEquippedItem()!=null && mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.pnumaticGun)
@@ -218,18 +222,28 @@ public class GuiSteamBar extends Gui
 	    		}
 	    		isJetpack = true;
 	    	}
+	    	if(mc.thePlayer.getCurrentArmor(1)!=null && mc.thePlayer.getCurrentArmor(1).getItem() == AdvancedUtilitiesItems.steamLegs)
+	    	{
+	    		if(mc.thePlayer.getCurrentArmor(1).getTagCompound()!=null)
+	    		{
+		    		NBTTagCompound tag = mc.thePlayer.getCurrentArmor(1).getTagCompound();
+		    		steam += tag.getInteger("tankAmount");
+		    		maxSteam += tag.getInteger("maxTankAmount");
+	    		}
+	    		isLegs = true;
+	    	}
 	    	if(mc.thePlayer.getCurrentArmor(3)!=null && mc.thePlayer.getCurrentArmor(3).getItem() == AdvancedUtilitiesItems.rebreather)
 	    	{
 	    		RebreatherInv inv = new RebreatherInv(mc.thePlayer.getCurrentArmor(3));
 	    		food = inv.getFoodTotal();
 	    		isRebreather = true;
 	    	}
-	    	if(isJackHammer || isJetpack || isPnGun)
+	    	if(isJackHammer || isJetpack || isPnGun || isLegs)
 	    	{
 	    		this.drawTexturedModalRect(width-(width-HudOptions.steamBarX), height-(height-HudOptions.steamBarY), 1, 1, 9, 30);
 	    		this.drawString(mc.fontRenderer, "Steam: "+steam+" / "+maxSteam+" mB", width-(width-HudOptions.steamStringX), height-(height-HudOptions.steamStringY), 0xFFFFFF);
 	    	}
-	    	if(maxSteam > 0  && (isJackHammer || isJetpack || isPnGun))
+	    	if(maxSteam > 0  && (isJackHammer || isJetpack || isPnGun || isLegs))
 	    	{
 	    		 this.mc.getTextureManager().bindTexture(texture); 
 	    		int scaled = steam * 30/ maxSteam;

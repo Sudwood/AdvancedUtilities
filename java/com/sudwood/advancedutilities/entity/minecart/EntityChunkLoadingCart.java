@@ -3,12 +3,9 @@ package com.sudwood.advancedutilities.entity.minecart;
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.AdvancedUtilitiesChunkLoadCallback;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

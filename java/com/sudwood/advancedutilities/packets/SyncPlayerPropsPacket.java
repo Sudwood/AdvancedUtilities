@@ -1,9 +1,7 @@
 package com.sudwood.advancedutilities.packets;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
-import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.ExtendedPlayer;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -15,7 +13,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class SyncPlayerPropsPacket implements IMessage

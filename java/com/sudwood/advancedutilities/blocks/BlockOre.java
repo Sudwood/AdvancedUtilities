@@ -1,33 +1,48 @@
 package com.sudwood.advancedutilities.blocks;
 
+import java.util.List;
 import java.util.Random;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 
 public class BlockOre extends Block
 {
-	protected int type;
-	protected BlockOre(Material mat, int type) 
+	private IIcon[] icons = new IIcon[9];
+	
+	public static int COPPER = 0;
+	public static int TIN = 1;
+	public static int ZINC = 2;
+	public static int NICKEL = 8;
+	public static int SILVER = 3;
+	public static int LEAD = 4;
+	public static int BAUXITE = 5;
+	public static int TUNGSTEN = 6;
+	public static int PLATINUM = 7;
+	protected BlockOre(Material mat) 
 	{
 		super(mat);
-		this.type = type;
-		if(type == 0 || type == 1 || type == 2 || type == 9)
-			this.setHarvestLevel("pickaxe", 1);
-		if(type == 3 || type == 4 || type == 5)
-			this.setHarvestLevel("pickaxe", 2);
-		if(type == 6 || type == 7)
-			this.setHarvestLevel("pickaxe", 3);
-		// TODO Auto-generated constructor stub
+		this.setHarvestLevel("pickaxe", 1, 0);
+		this.setHarvestLevel("pickaxe", 1, 1);
+		this.setHarvestLevel("pickaxe", 1, 2);
+		this.setHarvestLevel("pickaxe", 1, 8);
+		this.setHarvestLevel("pickaxe", 2, 3);
+		this.setHarvestLevel("pickaxe", 2, 4);
+		this.setHarvestLevel("pickaxe", 2, 5);
+		this.setHarvestLevel("pickaxe", 3, 6);
+		this.setHarvestLevel("pickaxe", 3, 7);
 	}
+	// public void setHarvestLevel(String toolClass, int level, int metadata)
 	    /**
 	     * Returns the quantity of items to drop on block destruction.
 	     */
@@ -35,49 +50,39 @@ public class BlockOre extends Block
     {
        return 1;
     }
-
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubBlocks(Item item, CreativeTabs tab, List subItems)
+    {
+    	for (int ix = 0; ix < 9; ix++) {
+    		subItems.add(new ItemStack(this, 1, ix));
+    		item.setCreativeTab(AdvancedUtilities.advancedTab);
+    	}
+    }
+    
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int p_149691_1_, int meta)
+    {
+        return icons[meta];
+    }
     
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister icon)
     {
-        
-        switch(type)
-        {
-        case 0:
-        	this.blockIcon = icon.registerIcon("advancedutilities:copper"+AdvancedUtilities.textureSize);
-        	break;
-        	
-        case 1:
-        	this.blockIcon = icon.registerIcon("advancedutilities:tin"+AdvancedUtilities.textureSize);
-        	break;
-        case 2:
-        	this.blockIcon = icon.registerIcon("advancedutilities:zinc"+AdvancedUtilities.textureSize);
-        	break;
-        case 3:
-        	this.blockIcon = icon.registerIcon("advancedutilities:silver"+AdvancedUtilities.textureSize);
-        	break;
-        case 4:
-        	this.blockIcon = icon.registerIcon("advancedutilities:lead"+AdvancedUtilities.textureSize);
-        	break;
-        case 5:
-        	this.blockIcon = icon.registerIcon("advancedutilities:bauxite"+AdvancedUtilities.textureSize);
-        	break;
-        case 6:
-        	this.blockIcon = icon.registerIcon("advancedutilities:tungsten"+AdvancedUtilities.textureSize);
-        	break;
-        case 7:
-        	this.blockIcon = icon.registerIcon("advancedutilities:platinum"+AdvancedUtilities.textureSize);
-        	break;
-        case 8:
-        	this.blockIcon = icon.registerIcon("advancedutilities:bronzemachine");
-        	break;
-        case 9:
-        	this.blockIcon = icon.registerIcon("advancedutilities:nickel");
-        	break;
-        case 10:
-        	this.blockIcon = icon.registerIcon("advancedutilities:steelmachine");
-        	break;
-        }
+        	icons[0] = icon.registerIcon("advancedutilities:copper"+AdvancedUtilities.textureSize);
+        	icons[1] = icon.registerIcon("advancedutilities:tin"+AdvancedUtilities.textureSize);
+        	icons[2] = icon.registerIcon("advancedutilities:zinc"+AdvancedUtilities.textureSize);
+        	icons[3] = icon.registerIcon("advancedutilities:silver"+AdvancedUtilities.textureSize);
+        	icons[4] = icon.registerIcon("advancedutilities:lead"+AdvancedUtilities.textureSize);
+        	icons[5] = icon.registerIcon("advancedutilities:bauxite"+AdvancedUtilities.textureSize);
+        	icons[6] = icon.registerIcon("advancedutilities:tungsten"+AdvancedUtilities.textureSize);
+        	icons[7] = icon.registerIcon("advancedutilities:platinum"+AdvancedUtilities.textureSize);
+        	icons[8] = icon.registerIcon("advancedutilities:nickel");
+    }
+    
+    @Override
+    public int damageDropped (int metadata) {
+    	return metadata;
     }
     
     

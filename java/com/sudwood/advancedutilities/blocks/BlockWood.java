@@ -1,6 +1,5 @@
 package com.sudwood.advancedutilities.blocks;
 
-import javax.swing.Icon;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
 
@@ -20,9 +19,14 @@ public class BlockWood extends Block
 	{
 		super(mat);
 		this.type = type;
+		
 		// TODO Auto-generated constructor stub
 	}
-	
+	@Override
+	public boolean isWood(IBlockAccess world, int x, int y, int z)
+	{
+		return true;
+	}
 	@SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister icon)
     {

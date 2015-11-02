@@ -11,7 +11,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.sudwood.advancedutilities.CrushRecipes;
-import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteelController;
 
 import cpw.mods.fml.relauncher.Side;

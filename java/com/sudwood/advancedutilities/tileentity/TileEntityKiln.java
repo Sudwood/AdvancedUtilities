@@ -1,10 +1,11 @@
 package com.sudwood.advancedutilities.tileentity;
 
 import com.sudwood.advancedutilities.CrushRecipes;
+import com.sudwood.advancedutilities.HelperLibrary;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.items.ItemIngot;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFurnace;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -27,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityKiln extends TileEntity implements ISidedInventory
 {
-    private static final int[] slotsTop = new int[] {0};
+    private static final int[] slotsTop = new int[] {0, 1, 2, 3};
     private static final int[] slotsBottom = new int[] {5};
     private static final int[] slotsSides = new int[] {4};
     /**
@@ -281,7 +282,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
             if (this.isBurning() && this.canSmelt())
             {
                 ++this.furnaceCookTime;
-                if (this.furnaceCookTime == 80)
+                if (this.furnaceCookTime >= 80)
                 {
                     this.furnaceCookTime = 0;
                     this.smeltItem();
@@ -335,36 +336,36 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
             		
             		if(OreDictionary.getOreIDs(inventory[0]).length > 0 && OreDictionary.getOreIDs(inventory[1]).length > 0 && OreDictionary.getOreIDs(inventory[2]).length > 0 && OreDictionary.getOreIDs(inventory[3]).length > 0)
             		{
-			            if(OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_TIN) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER) && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
 			            {
 			            	return true;
 			            }
-			            if(OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_TIN) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER) && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
 			            {
 			            	return true;
 			            }
-			            if(OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_TIN)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER) && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
 			            {
 			            	return true;
 			            }
-			            if(OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_TIN) && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
 			            {
 			            	return true;
 			            }
 			
-			            if(OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_ZINC) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER) && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
 			            {
 			            	return true;
 			            }
-			            if(OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_ZINC) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER) && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
 			            {
 			            	return true;
 			            }
-			            if(OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_ZINC)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER) && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
 			            {
 			            	return true;
 			            }
-			            if(OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
+			            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_ZINC) && (this.inventory[5] == null || this.inventory[5].stackSize < 64))
 			            {
 			            	return true;
 			            }
@@ -425,13 +426,11 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
         		
         		if(OreDictionary.getOreIDs(inventory[0]) != null && OreDictionary.getOreIDs(inventory[1]) != null && OreDictionary.getOreIDs(inventory[2]) != null && OreDictionary.getOreIDs(inventory[3]) != null && OreDictionary.getOreIDs(inventory[0]).length >= 1 && OreDictionary.getOreIDs(inventory[1]).length >= 1 && OreDictionary.getOreIDs(inventory[2]).length >= 1 && OreDictionary.getOreIDs(inventory[3]).length >= 1)
         		{
-        		if(OreDictionary.getOreIDs(inventory[0])[0] != -1 && OreDictionary.getOreIDs(inventory[1])[0] != -1 && OreDictionary.getOreIDs(inventory[2])[0] != -1 && OreDictionary.getOreIDs(inventory[3])[0] != -1 && OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1)).length > 0 && OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1)).length > 0)
-        		{
-        			if(OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+        			if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_TIN) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER) )
         			{
         				if(this.inventory[5] == null)
 		        		{
-		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingot, 2, ItemIngot.BRONZE);
 		        			for(int i = 0; i < 4; i++)
 		                    {
 		                   	 --this.inventory[i].stackSize;
@@ -442,7 +441,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		                    }
 		        			return;
 		        		}
-		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.BRONZE)))
 		        		{
 		        			this.inventory[5].stackSize+=2;
 		        			for(int i = 0; i < 4; i++)
@@ -458,11 +457,11 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		        		return;
         			}
             
-		            if(OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_TIN) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER))
 		            {
 		            	if(this.inventory[5] == null)
 		        		{
-		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
+		        			this.inventory[5] =  new ItemStack(AdvancedUtilitiesItems.ingot, 2, ItemIngot.BRONZE);
 		        			for(int i = 0; i < 4; i++)
 		                    {
 		                   	 --this.inventory[i].stackSize;
@@ -473,7 +472,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		                    }
 		        			return;
 		        		}
-		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.BRONZE)))
 		        		{
 		        			this.inventory[5].stackSize+=2;
 		        			for(int i = 0; i < 4; i++)
@@ -487,11 +486,11 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		        		}
 		            	return;
 		            }
-		            if(OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_TIN)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER) )
 		            {
 		            	if(this.inventory[5] == null)
 		        		{
-		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingot, 2, ItemIngot.BRONZE);
 		        			for(int i = 0; i < 4; i++)
 		                    {
 		                   	 --this.inventory[i].stackSize;
@@ -502,7 +501,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		                    }
 		        			return;
 		        		}
-		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.BRONZE)))
 		        		{
 		        			this.inventory[5].stackSize+=2;
 		        			for(int i = 0; i < 4; i++)
@@ -516,11 +515,11 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		        		}
 		            	return;
 		            }
-		            if(OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotTin, 1))[0] && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_TIN))
 		            {
 		            	if(this.inventory[5] == null)
 		        		{
-		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBronze, 2);
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingot, 2, ItemIngot.BRONZE);
 		        			for(int i = 0; i < 4; i++)
 		                    {
 		                   	 --this.inventory[i].stackSize;
@@ -531,7 +530,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		                    }
 		        			return;
 		        		}
-		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBronze)
+		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.BRONZE)))
 		        		{
 		        			this.inventory[5].stackSize+=2;
 		        			for(int i = 0; i < 4; i++)
@@ -545,7 +544,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		        		}
 		            	return;
 		            }
-        	}
+        	
         	}
             }
             
@@ -557,17 +556,16 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
              * 
              * 
              */
-            if(this.inventory[0] != null && this.inventory[1] != null && this.inventory[2] != null && this.inventory[3] != null && this.inventory[0].getItem() == AdvancedUtilitiesItems.ingotZinc && this.inventory[1].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[2].getItem() == AdvancedUtilitiesItems.ingotCopper && this.inventory[3].getItem() == AdvancedUtilitiesItems.ingotCopper)
-            {
+
             	if(OreDictionary.getOreIDs(inventory[0]) != null && OreDictionary.getOreIDs(inventory[1]) != null && OreDictionary.getOreIDs(inventory[2]) != null && OreDictionary.getOreIDs(inventory[3]) != null && OreDictionary.getOreIDs(inventory[0]).length > 0 && OreDictionary.getOreIDs(inventory[1]).length > 0 && OreDictionary.getOreIDs(inventory[2]).length > 0 && OreDictionary.getOreIDs(inventory[3]).length > 0)
             	{
         		if(OreDictionary.getOreIDs(inventory[0])[0] != -1 && OreDictionary.getOreIDs(inventory[1])[0] != -1 && OreDictionary.getOreIDs(inventory[2])[0] != -1 && OreDictionary.getOreIDs(inventory[3])[0] != -1)
         		{
-            		if(OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+            		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_ZINC) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER))
             		{
 		        		if(this.inventory[5] == null)
 		        		{
-		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
+		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingot, 2, ItemIngot.BRASS);
 		        			for(int i = 0; i < 4; i++)
 		                    {
 		                   	 --this.inventory[i].stackSize;
@@ -578,7 +576,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		                    }
 		        			return;
 		        		}
-		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
+		        		if(this.inventory[5].stackSize <= 62 &&  this.inventory[5].isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.BRASS)))
 		        		{
 		        			this.inventory[5].stackSize+=2;
 		        			for(int i = 0; i < 4; i++)
@@ -593,11 +591,11 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		        		return;
             		}
 		            
-		            if(OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_ZINC) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER) )
 		            {
 		            	if(this.inventory[5] == null)
 		        		{
-		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
+		        			this.inventory[5] =  new ItemStack(AdvancedUtilitiesItems.ingot, 2, ItemIngot.BRASS);
 		        			for(int i = 0; i < 4; i++)
 		                    {
 		                   	 --this.inventory[i].stackSize;
@@ -608,7 +606,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		                    }
 		        			return;
 		        		}
-		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
+		        		if(this.inventory[5].stackSize <= 62 &&  this.inventory[5].isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.BRASS)))
 		        		{
 		        			this.inventory[5].stackSize+=2;
 		        			for(int i = 0; i < 4; i++)
@@ -622,11 +620,11 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		        		}
 		            	return;
 		            }
-		            if(OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0]  && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_ZINC)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_COPPER) )
 		            {
 		            	if(this.inventory[5] == null)
 		        		{
-		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
+		        			this.inventory[5] =  new ItemStack(AdvancedUtilitiesItems.ingot, 2, ItemIngot.BRASS);
 		        			for(int i = 0; i < 4; i++)
 		                    {
 		                   	 --this.inventory[i].stackSize;
@@ -637,7 +635,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		                    }
 		        			return;
 		        		}
-		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
+		        		if(this.inventory[5].stackSize <= 62 &&  this.inventory[5].isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.BRASS)))
 		        		{
 		        			this.inventory[5].stackSize+=2;
 		        			for(int i = 0; i < 4; i++)
@@ -651,11 +649,11 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		        		}
 		            	return;
 		            }
-		            if(OreDictionary.getOreIDs(this.inventory[3])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotZinc, 1))[0] && OreDictionary.getOreIDs(this.inventory[1])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[2])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0]  && OreDictionary.getOreIDs(this.inventory[0])[0] == OreDictionary.getOreIDs(new ItemStack( AdvancedUtilitiesItems.ingotCopper, 1))[0] )
+		            if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && HelperLibrary.isOreDicItem(inventory[2], CrushRecipes.INGOT_COPPER)&& HelperLibrary.isOreDicItem(inventory[3], CrushRecipes.INGOT_ZINC) )
 		            {
 		            	if(this.inventory[5] == null)
 		        		{
-		        			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotBrass, 2);
+		        			this.inventory[5]= new ItemStack(AdvancedUtilitiesItems.ingot, 2, ItemIngot.BRASS);
 		        			for(int i = 0; i < 4; i++)
 		                    {
 		                   	 --this.inventory[i].stackSize;
@@ -666,7 +664,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		                    }
 		        			return;
 		        		}
-		        		if(this.inventory[5].stackSize <= 62 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotBrass)
+		        		if(this.inventory[5].stackSize <= 62 &&  this.inventory[5].isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.BRASS)))
 		        		{
 		        			this.inventory[5].stackSize+=2;
 		        			for(int i = 0; i < 4; i++)
@@ -682,7 +680,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
 		            }
             	}
             	}
-            }
+            
             
             
             if(inventory[0] == null)
@@ -858,14 +856,12 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
             
             if(this.inventory[0]!=null && this.inventory[1] == null && this.inventory[2] == null && this.inventory[3] == null)
         	{
-        		int copper = OreDictionary.getOreID("oreCopper");
-        		int tin = OreDictionary.getOreID("oreTin");
-        		if(OreDictionary.getOreIDs(inventory[0])!=null&& OreDictionary.getOreIDs(inventory[0]).length>0 && OreDictionary.getOreIDs(inventory[0])[0] == copper)
+        		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.ORE_COPPER))
         		{
         			
         			if(this.inventory[5] == null)
             		{
-            			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotCopper, 1);
+            			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.COPPER);
                        	 --this.inventory[0].stackSize;
                             if (this.inventory[0].stackSize <= 0)
                             {
@@ -873,7 +869,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
                             }
             			return;
             		}
-            		if(this.inventory[5].stackSize <= 63 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotCopper)
+            		if(this.inventory[5].stackSize <= 63 && this.inventory[5].isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.COPPER)))
             		{
             			this.inventory[5].stackSize+=1;
                        	 --this.inventory[0].stackSize;
@@ -884,11 +880,11 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
                             return;
             		}
         		}
-        		if(OreDictionary.getOreIDs(inventory[0])!=null&& OreDictionary.getOreIDs(inventory[0]).length>0 &&OreDictionary.getOreIDs(inventory[0])[0] == tin)
+        		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.ORE_TIN))
         		{
         			if(this.inventory[5] == null)
             		{
-            			this.inventory[5] = new ItemStack(AdvancedUtilitiesItems.ingotTin, 1);
+            			this.inventory[5] =  new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.TIN);
                        	 --this.inventory[0].stackSize;
                             if (this.inventory[0].stackSize <= 0)
                             {
@@ -896,7 +892,7 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
                             }
             			return;
             		}
-            		if(this.inventory[5].stackSize <= 63 && this.inventory[5].getItem() == AdvancedUtilitiesItems.ingotTin)
+            		if(this.inventory[5].stackSize <= 63 && this.inventory[5].isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.TIN)))
             		{
             			this.inventory[5].stackSize+=1;
                        	 --this.inventory[0].stackSize;
@@ -1032,6 +1028,8 @@ public class TileEntityKiln extends TileEntity implements ISidedInventory
      */
     public boolean canExtractItem(int par1, ItemStack par2ItemStack, int par3)
     {
-        return par3 != 0 || par1 != 1 || par2ItemStack.getItem() == Items.bucket;
+        if(par1 == 5 || par3 == 0)
+        	return true;
+        return false;
     }
 }

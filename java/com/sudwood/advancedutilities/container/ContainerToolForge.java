@@ -5,13 +5,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
 import com.sudwood.advancedutilities.slot.SlotForged;
-import com.sudwood.advancedutilities.slot.SlotToolRod;
-import com.sudwood.advancedutilities.slot.SlotToolTop;
 import com.sudwood.advancedutilities.tileentity.TileEntityToolForge;
 
 import cpw.mods.fml.relauncher.Side;

@@ -464,13 +464,13 @@ public class TransferHelper
             	int[] slots =  ((ISidedInventory) tempTile).getAccessibleSlotsFromSide(sideAttached);
             	for(int i = 0; i < slots.length; i++)
             	{
-            		if(((ISidedInventory) tempTile).canInsertItem(slots[0], stack, sideAttached) && ((ISidedInventory) tempTile).getStackInSlot(slots[i]) == null)
+            		if(((ISidedInventory) tempTile).canInsertItem(slots[i], stack, sideAttached) && ((ISidedInventory) tempTile).getStackInSlot(slots[i]) == null)
             		{
             			space[0] = slots[i];
             			space[1] = 0;
             			return space;
             		}
-            		if(((ISidedInventory) tempTile).canInsertItem(slots[0], stack, sideAttached) && ((ISidedInventory) tempTile).getStackInSlot(slots[i]).isItemEqual(stack))
+            		if(((ISidedInventory) tempTile).canInsertItem(slots[i], stack, sideAttached) && ((ISidedInventory) tempTile).getStackInSlot(slots[i]).isItemEqual(stack))
             		{
             			if(((ISidedInventory) tempTile).getStackInSlot(slots[i]).stackSize + stack.stackSize <= ((ISidedInventory) tempTile).getInventoryStackLimit())
             			{

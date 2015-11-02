@@ -81,6 +81,32 @@ public class HelperLibrary
 		return false;
 	}
 	
+	/**
+	 * Returns true if the item is OreDictionary the same - false if not
+	 * @param stack the item stack that is being checked
+	 * @param compare the item stack of the Item that you are looking for
+	 * @param isInt put whatever determines if a answer besides yes or no is needed
+	 * @return returns 0 - false 1 - true 2 - is not ore dictionary
+	 */
+	public static int isOreDicItem(ItemStack stack, ItemStack compare, boolean isInt)
+	{
+		if(stack!=null && OreDictionary.getOreIDs(stack)!= null && OreDictionary.getOreIDs(stack).length > 0)
+		{
+			if(compare!= null && OreDictionary.getOreIDs(compare)!= null && OreDictionary.getOreIDs(compare).length > 0)
+			{
+				if(OreDictionary.getOreIDs(stack)[0] == OreDictionary.getOreIDs(compare)[0])
+				{
+					return 1;
+				}
+			}
+		}
+		if(stack==null|| compare == null || OreDictionary.getOreIDs(stack)== null || OreDictionary.getOreIDs(stack).length <= 0 || OreDictionary.getOreIDs(compare)== null || OreDictionary.getOreIDs(compare).length <= 0)
+		{
+			return 2;
+		}
+		return 0;
+	}
+	
 	public static boolean is3x3(Block looking, int x, int y, int z, World world)
 	{
 		if(world.getBlock(x+1, y+1, z+1) == looking && world.getBlock(x+1, y+1, z) == looking && world.getBlock(x+1, y+1, z-1) == looking && world.getBlock(x, y+1, z+1) == looking && world.getBlock(x, y+1, z) == looking)
@@ -100,6 +126,30 @@ public class HelperLibrary
 						}
 					}
 				}
+			}
+		}
+		return false;
+	}
+	
+	public static boolean areItemStacksSameItemAndDamage(ItemStack base, ItemStack compare)
+	{
+		if(base.getItem() == compare.getItem())
+		{
+			if(base.getItemDamage() == compare.getItemDamage())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	public static boolean areItemStacksSameItemAndDamageAndNBT(ItemStack base, ItemStack compare)
+	{
+		if(base.getItem() == compare.getItem())
+		{
+			if(base.getItemDamage() == compare.getItemDamage())
+			{
+				if(ItemStack.areItemStackTagsEqual(base, compare))
+				return true;
 			}
 		}
 		return false;

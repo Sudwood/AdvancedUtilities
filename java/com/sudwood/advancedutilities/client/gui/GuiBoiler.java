@@ -10,7 +10,6 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.sudwood.advancedutilities.container.ContainerKiln;
 import com.sudwood.advancedutilities.container.ContainerSteamBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
 

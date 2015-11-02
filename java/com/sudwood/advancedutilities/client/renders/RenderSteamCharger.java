@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 import com.sudwood.advancedutilities.client.models.ModelGun;
 import com.sudwood.advancedutilities.client.models.ModelJackHammer;
 import com.sudwood.advancedutilities.client.models.ModelJetpack;
+import com.sudwood.advancedutilities.client.models.ModelPowerLegs;
 import com.sudwood.advancedutilities.client.models.ModelSteamCharger;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCharger;
 
@@ -18,6 +19,7 @@ public class RenderSteamCharger extends TileEntitySpecialRenderer
 	ModelGun modelGun = new ModelGun();
 	ModelJetpack modelJetpack = new ModelJetpack();
 	ModelJackHammer modelJackHammer = new ModelJackHammer();
+	ModelPowerLegs modelLegs = new ModelPowerLegs();
 	@Override
 	public void renderTileEntityAt(TileEntity var1, double var2, double var4,
 			double var6, float var8) 
@@ -56,6 +58,15 @@ public class RenderSteamCharger extends TileEntitySpecialRenderer
 			  GL11.glRotatef(45F, 20F, 22F, 10F);
 			  bindTexture(new ResourceLocation("advancedutilities","textures/items/jackhammer.png"));
 			  modelJackHammer.render(0.0625F);
+		  }
+		  if(tile.renderLegs)
+		  {
+			  GL11.glTranslatef(0F, 0.6F, 0.6F);
+			  GL11.glScalef(0.7F, 0.7F, 0.7F);
+			  GL11.glRotatef(225F, 10F, 10F, -3F);
+			  GL11.glRotatef(45F, 8F, -1.5F, 0.4F);
+			  bindTexture(new ResourceLocation("advancedutilities","textures/items/powerlegs.png"));
+			  modelLegs.render(0.0625F);
 		  }
 		  GL11.glPopMatrix();
 		  GL11.glPopMatrix();

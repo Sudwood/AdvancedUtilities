@@ -8,7 +8,6 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
-import com.sudwood.advancedutilities.client.models.ModelSmeltry;
 import com.sudwood.advancedutilities.client.models.ModelSteamCrusher;
 
 public class RenderSteamCrusher extends TileEntitySpecialRenderer

@@ -1,15 +1,18 @@
 package com.sudwood.advancedutilities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class CrushRecipes 
 {
+	
 	 public static final int ORE_TIN = OreDictionary.getOreID("oreTin");
 	 public static final int ORE_COPPER = OreDictionary.getOreID("oreCopper");
 	 public static final int ORE_ZINC = OreDictionary.getOreID("oreZinc");
@@ -29,6 +32,8 @@ public class CrushRecipes
 	 public static final int ORE_COAL = OreDictionary.getOreID("oreCoal");
 	 public static final int ORE_NICKEL = OreDictionary.getOreID("oreNickel");
 	 
+	 public static final int BLOCK_COAL = OreDictionary.getOreID("blockCoal");
+	 
 	 public static final int INGOT_TIN = OreDictionary.getOreID("ingotTin");
 	 public static final int INGOT_COPPER = OreDictionary.getOreID("ingotCopper");
 	 public static final int INGOT_ZINC = OreDictionary.getOreID("ingotZinc");
@@ -43,177 +48,95 @@ public class CrushRecipes
 	 public static final int INGOT_PALIDIUM = OreDictionary.getOreID("ingotPalidium");
 	 public static final int INGOT_STEEL = OreDictionary.getOreID("ingotSteel");
 	 public static final int INGOT_NICKEL = OreDictionary.getOreID("ingotNickel");
+	 public static final int INGOT_IRON = OreDictionary.getOreID("ingotIron");
+	 public static final int INGOT_GOLD = OreDictionary.getOreID("ingotGold");
+	 
+	 public static final int GEM_DIAMOND = OreDictionary.getOreID("gemDiamond");
 	 
 	 public static final int PLANKS = OreDictionary.getOreID("plankWood");
+	 public static final int COBBLESTONE = OreDictionary.getOreID("cobblestone");
+	 public static final int SAND = OreDictionary.getOreID("sand");
+	 public static final int GRAVEL = OreDictionary.getOreID("gravel");
+	 public static final int COAL = OreDictionary.getOreID("coal");
+	 public static final int WHEAT = OreDictionary.getOreID("cropWheat");
+	 
+	 private static Map map = new HashMap();
+	 private static Map numResult = new HashMap();
+	 
+	 public static void loadRecipes()
+	 {
+		 addCrushRecipe(COBBLESTONE, new ItemStack(Blocks.gravel, 1));
+		 addCrushRecipe(GRAVEL, new ItemStack(Blocks.sand, 1));
+		 addCrushRecipe(ORE_TIN, new ItemStack(AdvancedUtilitiesItems.dust, 2, 2));
+		 addCrushRecipe(ORE_COPPER, new ItemStack(AdvancedUtilitiesItems.dust, 2, 0));
+		 addCrushRecipe(ORE_ZINC, new ItemStack(AdvancedUtilitiesItems.dust, 2, 3));
+		 addCrushRecipe(ORE_IRON, new ItemStack(AdvancedUtilitiesItems.dust, 2, 1));
+		 addCrushRecipe(ORE_GOLD, new ItemStack(AdvancedUtilitiesItems.dust, 2, 6));
+		 addCrushRecipe(ORE_DIAMOND, new ItemStack(AdvancedUtilitiesItems.dust, 2, 7));
+		 addCrushRecipe(ORE_LAPIS, new ItemStack(Items.dye, 9, 4));
+		 addCrushRecipe(ORE_REDSTONE, new ItemStack(Items.redstone, 12));
+		 addCrushRecipe(ORE_EMERALD, new ItemStack(Items.emerald, 4));
+		 addCrushRecipe(ORE_QUARTZ, new ItemStack(Items.quartz, 4));
+		 addCrushRecipe(ORE_COAL, new ItemStack(Items.coal, 4, 0));
+		 addCrushRecipe(INGOT_TIN, new ItemStack(AdvancedUtilitiesItems.dust, 1,2));
+		 addCrushRecipe(INGOT_COPPER, new ItemStack(AdvancedUtilitiesItems.dust, 1, 0));
+		 addCrushRecipe(INGOT_ZINC, new ItemStack(AdvancedUtilitiesItems.dust, 1, 3));
+		 addCrushRecipe(INGOT_BRONZE, new ItemStack(AdvancedUtilitiesItems.dust, 1, 4));
+		 addCrushRecipe(INGOT_BRASS, new ItemStack(AdvancedUtilitiesItems.dust, 1, 5));
+		 addCrushRecipe(ORE_SILVER, new ItemStack(AdvancedUtilitiesItems.dust, 2, 9));
+		 addCrushRecipe(INGOT_SILVER, new ItemStack(AdvancedUtilitiesItems.dust, 1, 9));
+		 addCrushRecipe(ORE_LEAD, new ItemStack(AdvancedUtilitiesItems.dust, 2, 12));
+		 addCrushRecipe(INGOT_LEAD, new ItemStack(AdvancedUtilitiesItems.dust, 1, 12));
+		 addCrushRecipe(ORE_BAUXITE, new ItemStack(AdvancedUtilitiesItems.dust, 2, 11));
+		 addCrushRecipe(ORE_ALUMINUM, new ItemStack(AdvancedUtilitiesItems.dust, 2, 11));
+		 addCrushRecipe(INGOT_ALUMINUM, new ItemStack(AdvancedUtilitiesItems.dust, 1, 11));
+		 addCrushRecipe(ORE_TUNGSTEN, new ItemStack(AdvancedUtilitiesItems.dust, 2, 13));
+		 addCrushRecipe(INGOT_TUNGSTEN, new ItemStack(AdvancedUtilitiesItems.dust, 1, 13));
+		 addCrushRecipe(ORE_PLATINUM, new ItemStack(AdvancedUtilitiesItems.dust, 2, 10));
+		 addCrushRecipe(INGOT_PLATINUM, new ItemStack(AdvancedUtilitiesItems.dust, 1, 10));
+		 addCrushRecipe(INGOT_IRIDIUM, new ItemStack(AdvancedUtilitiesItems.dust, 1, 14));
+		 addCrushRecipe(INGOT_PALIDIUM, new ItemStack(AdvancedUtilitiesItems.dust, 1, 15));
+		 addCrushRecipe(INGOT_STEEL, new ItemStack(AdvancedUtilitiesItems.dust, 1, 16));
+		 addCrushRecipe(ORE_NICKEL, new ItemStack(AdvancedUtilitiesItems.dust, 2, 20));
+		 addCrushRecipe(INGOT_NICKEL, new ItemStack(AdvancedUtilitiesItems.dust, 1, 20));
+		 addCrushRecipe(PLANKS, new ItemStack(AdvancedUtilitiesItems.dust, 1, 19));
+		 addCrushRecipe(INGOT_IRON, new ItemStack(AdvancedUtilitiesItems.dust, 1, 1));
+		 addCrushRecipe(INGOT_GOLD, new ItemStack(AdvancedUtilitiesItems.dust, 1, 6));
+		 addCrushRecipe(GEM_DIAMOND, new ItemStack(AdvancedUtilitiesItems.dust, 1, 7));
+		 addCrushRecipe(COAL, new ItemStack(AdvancedUtilitiesItems.dust, 1, 8));
+		 addCrushRecipe(BLOCK_COAL, new ItemStack(AdvancedUtilitiesItems.dust, 9, 8));
+		 addCrushRecipe(WHEAT, new ItemStack(AdvancedUtilitiesItems.dust, 1, 18));
+	 }
+	 
+	 public static void addCrushRecipe(Object key, ItemStack value)
+	 {
+		 map.put(key, value);
+		 numResult.put(key, value.stackSize);
+	 }
 	public static ItemStack getCrushResult(ItemStack stack)
 	{
 		if(stack == null)
 			return null;
-		if(stack.getItem() == Item.getItemFromBlock(Blocks.cobblestone))
-		{
-			return new ItemStack(Blocks.gravel, 1);
-		}
-		if(stack.getItem() == Item.getItemFromBlock(Blocks.gravel))
-		{
-			return new ItemStack(Blocks.sand, 1);
-		}
 		int checkID = OreDictionary.getOreIDs(stack)[0];
-		
-		if(checkID == ORE_TIN)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 2);
-		}
-		if(checkID == ORE_COPPER)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 0);
-		}
-		if(checkID == ORE_ZINC)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 3);
-		}
-		if(checkID == ORE_IRON)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 1);
-		}
-		if(checkID == ORE_GOLD)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 6);
-		}
-		if(checkID == ORE_DIAMOND)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 7);
-		}
-		if(checkID == ORE_LAPIS)
-		{
-			return new ItemStack(Items.dye, 9, 4);
-		}
-		if(checkID == ORE_REDSTONE)
-		{
-			return new ItemStack(Items.redstone, 12);
-		}
-		if(checkID == ORE_EMERALD)
-		{
-			return new ItemStack(Items.emerald, 4);
-		}
-		if(checkID == ORE_QUARTZ)
-		{
-			return new ItemStack(Items.quartz, 4);
-		}
-		if(checkID == ORE_COAL)
-		{
-			return new ItemStack(Items.coal, 4);
-		}
-		if(checkID == INGOT_TIN)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 2);
-		}
-		if(checkID == INGOT_COPPER)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 0);
-		}
-		if(checkID == INGOT_ZINC)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 3);
-		}
-		if(checkID == INGOT_BRONZE)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 4);
-		}
-		if(checkID == INGOT_BRASS)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 5);
-		}
-		
-		if(checkID == ORE_SILVER)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 9);
-		}
-		if(checkID == INGOT_SILVER)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 9);
-		}
-		if(checkID == ORE_LEAD)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 12);
-		}
-		if(checkID == INGOT_LEAD)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 12);
-		}
-		if(checkID == ORE_BAUXITE || checkID == ORE_ALUMINUM)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 11);
-		}
-		if(checkID == INGOT_ALUMINUM)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 11);
-		}
-		if(checkID == ORE_TUNGSTEN)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 13);
-		}
-		if(checkID == INGOT_TUNGSTEN)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 13);
-		}
-		if(checkID == ORE_PLATINUM)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 10);
-		}
-		if(checkID == INGOT_PLATINUM)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 10);
-		}
-		if(checkID == INGOT_IRIDIUM)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 14);
-		}
-		if(checkID == INGOT_PALIDIUM)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 15);
-		}
-		if(checkID == INGOT_STEEL)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 16);
-		}
-		if(checkID == ORE_NICKEL)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 2, 20);
-		}
-		if(checkID == INGOT_NICKEL)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 20);
-		}
-		if(checkID == PLANKS)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 19);
-		}
-		if(stack.getItem() == Items.iron_ingot)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 1);
-		}
-		if(stack.getItem() == Items.gold_ingot)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 6);
-		}
-		if(stack.getItem() == Items.diamond)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 7);
-		}
-		if(stack.isItemEqual(new ItemStack(Items.coal, 1, 0)))
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 8);
-		}
-		if(stack.getItem() == Item.getItemFromBlock(Blocks.coal_block))
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 9, 8);
-		}
-		if(stack.getItem() == Items.wheat)
-		{
-			return new ItemStack(AdvancedUtilitiesItems.dust, 1, 18);
-		}
 		if(checkID == -1) 
 			return null;
+		else if(map.containsKey(checkID))
+		{
+			return (ItemStack) map.get(checkID);
+		}
 		return null;
+	}
+	public static int getCrushResultNumber(ItemStack stack)
+	{
+		if(stack == null)
+			return 0;
+		int checkID = OreDictionary.getOreIDs(stack)[0];
+		if(checkID == -1) 
+			return 0;
+		else if(numResult.containsKey(checkID))
+		{
+			return (Integer) numResult.get(checkID);
+		}
+		return 0;
 	}
 }

@@ -1,10 +1,8 @@
 package com.sudwood.advancedutilities.blocks;
 
-import java.util.List;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.HelperLibrary;
-import com.sudwood.advancedutilities.tileentity.TileEntitySmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteelController;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteelOven;
 
@@ -13,13 +11,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;

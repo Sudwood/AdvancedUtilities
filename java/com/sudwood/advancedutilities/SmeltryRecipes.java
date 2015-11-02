@@ -7,7 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.blocks.BlockIngotBlock;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.items.ItemIngot;
 
 public class SmeltryRecipes 
 {
@@ -90,7 +92,7 @@ public class SmeltryRecipes
     			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 12);
     		}
     	}
-    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 && OreDictionary.getOreIDs(melt)[0] == OreDictionary.getOreIDs(new ItemStack(AdvancedUtilitiesItems.ingotBronze, 1))[0])
+    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 && HelperLibrary.isOreDicItem(melt, new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.BRONZE)))
     	{
     		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 0)))
     		{
@@ -125,7 +127,7 @@ public class SmeltryRecipes
     			return new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 11);
     		}
     	}
-    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 && OreDictionary.getOreIDs(melt)[0] == OreDictionary.getOreIDs(new ItemStack(AdvancedUtilitiesItems.ingotBrass, 1))[0])
+    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 &&  HelperLibrary.isOreDicItem(melt, new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.BRASS)))
     	{
     		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 5)))
     		{
@@ -136,7 +138,7 @@ public class SmeltryRecipes
     			return new ItemStack(AdvancedUtilitiesItems.brassRivets, 1);
     		}
     	}
-    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 && OreDictionary.getOreIDs(melt)[0] == OreDictionary.getOreIDs(new ItemStack(AdvancedUtilitiesItems.ingotLead, 1))[0])
+    	if(OreDictionary.getOreIDs(melt)!= null && OreDictionary.getOreIDs(melt).length > 0 &&  HelperLibrary.isOreDicItem(melt, new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.LEAD)))
     	{
     		if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 7)))
     		{
@@ -145,7 +147,7 @@ public class SmeltryRecipes
     	}
     	if(level >= 1)
     	{
-    		if(HelperLibrary.isOreDicItem(melt, new ItemStack(AdvancedUtilitiesBlocks.blockSteelBlock, 1)))
+    		if(HelperLibrary.isOreDicItem(melt, new ItemStack(AdvancedUtilitiesBlocks.ingotBlock, 1, BlockIngotBlock.STEEL)))
     		{
     			if(mould.isItemEqual(new ItemStack(AdvancedUtilitiesItems.cast, 1, 5)))
         		{

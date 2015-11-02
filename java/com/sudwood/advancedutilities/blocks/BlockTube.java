@@ -14,10 +14,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.client.ClientRegistering;
@@ -218,6 +220,22 @@ public class BlockTube extends BlockContainer
 		{
 			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.fluidTubeGui, world, x, y, z);
 			return true;
+		}
+		if(Type == 2 && !player.isSneaking() && (player.getCurrentEquippedItem() != null && OreDictionary.getOreIDs(player.getCurrentEquippedItem()).length > 0 && OreDictionary.getOreID("dyeBlack") == OreDictionary.getOreIDs(player.getCurrentEquippedItem())[0]))
+		{
+			TileEntityRestrictedItemTube tile = (TileEntityRestrictedItemTube) world.getTileEntity(x, y, z);
+			tile.setBlacklist();
+			if(!world.isRemote)
+				player.addChatMessage(new ChatComponentText("Blacklist mode activated."));
+			return false;
+		}
+		if(Type == 2 && !player.isSneaking() && (player.getCurrentEquippedItem() != null && OreDictionary.getOreIDs(player.getCurrentEquippedItem()).length > 0 && OreDictionary.getOreID("dyeWhite") == OreDictionary.getOreIDs(player.getCurrentEquippedItem())[0]))
+		{
+			TileEntityRestrictedItemTube tile = (TileEntityRestrictedItemTube) world.getTileEntity(x, y, z);
+			tile.setWhitelist();
+			if(!world.isRemote)
+				player.addChatMessage(new ChatComponentText("Whitelist mode activated."));
+			return false;
 		}
 		if(Type == 2 && !player.isSneaking() && (player.getCurrentEquippedItem() == null || player.getCurrentEquippedItem().getItem() != AdvancedUtilitiesItems.bronzeWrench))
 		{

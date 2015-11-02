@@ -12,6 +12,8 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.blocks.BlockIngotBlock;
+import com.sudwood.advancedutilities.blocks.BlockMachineBase;
 import com.sudwood.advancedutilities.items.minecart.ItemChunkChestCart;
 import com.sudwood.advancedutilities.items.minecart.ItemChunkLoadCart;
 import com.sudwood.advancedutilities.items.minecart.ItemChunkTankCart;
@@ -27,20 +29,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class AdvancedUtilitiesItems 
 {
-	public static Item ingotCopper;
-	public static Item ingotTin;
-	public static Item ingotBronze;
-	public static Item ingotZinc;
-	public static Item ingotBrass;
-	public static Item ingotSilver;
-	public static Item ingotLead;
-	public static Item ingotAluminum;
-	public static Item ingotTungsten;
-	public static Item ingotPlatinum;
-	public static Item ingotIridium;
-	public static Item ingotPalidium;
-	public static Item ingotSteel;
-	public static Item ingotNickel;
+	public static Item ingot;
 	
 	public static Item rubber;
 	public static Item glue;
@@ -69,6 +58,8 @@ public class AdvancedUtilitiesItems
 	public static Item jackHammer;
 	public static Item bulletMagazine;
 	public static Item upgrade;
+	public static Item runningShoes;
+	public static Item steamLegs;
 	
 	public static Item speedyMinecart;
 	public static Item speedyChestcart;
@@ -82,7 +73,7 @@ public class AdvancedUtilitiesItems
 	public static Item speedyChunkTankCart;
 	public static Item crowbar;
 	public static Item bronzeWrench;
-	public static Item runningShoes;
+	
 	
 	public static Item itemTank;
 	
@@ -93,20 +84,7 @@ public class AdvancedUtilitiesItems
 	public static Item devTele;
 	public static void init()
 	{
-		ingotCopper = new ItemIngot(0).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("CopperIngot");
-		ingotTin = new ItemIngot(1).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("TinIngot");
-		ingotBronze = new ItemIngot(2).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("BronzeIngot");
-		ingotZinc = new ItemIngot(3).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("ZincIngot");
-		ingotBrass = new ItemIngot(4).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("BrassIngot");
-		ingotSilver = new ItemIngot(5).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("SilverIngot");
-		ingotLead = new ItemIngot(6).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("LeadIngot");
-		ingotAluminum = new ItemIngot(7).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("AluminumIngot");
-		ingotTungsten = new ItemIngot(8).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("TungstenIngot");
-		ingotPlatinum = new ItemIngot(9).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("PlatinumIngot");
-		ingotIridium = new ItemIngot(10).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("IridiumIngot");
-		ingotPalidium = new ItemIngot(11).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("PalidiumIngot");
-		ingotSteel = new ItemIngot(12).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("SteelIngot");
-		ingotNickel = new ItemIngot(13).setCreativeTab(AdvancedUtilities.advancedTab).setUnlocalizedName("NickelIngot");
+		ingot = new ItemIngot().setUnlocalizedName("Ingot");
 		dust = new ItemDust().setUnlocalizedName("Dust");
 		
 		bag = new ItemBag().setUnlocalizedName("Bag");
@@ -155,9 +133,11 @@ public class AdvancedUtilitiesItems
 		tomato = new ItemTomato(6, 6, false).setUnlocalizedName("Tomato").setCreativeTab(AdvancedUtilities.advancedTab).setCreativeTab(CreativeTabs.tabFood);
 		
 		ArmorMaterial armorSteamJetpack = EnumHelper.addArmorMaterial("SJETPACKAU", 0, new int[]{0, 0, 0, 0}, 10);
+		ArmorMaterial armorSteamLegs = EnumHelper.addArmorMaterial("SLEGSAU", 0, new int[]{2, 6, 5, 2}, 10);
 		steamJetpack = new ItemArmorSteamJetpack(armorSteamJetpack, 0, 1).setUnlocalizedName("SteamJetpack").setCreativeTab(AdvancedUtilities.advancedBEToolsTab);
 		runningShoes = new ItemRunningShoes(armorSteamJetpack, 0, 3).setUnlocalizedName("RunningShoes").setCreativeTab(AdvancedUtilities.advancedBEToolsTab);
 		rebreather = new ItemArmorRebreather(armorSteamJetpack, 0, 0).setUnlocalizedName("Rebreather").setCreativeTab(AdvancedUtilities.advancedBEToolsTab);
+		steamLegs = new ItemArmorSteamLegs(armorSteamLegs, 0, 2).setUnlocalizedName("SteamLegs").setCreativeTab(AdvancedUtilities.advancedBEToolsTab);
 		
 		devTele = new ItemDevTool().setUnlocalizedName("DevTele").setCreativeTab(AdvancedUtilities.advancedTab);
 		
@@ -166,20 +146,7 @@ public class AdvancedUtilitiesItems
 	
 	public static void registerItems()
 	{
-		GameRegistry.registerItem(ingotCopper, "ingotcopper");
-		GameRegistry.registerItem(ingotTin, "ingottin");
-		GameRegistry.registerItem(ingotBronze, "ingotbronze");
-		GameRegistry.registerItem(ingotZinc, "ingotzinc");
-		GameRegistry.registerItem(ingotBrass, "ingotbrass");
-		GameRegistry.registerItem(ingotSilver, "ingotsilver");
-		GameRegistry.registerItem(ingotLead, "ingotlead");
-		GameRegistry.registerItem(ingotAluminum, "ingotaluminum");
-		GameRegistry.registerItem(ingotTungsten, "ingottungsten");
-		GameRegistry.registerItem(ingotPlatinum, "ingotplatinum");
-		GameRegistry.registerItem(ingotIridium, "ingotiridium");
-		GameRegistry.registerItem(ingotPalidium, "ingotpalidium");
-		GameRegistry.registerItem(ingotSteel, "ingotsteel");
-		GameRegistry.registerItem(ingotNickel, "ingotnickel");
+		GameRegistry.registerItem(ingot, "ingot");
 		
 		GameRegistry.registerItem(dust, "dust");
 		
@@ -206,6 +173,7 @@ public class AdvancedUtilitiesItems
 		GameRegistry.registerItem(steamJetpack, "steamjetpack");
 		GameRegistry.registerItem(rebreather, "rebreather");
 		GameRegistry.registerItem(runningShoes, "runningshoes");
+		GameRegistry.registerItem(steamLegs, "steamlegs");
 		GameRegistry.registerItem(itemCasing, "itemcasing");
 		GameRegistry.registerItem(itemBulletHead, "itembullethead");
 		GameRegistry.registerItem(jackHammer, "jackhammer");
@@ -232,21 +200,24 @@ public class AdvancedUtilitiesItems
 		
 		GameRegistry.registerItem(devTele, "devTele");
 		
-		OreDictionary.registerOre("ingotCopper", ingotCopper);
-		OreDictionary.registerOre("ingotTin", ingotTin);
-		OreDictionary.registerOre("ingotBronze", ingotBronze);
-		OreDictionary.registerOre("ingotZinc", ingotZinc);
-		OreDictionary.registerOre("ingotBrass", ingotBrass);
-		
-		OreDictionary.registerOre("ingotSilver", ingotSilver);
-		OreDictionary.registerOre("ingotLead", ingotLead);
-		OreDictionary.registerOre("ingotAluminum", ingotAluminum);
-		OreDictionary.registerOre("ingotTungsten", ingotTungsten);
-		OreDictionary.registerOre("ingotPlatinum", ingotPlatinum);
-		OreDictionary.registerOre("ingotIridium", ingotIridium);
-		OreDictionary.registerOre("ingotPalidium", ingotPalidium);
-		OreDictionary.registerOre("ingotSteel", ingotSteel);
-		OreDictionary.registerOre("ingotNickel", ingotNickel);
+		OreDictionary.registerOre("ingotCopper", new ItemStack(ingot, 1, ItemIngot.COPPER));
+		OreDictionary.registerOre("ingotTin", new ItemStack(ingot, 1, ItemIngot.TIN));
+		OreDictionary.registerOre("ingotBronze", new ItemStack(ingot, 1, ItemIngot.BRONZE));
+		OreDictionary.registerOre("ingotZinc", new ItemStack(ingot, 1, ItemIngot.ZINC));
+		OreDictionary.registerOre("ingotBrass", new ItemStack(ingot, 1, ItemIngot.BRASS));
+		OreDictionary.registerOre("ingotSilver", new ItemStack(ingot, 1, ItemIngot.SILVER));
+		OreDictionary.registerOre("ingotLead", new ItemStack(ingot, 1, ItemIngot.LEAD));
+		OreDictionary.registerOre("ingotAluminum", new ItemStack(ingot, 1, ItemIngot.ALUMINUM));
+		OreDictionary.registerOre("ingotTungsten", new ItemStack(ingot, 1, ItemIngot.TUNGSTEN));
+		OreDictionary.registerOre("ingotPlatinum", new ItemStack(ingot, 1, ItemIngot.PLATINUM));
+		OreDictionary.registerOre("ingotIridium", new ItemStack(ingot, 1, ItemIngot.IRIDIUM));
+		OreDictionary.registerOre("ingotPalidium", new ItemStack(ingot, 1, ItemIngot.PALIDIUM));
+		OreDictionary.registerOre("ingotSteel", new ItemStack(ingot, 1, ItemIngot.STEEL));
+		OreDictionary.registerOre("ingotIron", new ItemStack(Items.iron_ingot, 1));
+		OreDictionary.registerOre("ingotGold", new ItemStack(Items.gold_ingot));
+		OreDictionary.registerOre("gemDiamond", new ItemStack(Items.diamond, 1));
+		OreDictionary.registerOre("coal", new ItemStack(Items.coal, 1));
+		OreDictionary.registerOre("cropWheat", new ItemStack(Items.wheat, 1));
 		
 		OreDictionary.registerOre("dustCopper", new ItemStack(dust, 1, 0));
 		OreDictionary.registerOre("dustIron", new ItemStack(dust, 1, 1));
@@ -293,6 +264,10 @@ public class AdvancedUtilitiesItems
 			" H ","TGT"," I ", 'H', Items.leather_helmet, 'T', new ItemStack(itemCasing, 1, 2) , 'G', Blocks.glass, 'I', Items.iron_ingot
 		});
 		
+		GameRegistry.addRecipe(new ItemStack(steamLegs, 1) , new Object[]{
+			"PRP","TRT","PRP", 'P', new ItemStack(plate, 1, 1), 'T', new ItemStack(itemCasing, 1, 2), 'R', brassRivets 
+		});
+		
 		GameRegistry.addRecipe(new ItemStack(bulletMagazine, 1) , new Object[]{
 			"PRP","P P","PRP",Character.valueOf('P'), new ItemStack(plate, 1, 0), 'R', brassRivets
 		});
@@ -300,14 +275,14 @@ public class AdvancedUtilitiesItems
 		addPotionRecipes();
 		
 		GameRegistry.addRecipe(new ItemStack(crowbar, 1) , new Object[]{
-			"  I"," I ","I  ",'I', ingotBronze
+			"  I"," I ","I  ",'I',  new ItemStack(ingot, 1, ItemIngot.BRONZE)
 		});
 		GameRegistry.addRecipe(new ItemStack(crowbar, 1) , new Object[]{
-			"I  "," I ","  I",'I', ingotBronze
+			"I  "," I ","  I",'I',  new ItemStack(ingot, 1, ItemIngot.BRONZE)
 		});
 		
 		GameRegistry.addRecipe(new ItemStack(bronzeWrench, 1) , new Object[]{
-			"I I"," I "," I ",'I', ingotBronze
+			"I I"," I "," I ",'I',  new ItemStack(ingot, 1, ItemIngot.BRONZE)
 		});
 		
 		GameRegistry.addRecipe(new ItemStack(Items.saddle, 1) , new Object[]{
@@ -335,7 +310,7 @@ public class AdvancedUtilitiesItems
 			});
 		
 		GameRegistry.addRecipe(new ItemStack(speedyMinecart, 1) , new Object[]{
-			"   ", "P P", "PPP", Character.valueOf('P'), ingotBronze
+			"   ", "P P", "PPP", Character.valueOf('P'),  new ItemStack(ingot, 1, ItemIngot.BRONZE)
 			});
 		
 		MinecraftForge.addGrassSeed(new ItemStack(Items.melon_seeds), 4);
@@ -362,31 +337,31 @@ public class AdvancedUtilitiesItems
 		GameRegistry.addShapelessRecipe(new ItemStack(speedyChunkTankCart, 1), new Object[]{AdvancedUtilitiesBlocks.blockTank, speedyMinecart, AdvancedUtilitiesBlocks.chunkLoader});
 		
 		GameRegistry.addRecipe(new ItemStack(jackHammer, 1) , new Object[]{
-			"CPC", "CMC", " B ", 'C', new ItemStack(itemCasing, 1, 2), 'P', new ItemStack(plate, 1, 0), 'M', AdvancedUtilitiesBlocks.bronzeMachineCase, 'B', new ItemStack(toolPart, 1, 0)
+			"CPC", "CMC", " B ", 'C', new ItemStack(itemCasing, 1, 2), 'P', new ItemStack(plate, 1, 0), 'M', new ItemStack(AdvancedUtilitiesBlocks.machineBase, 1, BlockMachineBase.BRONZEMACHINE), 'B', new ItemStack(toolPart, 1, 0)
 			});
 		
 		GameRegistry.addShapelessRecipe(new ItemStack(bronzeBullet, 1), new Object[]{
 			new ItemStack(itemBulletHead, 1, 1), new ItemStack(itemCasing, 1 ,1)
 		});
 		
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 0), new ItemStack(ingotCopper,  1), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 0), new ItemStack(ingot,  1, ItemIngot.COPPER), 1);
 		GameRegistry.addSmelting(new ItemStack(dust, 1, 1), new ItemStack(Items.iron_ingot,  1), 1);
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 2), new ItemStack(ingotTin,  1), 1);
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 3), new ItemStack(ingotZinc,  1), 1);
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 4), new ItemStack(ingotBronze,  1), 1);
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 5), new ItemStack(ingotBrass,  1), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 2), new ItemStack(ingot,  1, ItemIngot.TIN), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 3), new ItemStack(ingot,  1, ItemIngot.ZINC), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 4), new ItemStack(ingot,  1, ItemIngot.BRONZE), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 5), new ItemStack(ingot,  1, ItemIngot.BRASS), 1);
 		GameRegistry.addSmelting(new ItemStack(dust, 1, 6), new ItemStack(Items.gold_ingot,  1), 1);
 		GameRegistry.addSmelting(new ItemStack(dust, 1, 7), new ItemStack(Items.diamond,  1), 1);
 		
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 9), new ItemStack(ingotSilver,  1), 1);
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 10), new ItemStack(ingotPlatinum,  1), 1);
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 11), new ItemStack(ingotAluminum,  1), 1);
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 12), new ItemStack(ingotLead,  1), 1);
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 13), new ItemStack(ingotTungsten,  1), 1);
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 14), new ItemStack(ingotIridium,  1), 1);
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 15), new ItemStack(ingotPalidium,  1), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 9), new ItemStack(ingot,  1, ItemIngot.SILVER), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 10), new ItemStack(ingot,  1, ItemIngot.PLATINUM), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 11), new ItemStack(ingot,  1, ItemIngot.ALUMINUM), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 12), new ItemStack(ingot,  1, ItemIngot.LEAD), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 13), new ItemStack(ingot,  1, ItemIngot.TUNGSTEN), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 14), new ItemStack(ingot,  1, ItemIngot.IRIDIUM), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 15), new ItemStack(ingot,  1, ItemIngot.PALIDIUM), 1);
 		GameRegistry.addSmelting(new ItemStack(dust, 1, 18), new ItemStack(Items.bread,  1), 1);
-		GameRegistry.addSmelting(new ItemStack(dust, 1, 20), new ItemStack(ingotNickel,  1), 1);
+		GameRegistry.addSmelting(new ItemStack(dust, 1, 20), new ItemStack(ingot,  1, ItemIngot.NICKEL), 1);
 		
 		GameRegistry.addSmelting(new ItemStack(AdvancedUtilitiesBlocks.blockRubberLog,  1), new ItemStack(rubber, 2), 1);
 		
@@ -414,7 +389,7 @@ public class AdvancedUtilitiesItems
 			"DDD","DUD","DDD",'D', Items.diamond, 'U', new ItemStack(upgrade, 1, 2)
 		});
 		GameRegistry.addRecipe(new ItemStack(upgrade, 1, 4) , new Object[]{
-			"RRR","RRR","RRR",'R', AdvancedUtilitiesBlocks.blockAluminumBlock
+			"RRR","RRR","RRR",'R', new ItemStack(AdvancedUtilitiesBlocks.ingotBlock, 1, BlockIngotBlock.ALUMINUM)
 		});
 		GameRegistry.addRecipe(new ItemStack(upgrade, 1, 5) , new Object[]{
 			"WWW","UUU","WWW",'W', new ItemStack(Blocks.wool, 1, OreDictionary.WILDCARD_VALUE), 'U', new ItemStack(upgrade, 1, 4)
@@ -432,7 +407,7 @@ public class AdvancedUtilitiesItems
 			"DDD","DUD","DDD",'D', Items.diamond, 'U', new ItemStack(upgrade, 1, 8)
 		});
 		GameRegistry.addRecipe(new ItemStack(upgrade, 1, 10) , new Object[]{
-			"RRR","RRR","RRR",'R', AdvancedUtilitiesBlocks.blockBronzeBlock
+			"RRR","RRR","RRR",'R', new ItemStack(AdvancedUtilitiesBlocks.ingotBlock, 1, BlockIngotBlock.BRONZE)
 		});
 		GameRegistry.addRecipe(new ItemStack(upgrade, 1, 10) , new Object[]{
 			"RRR","RRR","RRR",'R', Blocks.iron_block
@@ -441,7 +416,7 @@ public class AdvancedUtilitiesItems
 			" I ","UUU"," I ",'I', Blocks.iron_block, 'U', new ItemStack(upgrade, 1, 10)
 		});
 		GameRegistry.addRecipe(new ItemStack(upgrade, 1, 11) , new Object[]{
-			" I ","UUU"," I ",'I', AdvancedUtilitiesBlocks.blockBronzeBlock, 'U', new ItemStack(upgrade, 1, 10)
+			" I ","UUU"," I ",'I', new ItemStack(AdvancedUtilitiesBlocks.ingotBlock, 1, BlockIngotBlock.BRONZE), 'U', new ItemStack(upgrade, 1, 10)
 		});
 		GameRegistry.addRecipe(new ItemStack(upgrade, 1, 12) , new Object[]{
 			"DDD","DUD","DDD",'D', Items.diamond, 'U', new ItemStack(upgrade, 1, 11)

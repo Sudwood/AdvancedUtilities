@@ -8,19 +8,14 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiKeyBindingList;
-import net.minecraft.client.gui.GuiOptionButton;
-import net.minecraft.client.gui.GuiOptionSlider;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.ResourceLocation;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.ExtendedPlayer;
 import com.sudwood.advancedutilities.client.ClientRegistering;
-import com.sudwood.advancedutilities.packets.PacketForge;
 import com.sudwood.advancedutilities.packets.PacketSkillMenu;
 
 //

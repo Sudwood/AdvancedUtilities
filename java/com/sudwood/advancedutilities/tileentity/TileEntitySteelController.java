@@ -5,7 +5,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -23,6 +22,7 @@ import com.sudwood.advancedutilities.HelperLibrary;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.config.ServerOptions;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.items.ItemIngot;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -227,7 +227,7 @@ public class TileEntitySteelController extends TileEntity implements ISidedInven
     {
     	if(this.canSmelt())
     	{
-    	ItemStack itemstack = new ItemStack(AdvancedUtilitiesItems.ingotSteel, 1);
+    	ItemStack itemstack = new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.STEEL);
 		 if(itemstack!=null)
 		 {
             if (this.inventory[5] == null)

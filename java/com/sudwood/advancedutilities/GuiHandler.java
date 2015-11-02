@@ -1,13 +1,9 @@
 package com.sudwood.advancedutilities;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
 import com.sudwood.advancedutilities.client.gui.GuiArmorForge;
 import com.sudwood.advancedutilities.client.gui.GuiBag;
 import com.sudwood.advancedutilities.client.gui.GuiBoiler;
+import com.sudwood.advancedutilities.client.gui.GuiCompressor;
 import com.sudwood.advancedutilities.client.gui.GuiFluidTube;
 import com.sudwood.advancedutilities.client.gui.GuiItemTube;
 import com.sudwood.advancedutilities.client.gui.GuiKiln;
@@ -19,11 +15,15 @@ import com.sudwood.advancedutilities.client.gui.GuiSkills;
 import com.sudwood.advancedutilities.client.gui.GuiSmeltry;
 import com.sudwood.advancedutilities.client.gui.GuiSteamCrusher;
 import com.sudwood.advancedutilities.client.gui.GuiSteamFurnace;
+import com.sudwood.advancedutilities.client.gui.GuiSteamQuarry;
 import com.sudwood.advancedutilities.client.gui.GuiSteamSmeltry;
 import com.sudwood.advancedutilities.client.gui.GuiSteelOven;
+import com.sudwood.advancedutilities.client.gui.GuiStoneMill;
 import com.sudwood.advancedutilities.client.gui.GuiToolForge;
+import com.sudwood.advancedutilities.client.gui.GuiWoodenCrate;
 import com.sudwood.advancedutilities.container.ContainerArmorForge;
 import com.sudwood.advancedutilities.container.ContainerBag;
+import com.sudwood.advancedutilities.container.ContainerCompressor;
 import com.sudwood.advancedutilities.container.ContainerFluidTube;
 import com.sudwood.advancedutilities.container.ContainerItemTube;
 import com.sudwood.advancedutilities.container.ContainerKiln;
@@ -35,9 +35,12 @@ import com.sudwood.advancedutilities.container.ContainerSmeltry;
 import com.sudwood.advancedutilities.container.ContainerSteamBoiler;
 import com.sudwood.advancedutilities.container.ContainerSteamCrusher;
 import com.sudwood.advancedutilities.container.ContainerSteamFurnace;
+import com.sudwood.advancedutilities.container.ContainerSteamQuarry;
 import com.sudwood.advancedutilities.container.ContainerSteamSmeltry;
 import com.sudwood.advancedutilities.container.ContainerSteelOven;
+import com.sudwood.advancedutilities.container.ContainerStoneMill;
 import com.sudwood.advancedutilities.container.ContainerToolForge;
+import com.sudwood.advancedutilities.container.ContainerWoodenCrate;
 import com.sudwood.advancedutilities.container.InventoryBag;
 import com.sudwood.advancedutilities.container.InventoryItem;
 import com.sudwood.advancedutilities.container.RebreatherInv;
@@ -47,6 +50,7 @@ import com.sudwood.advancedutilities.items.ItemMagazine;
 import com.sudwood.advancedutilities.items.ItemPnumaticGun;
 import com.sudwood.advancedutilities.tileentity.TileEntityArmorForge;
 import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
+import com.sudwood.advancedutilities.tileentity.TileEntityCompressor;
 import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityKiln;
@@ -54,11 +58,18 @@ import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamFurnace;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteamQuarry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamSmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteelController;
+import com.sudwood.advancedutilities.tileentity.TileEntityStoneMill;
 import com.sudwood.advancedutilities.tileentity.TileEntityToolForge;
+import com.sudwood.advancedutilities.tileentity.TileEntityWoodenCrate;
 
 import cpw.mods.fml.common.network.IGuiHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public class GuiHandler implements IGuiHandler
 {
@@ -165,6 +176,30 @@ public class GuiHandler implements IGuiHandler
 				{
 					return new ContainerSteelOven(player.inventory, (TileEntitySteelController)tile211111);
 				}
+			case AdvancedUtilities.steamQuaryGui:
+				TileEntity tile221111 = world.getTileEntity(x, y, z);
+				if(tile221111 instanceof TileEntitySteamQuarry)
+				{
+					return new ContainerSteamQuarry(player.inventory, (TileEntitySteamQuarry)tile221111);
+				}
+			case AdvancedUtilities.stoneMillGui:
+				TileEntity tile222111 = world.getTileEntity(x, y, z);
+				if(tile222111 instanceof TileEntityStoneMill)
+				{
+					return new ContainerStoneMill(player.inventory, (TileEntityStoneMill)tile222111);
+				}
+			case AdvancedUtilities.compressorGui:
+				TileEntity tile222211 = world.getTileEntity(x, y, z);
+				if(tile222211 instanceof TileEntityCompressor)
+				{
+					return new ContainerCompressor(player.inventory, (TileEntityCompressor)tile222211);
+				}
+			case AdvancedUtilities.woodenCrateGui:
+				TileEntity tile222221 = world.getTileEntity(x, y, z);
+				if(tile222221 instanceof TileEntityWoodenCrate)
+				{
+					return new ContainerWoodenCrate(player.inventory, (TileEntityWoodenCrate)tile222221);
+				}
 				
 			default: return null;
 		}
@@ -269,6 +304,30 @@ public class GuiHandler implements IGuiHandler
 				if(tile211111 instanceof TileEntitySteelController)
 				{
 					return new GuiSteelOven(player.inventory, (TileEntitySteelController)tile211111);
+				}
+			case AdvancedUtilities.steamQuaryGui:
+				TileEntity tile221111 = world.getTileEntity(x, y, z);
+				if(tile221111 instanceof TileEntitySteamQuarry)
+				{
+					return new GuiSteamQuarry(player.inventory, (TileEntitySteamQuarry)tile221111);
+				}
+			case AdvancedUtilities.stoneMillGui:
+				TileEntity tile222111 = world.getTileEntity(x, y, z);
+				if(tile222111 instanceof TileEntityStoneMill)
+				{
+					return new GuiStoneMill(player.inventory, (TileEntityStoneMill)tile222111);
+				}
+			case AdvancedUtilities.compressorGui:
+				TileEntity tile222211 = world.getTileEntity(x, y, z);
+				if(tile222211 instanceof TileEntityCompressor)
+				{
+					return new GuiCompressor(player.inventory, (TileEntityCompressor)tile222211);
+				}
+			case AdvancedUtilities.woodenCrateGui:
+				TileEntity tile222221 = world.getTileEntity(x, y, z);
+				if(tile222221 instanceof TileEntityWoodenCrate)
+				{
+					return new GuiWoodenCrate(player.inventory, (TileEntityWoodenCrate)tile222221);
 				}
 			default: return null;
 		}

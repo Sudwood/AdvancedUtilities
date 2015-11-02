@@ -7,7 +7,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import com.sudwood.advancedutilities.items.ItemBulletBE;
-import com.sudwood.advancedutilities.slot.SlotBulletSlot;
 import com.sudwood.advancedutilities.slot.SlotFoodSlot;
 
 public class ContainerRebreather extends Container

@@ -6,6 +6,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -95,8 +96,11 @@ public class BlockTank extends BlockContainer
 			  {
 				  TileEntityTank tile = (TileEntityTank) world.getTileEntity(x, y, z);
 				  tile.fill(ForgeDirection.UNKNOWN, FluidContainerRegistry.getFluidForFilledItem(player.getCurrentEquippedItem()), true);
-				  player.inventory.addItemStackToInventory(FluidContainerRegistry.EMPTY_BUCKET);
-				  player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
+				  if(!player.capabilities.isCreativeMode)
+				  {
+					  player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
+					  player.inventory.addItemStackToInventory(new ItemStack(Items.bucket, 1));
+				  }
 				  world.markBlockForUpdate(x, y, z);
 			  }
 			  return true;
@@ -106,8 +110,19 @@ public class BlockTank extends BlockContainer
 			  if(world.getTileEntity(x, y, z) != null)
 			  {
 				  TileEntityTank tile = (TileEntityTank) world.getTileEntity(x, y, z);
-				 FluidContainerRegistry.fillFluidContainer(tile.drain(ForgeDirection.UNKNOWN, FluidContainerRegistry.BUCKET_VOLUME, true), player.getCurrentEquippedItem());
-				  world.markBlockForUpdate(x, y, z);
+				  if(tile.tank.getFluidAmount() > 0 && tile.tank.getFluid().getFluid()!= AdvancedUtilitiesBlocks.fluidSteam)
+				  {
+					  player.inventory.addItemStackToInventory(FluidContainerRegistry.fillFluidContainer(tile.drain(ForgeDirection.UNKNOWN, FluidContainerRegistry.BUCKET_VOLUME, true), player.getCurrentEquippedItem()));
+					  if(!player.capabilities.isCreativeMode)
+					  {
+						  player.inventory.getCurrentItem().stackSize-=1;
+						  if(player.inventory.getCurrentItem().stackSize <= 0)
+						  {
+							  player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+						  }
+					  }
+					  world.markBlockForUpdate(x, y, z);
+				  }
 			  }
 			  return true;
 		  }

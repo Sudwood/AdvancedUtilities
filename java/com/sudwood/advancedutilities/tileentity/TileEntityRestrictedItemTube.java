@@ -1,33 +1,23 @@
 package com.sudwood.advancedutilities.tileentity;
 
-import java.util.List;
-
-
-
-
-
-
-
-
-
+import com.sudwood.advancedutilities.HelperLibrary;
 import com.sudwood.advancedutilities.TransferHelper;
 
-import net.minecraft.command.IEntitySelector;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
 
 public class TileEntityRestrictedItemTube extends TileEntity implements IInventory
 {
+	public static final int WHITELIST = 0;
+	public static final int BLACKLIST = 1;
+	private int mode = WHITELIST;
     private ItemStack[] inventory = new ItemStack[5];
     private ItemStack[] restriction = new ItemStack[9];
     private String inventoryName;
@@ -35,9 +25,11 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
     public final int CooldownTime = 8;
     public int numTransfered = 1;
     
+    
     public void readFromNBT(NBTTagCompound par1NBTTagCompound)
     {
         super.readFromNBT(par1NBTTagCompound);
+        mode = par1NBTTagCompound.getInteger("Mode");
         NBTTagList nbttaglist = par1NBTTagCompound.getTagList("Items", 10);
         this.inventory = new ItemStack[this.getSizeInventory()];
 
@@ -73,6 +65,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
     public void writeToNBT(NBTTagCompound tag)
     {
         super.writeToNBT(tag);
+        tag.setInteger("Mode", mode);
         NBTTagList nbttaglist = new NBTTagList();
 
         for (int i = 0; i < this.inventory.length; ++i)
@@ -103,6 +96,25 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 
         tag.setTag("Restriction", nbttaglist1);
 
+    }
+    
+    public void setWhitelist()
+    {
+    	mode = WHITELIST;
+    	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		this.markDirty();
+    }
+    
+    public void setBlacklist()
+    {
+    	mode = BLACKLIST;
+    	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		this.markDirty();
+    }
+    
+    public int getMode()
+    {
+    	return mode;
     }
     
     @Override
@@ -673,12 +685,42 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		boolean result = false;
+		boolean[] temp = new boolean[9];
+		for(int iz = 0; iz < 9; iz++)
+		{
+			temp[iz] = true;
+		}
 		for (int ix = 0; ix < 9; ix++)
 		{
-			if(restriction[ix]!=null && ((restriction[ix].getItem() == itemstack.getItem() && restriction[ix].getItemDamage() == itemstack.getItemDamage()) || OreDictionary.itemMatches(restriction[ix], itemstack, true)))
+			if(mode == WHITELIST && restriction[ix]!=null && ((restriction[ix].getItem() == itemstack.getItem() && restriction[ix].getItemDamage() == itemstack.getItemDamage()) || OreDictionary.itemMatches(restriction[ix], itemstack, true)))
 			{
 				result = true;
 			}
+			if(mode == BLACKLIST && restriction[ix]!=null && HelperLibrary.isOreDicItem(restriction[ix], itemstack, true) == 0 )
+			{
+				temp[ix] = true;
+			}
+			if(mode == BLACKLIST && restriction[ix]!=null && HelperLibrary.isOreDicItem(restriction[ix], itemstack, true) == 1 )
+			{
+				temp[ix] = false;
+			}
+			else if(mode == BLACKLIST && restriction[ix]!=null && ((restriction[ix].getItem() == itemstack.getItem()) && restriction[ix].getItemDamage() != itemstack.getItemDamage()))
+			{
+				temp[ix] = true;
+			}
+			else if(mode == BLACKLIST && restriction[ix]!=null && ((restriction[ix].getItem() == itemstack.getItem())))
+			{
+				temp[ix] = false;
+			}
+			
+		}
+		if(mode == BLACKLIST)
+		{
+			if(temp[0]&&temp[1]&&temp[2]&&temp[3]&&temp[4]&&temp[5]&&temp[6]&&temp[7]&&temp[8])
+			{
+				result = true;
+			}
+				
 		}
 		return result;
 	}

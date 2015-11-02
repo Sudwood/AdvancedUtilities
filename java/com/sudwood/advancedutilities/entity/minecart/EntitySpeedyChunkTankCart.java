@@ -36,9 +36,9 @@ public class EntitySpeedyChunkTankCart extends EntityChunkLoadingCart
 		super.onUpdate();
 		if(this.motionX == 0 && this.motionY == 0 && this.motionZ == 0)
 		{
-			if(worldObj.getBlock((int)this.posX-1, (int)this.posY+1, (int)this.posZ) == AdvancedUtilitiesBlocks.blockTank)
+			if(worldObj.getBlock((int)this.posX, (int)this.posY+1, (int)this.posZ) == AdvancedUtilitiesBlocks.blockTank)
 			{
-				TileEntityTank tile = (TileEntityTank) worldObj.getTileEntity((int)this.posX-1, (int)this.posY+1, (int)this.posZ);
+				TileEntityTank tile = (TileEntityTank) worldObj.getTileEntity((int)this.posX, (int)this.posY+1, (int)this.posZ);
 				if( tile.tank.getFluidAmount() >= 100 && (this.tank.getFluidAmount()<= 0 || this.tank.getFluid().getFluid() == tile.tank.getFluid().getFluid()) && this.tank.getCapacity()-this.tank.getFluidAmount() >= 100)
 				{
 					this.tank.fill(tile.drain(ForgeDirection.DOWN, new FluidStack(tile.tank.getFluid().getFluid(), 100), true), true);
@@ -53,9 +53,9 @@ public class EntitySpeedyChunkTankCart extends EntityChunkLoadingCart
 				}
 			}
 
-			if(worldObj.getBlock((int)this.posX-1, (int)this.posY-1, (int)this.posZ) == AdvancedUtilitiesBlocks.blockTank)
+			if(worldObj.getBlock((int)this.posX, (int)this.posY-1, (int)this.posZ) == AdvancedUtilitiesBlocks.blockTank)
 			{
-				TileEntityTank tile = (TileEntityTank) worldObj.getTileEntity((int)this.posX-1, (int)this.posY-1, (int)this.posZ);
+				TileEntityTank tile = (TileEntityTank) worldObj.getTileEntity((int)this.posX, (int)this.posY-1, (int)this.posZ);
 				if(this.tank.getFluidAmount() > 0 && (tile.tank.getFluidAmount() <= 0 || this.tank.getFluid().getFluid() == tile.tank.getFluid().getFluid()) && this.tank.getFluidAmount() >= 100 && tile.tank.getCapacity()-tile.tank.getFluidAmount() >= 100)
 				{
 					tile.tank.fill(tank.drain(100, true), true);
@@ -133,6 +133,34 @@ public class EntitySpeedyChunkTankCart extends EntityChunkLoadingCart
     {
 		if(!player.worldObj.isRemote)
 		{
+			if(player.getCurrentEquippedItem() != null)
+			  {
+				  if(FluidContainerRegistry.isFilledContainer(player.getCurrentEquippedItem()))
+				  {
+						  this.tank.fill(FluidContainerRegistry.getFluidForFilledItem(player.getCurrentEquippedItem()), true);
+						  if(!player.capabilities.isCreativeMode)
+						  {
+							  player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
+							  player.inventory.addItemStackToInventory(new ItemStack(Items.bucket, 1));
+						  }
+					  }
+				  
+				  if(FluidContainerRegistry.isEmptyContainer(player.getCurrentEquippedItem()))
+				  {
+						  if(this.tank.getFluidAmount() > 0 && this.tank.getFluid().getFluid()!= AdvancedUtilitiesBlocks.fluidSteam)
+						  {
+							  player.inventory.addItemStackToInventory(FluidContainerRegistry.fillFluidContainer(this.tank.drain(FluidContainerRegistry.BUCKET_VOLUME, true), player.getCurrentEquippedItem()));
+							  if(!player.capabilities.isCreativeMode)
+							  {
+								  player.inventory.getCurrentItem().stackSize-=1;
+								  if(player.inventory.getCurrentItem().stackSize <= 0)
+								  {
+									  player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+								  }
+							  }
+						  }
+					  }
+				  }
 			if(tank.getFluidAmount() > 0)
 				player.addChatComponentMessage(new ChatComponentText("Fluid: "+tank.getFluid().getFluid().getName()+" Amount: "+tank.getFluidAmount()+" mB"));
 			else

@@ -1,26 +1,12 @@
 package com.sudwood.advancedutilities.tileentity;
 
-import java.util.List;
-
-
-
-
-
-
-
-
 import com.sudwood.advancedutilities.TransferHelper;
 
-import net.minecraft.command.IEntitySelector;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 
@@ -402,10 +388,10 @@ public class TileEntitySplitterItemTube extends TileEntityItemTube implements II
     	{
 	    	if(inventory[i]!=null)
 	    	{
-	    		lastDir[worldObj.getBlockMetadata(xCoord, yCoord, zCoord)^1] = 0;
+	    		lastDir[worldObj.getBlockMetadata(xCoord, yCoord, zCoord)] = 0;
 	    		for(int ix = 0; ix < 6; ix++)
 	    		{
-	    			if(lastDir[0] == 0 && lastDir[1] == 0 && lastDir[0] == 0 && lastDir[2] == 0 && lastDir[3] == 0 && lastDir[4] == 0 && lastDir[0] == 0)
+	    			if(lastDir[0] == 0 && lastDir[1] == 0 && lastDir[2] == 0 && lastDir[3] == 0 && lastDir[4] == 0 && lastDir[5] == 0)
 	    			{
 	    				
 	    				lastDir[0] = 1;
@@ -414,7 +400,7 @@ public class TileEntitySplitterItemTube extends TileEntityItemTube implements II
 	    				lastDir[3] = 1;
 	    				lastDir[4] = 1;
 	    				lastDir[5] = 1;
-	    				lastDir[worldObj.getBlockMetadata(xCoord, yCoord, zCoord)^1] = 0;
+	    				lastDir[worldObj.getBlockMetadata(xCoord, yCoord, zCoord)] = 0;
 	    			}
 	    			ForgeDirection dir = ForgeDirection.getOrientation(ix);
 	    			if(lastDir[ix] == 0 || worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) == null || !(worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) instanceof IInventory))

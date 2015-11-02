@@ -5,20 +5,14 @@ import java.util.List;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.sudwood.advancedutilities.container.ContainerKiln;
 import com.sudwood.advancedutilities.container.ContainerPnumaticGun;
-import com.sudwood.advancedutilities.container.ContainerSteamBoiler;
-import com.sudwood.advancedutilities.container.ContainerSteamCrusher;
 import com.sudwood.advancedutilities.container.InventoryItem;
-import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

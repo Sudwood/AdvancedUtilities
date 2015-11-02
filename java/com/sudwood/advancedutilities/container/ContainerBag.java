@@ -6,8 +6,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import com.sudwood.advancedutilities.items.ItemBulletBE;
-import com.sudwood.advancedutilities.slot.SlotBulletSlot;
 
 public class ContainerBag extends Container
 {

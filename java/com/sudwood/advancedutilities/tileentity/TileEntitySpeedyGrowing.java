@@ -2,9 +2,7 @@ package com.sudwood.advancedutilities.tileentity;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.IPlantable;
 
 public class TileEntitySpeedyGrowing extends TileEntity
 {

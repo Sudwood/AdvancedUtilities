@@ -2,12 +2,10 @@ package com.sudwood.advancedutilities.items;
 
 import java.util.List;
 
-import javax.swing.Icon;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -71,7 +69,7 @@ public class ItemDevTool extends Item {
 	        
 	      if (par3EntityPlayer.isSneaking()&&!par2World.isRemote)
 	      {
-	    	  if (state == false)
+	    	  if (!state)
 	    	  {
 	    		  
 	    		  par3EntityPlayer.addChatComponentMessage(new ChatComponentText("Recall Mode Activated"));
@@ -79,7 +77,7 @@ public class ItemDevTool extends Item {
 	    		  tag.setBoolean("state", state);
 	    		  return par1ItemStack;
 	    	  }
-	    	  if (state==true)
+	    	  if (state)
 	    	  {
 	    		  par3EntityPlayer.addChatComponentMessage(new ChatComponentText(("Mark Mode Activated")));
 	    		  state = false;
@@ -91,7 +89,7 @@ public class ItemDevTool extends Item {
 	      if (!par3EntityPlayer.isSneaking())
 	      {
 	    		  
-	    	  if (state == false)
+	    	  if (!state)
 	    	  {
 	    		  
 	    		  if (isSet==true)

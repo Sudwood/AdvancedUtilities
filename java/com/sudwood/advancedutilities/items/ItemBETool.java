@@ -30,11 +30,14 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BlockEvent;
 
 import com.google.common.collect.Sets;
 import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.HelperLibrary;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -376,16 +379,17 @@ public class ItemBETool extends ItemTool
     	}
     	if(tag.getInteger("Type") == AXE)
     	{
-    		if(block.isToolEffective("axe", 2) && tag.getInteger("CurrentDamage") >= 1)
+    		if(tag.getInteger("GoingDamage")>0 && tag.getInteger("CurrentDamage") >= tag.getInteger("GoingDamage"))
 	      	 {
-		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-tag.getInteger("GoingDamage"));
+		      	 tag.setInteger("GoingDamage", 0);
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
 		      	}
 		      	 return true;
 	      	 }
-    		if(!block.isToolEffective("axe", 2) && tag.getInteger("CurrentDamage") >= 2)
+    		else if(!block.isToolEffective("axe", 2) && tag.getInteger("CurrentDamage") >= 2)
 	      	 {
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
 		      	if(tag.getInteger("CurrentDamage") <= 0)
@@ -394,6 +398,7 @@ public class ItemBETool extends ItemTool
 		      	}
 		      	 return true;
 	      	 }
+    		
 	        return false;
     	}
     	return false;
@@ -481,6 +486,31 @@ public class ItemBETool extends ItemTool
     		}
     		else
     		return true;
+    	}
+    	if(tag.getInteger("Type") == AXE)
+    	{
+    		 if (!stack.hasTagCompound())
+    	           return true;
+
+    	        World world = player.worldObj;
+    	        final Block wood = world.getBlock(x, y, z);
+
+    	        if (wood == null)
+    	            return true;
+
+    	        if (wood.isToolEffective("axe", 2) && wood.isWood(world, x, y, z) || wood.getMaterial() == Material.sponge)
+    	        {
+    	            if(detectTree(world, x,y,z, wood)) {
+    	                NBTTagCompound tags = stack.getTagCompound().getCompoundTag("InfiTool");
+    	                int meta = world.getBlockMetadata(x, y, z);
+    	               int temp = breakTree(world, x, y, z, stack, tags, wood, meta, player);
+    	            	  world.playSoundAtEntity(player, "minecraft:dig.wood", 1F, 1F);
+    	                // custom block breaking code, don't call vanilla code
+    	                return true;
+    	            }
+    	        }
+
+    	        return false;
     	}
     	else
     	{
@@ -749,7 +779,8 @@ public class ItemBETool extends ItemTool
 		tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
     }
 	
-	protected void breakExtraBlock(World world, int x, int y, int z, int sidehit, EntityPlayer player, int refX, int refY, int refZ) {
+	protected void breakExtraBlock(World world, int x, int y, int z, int sidehit, EntityPlayer player, int refX, int refY, int refZ) 
+	{
         // prevent calling that stuff for air blocks, could lead to unexpected behaviour since it fires events
         if (world.isAirBlock(x, y, z))
             return;
@@ -831,4 +862,98 @@ public class ItemBETool extends ItemTool
                 Minecraft.getMinecraft().getNetHandler().addToSendQueue(new C07PacketPlayerDigging(2, x,y,z, Minecraft.getMinecraft().objectMouseOver.sideHit));
         }
 	}
+	 private boolean detectTree(World world, int x, int y, int z, Block wood)
+	    {
+	        int height = y;
+	        boolean foundTop = false;
+	        do
+	        {
+	            height++;
+	            Block block = world.getBlock(x, height, z);
+	            if (block != wood)
+	            {
+	                height--;
+	                foundTop = true;
+	            }
+	        } while (!foundTop);
+
+	        int numLeaves = 0;
+	        if (height - y < 50)
+	        {
+	            for (int xPos = x - 1; xPos <= x + 1; xPos++)
+	            {
+	                for (int yPos = height - 1; yPos <= height + 1; yPos++)
+	                {
+	                    for (int zPos = z - 1; zPos <= z + 1; zPos++)
+	                    {
+	                        Block leaves = world.getBlock(xPos, yPos, zPos);
+	                        if (leaves != null && leaves.isLeaves(world, xPos, yPos, zPos))
+	                            numLeaves++;
+	                    }
+	                }
+	            }
+	        }
+
+	        return numLeaves > 3;
+	    }
+
+	    private int breakTree (World world, int x, int y, int z, ItemStack stack, NBTTagCompound tags, Block bID, int meta, EntityPlayer player)
+	    {
+	    	int count = 0;
+	        for (int xPos = x - 1; xPos <= x + 1; xPos++)
+	        {
+	            for (int yPos = y; yPos <= y + 1; yPos++)
+	            {
+	                for (int zPos = z - 1; zPos <= z + 1; zPos++)
+	                {
+	                    
+	                        Block localBlock = world.getBlock(xPos, yPos, zPos);
+	                        if (bID == localBlock)
+	                        {
+	                            int localMeta = world.getBlockMetadata(xPos, yPos, zPos);
+	                            int hlvl = localBlock.getHarvestLevel(localMeta);
+	                            float localHardness = localBlock == null ? Float.MAX_VALUE : localBlock.getBlockHardness(world, xPos, yPos, zPos);
+
+	                            if (hlvl <= 2 && !(localHardness < 0))
+	                            {
+	                                boolean cancelHarvest = false;
+	                                if (stack.getTagCompound().getInteger("CurrentDamage")<=0)
+	                                       return 0;
+
+
+	                                // send blockbreak event
+	                                BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(x, y, z, world, localBlock, localMeta, player);
+	                                event.setCanceled(cancelHarvest);
+	                                MinecraftForge.EVENT_BUS.post(event);
+	                                cancelHarvest = event.isCanceled();
+
+	                                if (cancelHarvest)
+	                                {
+	                                    breakTree(world, xPos, yPos, zPos, stack, tags, bID, meta, player);
+	                                }
+	                                else
+	                                {
+	                                    if (localBlock == bID && localMeta % 4 == meta % 4)
+	                                    {
+	                                        if (!player.capabilities.isCreativeMode)
+	                                        {
+	                                            localBlock.harvestBlock(world, player, x,y,z, localMeta);
+	                                            onBlockDestroyed(stack, world, localBlock, xPos, yPos, zPos, player);
+	                                            if(stack.getTagCompound()!= null)
+	                                            stack.getTagCompound().setInteger("CurrentDamage", stack.getTagCompound().getInteger("CurrentDamage")-1);
+	                                        }
+
+	                                        world.setBlockToAir(xPos, yPos, zPos);
+	                                        if (!world.isRemote)
+	                                            breakTree(world, xPos, yPos, zPos, stack, tags, bID, meta, player);
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    
+	                }
+	            }
+	        }
+	        return count;
+	    }
 }

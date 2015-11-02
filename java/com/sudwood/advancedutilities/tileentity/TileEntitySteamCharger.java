@@ -17,14 +17,12 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.client.SoundHandler;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.items.ItemArmorSteamJetpack;
 import com.sudwood.advancedutilities.items.ItemJackHammer;
 import com.sudwood.advancedutilities.items.ItemPnumaticGun;
-import com.sudwood.advancedutilities.packets.PacketSteamCharger;
 
 public class TileEntitySteamCharger extends TileEntity implements IInventory, IFluidHandler, ISteamTank
 {
@@ -37,6 +35,7 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	 public boolean renderGun = false;
 	 public boolean renderJetpack = false;
 	 public boolean renderJackHammer = false;
+	 public boolean renderLegs = false;
 	 private boolean hasSent = false;
 	    @Override
 	    public void readFromNBT(NBTTagCompound tag)
@@ -48,6 +47,7 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	        this.renderGun = tag.getBoolean("renderGun");
 	        this.renderJackHammer = tag.getBoolean("renderJackHammer");
 	        this.renderJetpack = tag.getBoolean("renderJetpack");
+	        this.renderLegs = tag.getBoolean("renderLegs");
 	        
 	        NBTTagCompound nbttagcompound1 = (NBTTagCompound) tag.getTag("inventory");
             this.inventory = ItemStack.loadItemStackFromNBT(nbttagcompound1);
@@ -63,6 +63,7 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	        tag.setBoolean("renderGun", renderGun);
 	        tag.setBoolean("renderJackHammer", renderJackHammer);
 	        tag.setBoolean("renderJetpack", renderJetpack);
+	        tag.setBoolean("renderLegs", renderLegs);
 	        NBTTagCompound tag2 = new NBTTagCompound();
 	        if(inventory!=null)
 	        	inventory.writeToNBT(tag2);
@@ -123,6 +124,12 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
             	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         		this.markDirty();
             }
+            if(isLegs())
+            {
+            	this.renderLegs = true;
+            	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        		this.markDirty();
+            }
 	    }
 	    
 	    public ItemStack takeItem()
@@ -134,6 +141,7 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	    	this.renderGun = false;
 	    	this.renderJetpack = false;
 	    	this.renderJackHammer = false;
+	    	this.renderLegs = false;
 	    	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     		this.markDirty();
 
@@ -191,6 +199,14 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	    public boolean isJetpack()
 	    {
 	    	if(inventory!= null && inventory.getItem() == AdvancedUtilitiesItems.steamJetpack)
+	    	{
+	    		return true;
+	    	}
+	    	return false;
+	    }
+	    public boolean isLegs()
+	    {
+	    	if(inventory!= null && inventory.getItem() == AdvancedUtilitiesItems.steamLegs)
 	    	{
 	    		return true;
 	    	}
@@ -373,12 +389,14 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 			   tag.setBoolean("renderGun", renderGun);
 		        tag.setBoolean("renderJackHammer", renderJackHammer);
 		        tag.setBoolean("renderJetpack", renderJetpack);
+		        tag.setBoolean("renderLegs", renderLegs);
 		   }
 		   public void readSyncableDataFromNBT(NBTTagCompound tag)
 		   {
 			   this.renderGun = tag.getBoolean("renderGun");
 		        this.renderJackHammer = tag.getBoolean("renderJackHammer");
 		        this.renderJetpack = tag.getBoolean("renderJetpack");
+		        this.renderLegs = tag.getBoolean("renderLegs");
 		   }
 		   @Override
 		   public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)

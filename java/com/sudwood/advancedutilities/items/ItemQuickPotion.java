@@ -1,6 +1,5 @@
 package com.sudwood.advancedutilities.items;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;

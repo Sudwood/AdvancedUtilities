@@ -58,7 +58,11 @@ public class GuiRestrictedItemTube extends GuiContainer
         int var6 = (this.height - this.ySize) / 2;
     	if(par1 >= 108+var5 && par2 >= 16+var6 && par1 <= 161+var5 && par2 <= 69+var6)
 		{
-			String[] text = {"Whitelisted Items"};
+    		String[] text = {""};
+    		if(tile.getMode() == TileEntityRestrictedItemTube.WHITELIST)
+    			text[0] = "Whitelisted Items";
+    		if(tile.getMode() == TileEntityRestrictedItemTube.BLACKLIST)
+    			text[0] = "Blacklisted Items";
 			List temp = Arrays.asList(text);
 			drawHoveringText(temp, par1-40, par2-15, fontRendererObj);
 		}
