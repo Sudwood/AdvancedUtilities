@@ -1,4 +1,4 @@
 AdvancedUtilities
 =================
 
-A mod adding advanced utilities to miencraft
+A mod adding advanced utilities to minecraft
