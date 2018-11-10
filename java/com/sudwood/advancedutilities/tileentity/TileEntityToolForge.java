@@ -1,12 +1,13 @@
 package com.sudwood.advancedutilities.tileentity;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import com.sudwood.advancedutilities.CrushRecipes;
 import com.sudwood.advancedutilities.HelperLibrary;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.items.ItemBETool;
 import com.sudwood.advancedutilities.items.ItemIngot;
+import com.sudwood.advancedutilities.recipes.CrushRecipes;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -414,7 +415,86 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 27);
     		}
     	}
-    	if(top.getItem() == AdvancedUtilitiesItems.toolBE && (top.getItemDamage() < 12 || top.getItemDamage() == 27 || top.getItemDamage() == 28 || top.getItemDamage() == 29))
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 14)))
+    	{
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 0)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 32);
+    		}
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 1)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 31);
+    		}
+    		if(rod.isItemEqual(new ItemStack(Items.stick, 1, 0)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 30);
+    		}
+    	}
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 15)))
+    	{
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 0)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 35);
+    		}
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 1)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 34);
+    		}
+    		if(rod.isItemEqual(new ItemStack(Items.stick, 1, 0)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 33);
+    		}
+    	}
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 17)))
+    	{
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 16)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 36);
+    		}
+    		
+    	}
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 18)))
+    	{
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 16)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 37);
+    		}
+    		
+    	}
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 19)))
+    	{
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 16)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 38);
+    		}
+    		
+    	}
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 20)))
+    	{
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 16)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 39);
+    		}
+    		
+    	}
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 21)))
+    	{
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 16)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 40);
+    		}
+    		
+    	}
+    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 22)))
+    	{
+    		if(rod.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 16)))
+    		{
+    			return new ItemStack(AdvancedUtilitiesItems.toolBE, 1, 41);
+    		}
+    		
+    	}
+    	
+    	if(top.getItem() == AdvancedUtilitiesItems.toolBE && (top.getItemDamage() < 12 || top.getItemDamage() == 27 || top.getItemDamage() == 28 || top.getItemDamage() == 29 || top.getItemDamage() == 33 || top.getItemDamage() == 34|| top.getItemDamage() == 35))
     	{
     		if(rod.getItem() == Items.iron_ingot)
     		{
@@ -424,9 +504,19 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     			return result;
     		}
     	}
-    	if(top.getItem() == AdvancedUtilitiesItems.toolBE && (top.getItemDamage() > 11|| top.getItemDamage() == 24 || top.getItemDamage() == 25 || top.getItemDamage() == 26))
+    	if(top.getItem() == AdvancedUtilitiesItems.toolBE && (top.getItemDamage() > 11|| top.getItemDamage() == 24 || top.getItemDamage() == 25 || top.getItemDamage() == 26 || top.getItemDamage() == 30 || top.getItemDamage() == 31 || top.getItemDamage() == 32))
     	{
     		if(HelperLibrary.isOreDicItem(rod, CrushRecipes.INGOT_BRONZE))
+    		{
+    			ItemStack result = top.copy();
+    			NBTTagCompound tag = result.getTagCompound();
+    			tag.setInteger("CurrentDamage", tag.getInteger("MaxDamage"));
+    			return result;
+    		}
+    	}
+    	if(top.getItem() == AdvancedUtilitiesItems.toolBE && ( top.getItemDamage() == 36 || top.getItemDamage() == 37 || top.getItemDamage() == 38 || top.getItemDamage() == 39 || top.getItemDamage() == 40 || top.getItemDamage() == 41))
+    	{
+    		if(HelperLibrary.isOreDicItem(rod, CrushRecipes.INGOT_STEEL))
     		{
     			ItemStack result = top.copy();
     			NBTTagCompound tag = result.getTagCompound();
@@ -594,11 +684,15 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     	if(rod.getItem() == Items.enchanted_book)
     	{
     		ItemStack result = top.copy();
-    		Map map = EnchantmentHelper.getEnchantments(rod);
-    		EnchantmentHelper.setEnchantments(map, result);
+    		Map map = EnchantmentHelper.getEnchantments(top);
+    		Map map2 = EnchantmentHelper.getEnchantments(rod);
+    		Map map3 = new HashMap();
+    		map3.putAll(map);
+    		map3.putAll(map2);
+    		EnchantmentHelper.setEnchantments(map3, result);
     		return result;
     	}
-    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1,ItemIngot.BRONZE)) && top.stackSize >= 6)
+    	if(HelperLibrary.isOreDicItem(top, new ItemStack(AdvancedUtilitiesItems.ingot, 1,ItemIngot.BRONZE))  && top.stackSize >= 6)
     	{
     		if(rod.isItemEqual(new ItemStack(Items.stick, 1)))
     		{
@@ -606,7 +700,7 @@ public class TileEntityToolForge extends TileEntity implements IInventory
     			return result;
     		}
     	}
-    	if(top.isItemEqual(new ItemStack(AdvancedUtilitiesItems.ingot, 1,ItemIngot.BRASS)) && top.stackSize >= 6)
+    	if(HelperLibrary.isOreDicItem(top, new ItemStack(AdvancedUtilitiesItems.ingot, 1,ItemIngot.BRASS)) && top.stackSize >= 6)
     	{
     		if(rod.isItemEqual(new ItemStack(Items.stick, 1)))
     		{

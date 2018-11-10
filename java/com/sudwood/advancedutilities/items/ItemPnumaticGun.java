@@ -44,7 +44,8 @@ public class ItemPnumaticGun extends ItemBow
 		}
 		par3List.add("Steam: "+tag.getInteger("tankAmount")+" / "+tag.getInteger("maxTankAmount")+" mB");
 		InventoryItem inv = new InventoryItem(par1ItemStack);
-		par3List.add("Bullets: "+inv.getTotalItemsWithInventoryItems(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine));
+		int temp = inv.getTotalItemsWithInventoryItems(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine)+inv.getTotalItemsWithInventoryItems(AdvancedUtilitiesItems.steelBullet,AdvancedUtilitiesItems.bulletMagazine);
+		par3List.add("Bullets: "+temp);
 	}
 	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister icon)
@@ -93,7 +94,7 @@ public class ItemPnumaticGun extends ItemBow
     {
     	InventoryItem inv = new InventoryItem(par1ItemStack);
     	NBTTagCompound tag = par1ItemStack.getTagCompound();
-    	if((!par3EntityPlayer.isSneaking() || !par3EntityPlayer.onGround) && inv.hasItemWithInvItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine) && tag.getInteger("tankAmount") >= 50)
+    	if((!par3EntityPlayer.isSneaking() || !par3EntityPlayer.onGround) && (inv.hasItemWithInvItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine)||inv.hasItemWithInvItem(AdvancedUtilitiesItems.steelBullet, AdvancedUtilitiesItems.bulletMagazine) ) && tag.getInteger("tankAmount") >= 50)
     	{
 	     float f = 50F;
 	    
@@ -103,7 +104,29 @@ public class ItemPnumaticGun extends ItemBow
 	     {
 	         bullet.setIsCritical(true);
 	     }
+	     int bronzDam = inv.checkItemWithInvItems(AdvancedUtilitiesItems.bronzeBullet,  AdvancedUtilitiesItems.bulletMagazine);
+	     int steelDam = inv.checkItemWithInvItems(AdvancedUtilitiesItems.steelBullet,  AdvancedUtilitiesItems.bulletMagazine);
 	     int damage = 10;
+	     if(bronzDam  > -1&& steelDam >-1)
+	     {
+	    	 if(steelDam < bronzDam)
+	    	 {
+	    		damage = 20; 
+	    	 }
+	    	 if(steelDam > bronzDam)
+	    	 {
+	    		damage = 10; 
+	    	 }
+	     }
+	     else if(bronzDam >-1 && steelDam == -1)
+	     {
+	    	 damage = 10;
+	     }
+	     else if(steelDam >-1 && bronzDam == -1)
+	     {
+	    	 damage = 20;
+	     }
+	     
 	     if(EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, par1ItemStack) > 0)
 	     {
 	    	 damage+=EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, par1ItemStack)*2;
@@ -120,15 +143,51 @@ public class ItemPnumaticGun extends ItemBow
 	     }
 	     if(EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, par1ItemStack) <= 0)
 	     {
-	    	 inv.decreaseStackedItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine);
+	    	 if(bronzDam  > -1&& steelDam >-1)
+		     {
+		    	 if(steelDam < bronzDam)
+		    	 {
+		    		 inv.decreaseStackedItem(AdvancedUtilitiesItems.steelBullet, AdvancedUtilitiesItems.bulletMagazine);
+		    	 }
+		    	 if(steelDam > bronzDam)
+		    	 {
+		    		 inv.decreaseStackedItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine);
+		    	 }
+		     }
+		     else if(bronzDam >-1 && steelDam == -1)
+		     {
+		    	 inv.decreaseStackedItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine);
+		     }
+		     else if(steelDam >-1 && bronzDam == -1)
+		     {
+		    	 inv.decreaseStackedItem(AdvancedUtilitiesItems.steelBullet, AdvancedUtilitiesItems.bulletMagazine);
+		     }
 		     tag.setInteger("tankAmount", tag.getInteger("tankAmount")-50);
 	     }
 	     else
 	     {
 	    	 Random random = new Random();
-	    	 if(random.nextInt(10) > 0)
+	    	 if(random.nextInt(10) > 4)
 	    	 {
-	    		 inv.decreaseStackedItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine);
+	    		 if(bronzDam  > -1&& steelDam >-1)
+			     {
+			    	 if(steelDam < bronzDam)
+			    	 {
+			    		 inv.decreaseStackedItem(AdvancedUtilitiesItems.steelBullet, AdvancedUtilitiesItems.bulletMagazine);
+			    	 }
+			    	 if(steelDam > bronzDam)
+			    	 {
+			    		 inv.decreaseStackedItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine);
+			    	 }
+			     }
+			     else if(bronzDam >-1 && steelDam == -1)
+			     {
+			    	 inv.decreaseStackedItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine);
+			     }
+			     else if(steelDam >-1 && bronzDam == -1)
+			     {
+			    	 inv.decreaseStackedItem(AdvancedUtilitiesItems.steelBullet, AdvancedUtilitiesItems.bulletMagazine);
+			     }
 			     tag.setInteger("tankAmount", tag.getInteger("tankAmount")-50);
 	    	 }
 	     }

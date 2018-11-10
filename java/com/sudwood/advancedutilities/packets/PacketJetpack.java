@@ -52,6 +52,14 @@ public class PacketJetpack implements IMessage
     		{
     			props.toggleJetpack = message.isJetpack;
     		}
+    		if(message.type == 2)
+    		{
+    			props.toggleHover = message.isJetpack;
+    		}
+    		if(message.type == 3)
+    		{
+    			props.toggleBaubles = message.isJetpack;
+    		}
     		props.saveProxyData(player);
     		props.loadProxyData(player);
     		return null;

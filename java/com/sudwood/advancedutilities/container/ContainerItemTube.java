@@ -11,10 +11,11 @@ public class ContainerItemTube extends Container
 {
     private final IInventory field_94538_a;
     private static final String __OBFID = "CL_00001750";
-
+    private int sizeInventory = 0;
     public ContainerItemTube(InventoryPlayer par1InventoryPlayer, IInventory par2IInventory)
     {
         this.field_94538_a = par2IInventory;
+        sizeInventory = par2IInventory.getSizeInventory();
         par2IInventory.openInventory();
         byte b0 = 51;
         int i;
@@ -46,39 +47,39 @@ public class ContainerItemTube extends Container
     /**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */
-    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
     {
-        ItemStack itemstack = null;
-        Slot slot = (Slot)this.inventorySlots.get(par2);
-
-        if (slot != null && slot.getHasStack())
-        {
-            ItemStack itemstack1 = slot.getStack();
-            itemstack = itemstack1.copy();
-
-            if (par2 < this.field_94538_a.getSizeInventory())
-            {
-                if (!this.mergeItemStack(itemstack1, this.field_94538_a.getSizeInventory(), this.inventorySlots.size(), true))
-                {
-                    return null;
-                }
-            }
-            else if (!this.mergeItemStack(itemstack1, 0, this.field_94538_a.getSizeInventory(), false))
-            {
-                return null;
-            }
-
-            if (itemstack1.stackSize == 0)
-            {
-                slot.putStack((ItemStack)null);
-            }
-            else
-            {
-                slot.onSlotChanged();
-            }
-        }
-
-        return itemstack;
+    	 ItemStack itemstack = null;
+         Slot slot = (Slot) inventorySlots.get(i);
+         if (slot != null && slot.getHasStack())
+         {
+             ItemStack itemstack1 = slot.getStack();
+             itemstack = itemstack1.copy();
+             if (i < sizeInventory)
+             {
+                 if (!mergeItemStack(itemstack1, sizeInventory, inventorySlots.size(), true))
+                 {
+                     return null;
+                 }
+             }
+             else if (!field_94538_a.isItemValidForSlot(i, slot.getStack()))
+             {
+                 return null;
+             }
+             else if (!mergeItemStack(itemstack1, 0, sizeInventory, false))
+             {
+                 return null;
+             }
+             if (itemstack1.stackSize == 0)
+             {
+                 slot.putStack(null);
+             }
+             else
+             {
+                 slot.onSlotChanged();
+             }
+         }
+ return itemstack;
     }
 
     /**

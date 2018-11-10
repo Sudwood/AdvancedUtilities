@@ -115,8 +115,11 @@ public class BlockQuarryFrame extends BlockContainer
         if(world.isRemote)
         {
         	TileEntityQuarryFrame tile = (TileEntityQuarryFrame) world.getTileEntity(x, y, z);
-        	if(id<tile.render.length)
-        	tile.render[id] = info;
+        	if(tile!= null)
+        	{
+	        	if(id<tile.render.length)
+	        	tile.render[id] = info;
+        	}
         }
         return true;
     }

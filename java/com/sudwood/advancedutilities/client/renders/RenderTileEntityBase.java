@@ -5,6 +5,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.IModelCustom;
 
 import org.lwjgl.opengl.GL11;
 
@@ -17,11 +19,19 @@ public class RenderTileEntityBase implements IItemRenderer
 	
 	AdvancedModelBase model;
 	ResourceLocation texture;
+	IModelCustom cusmod;
+	int typeRender;
 	public RenderTileEntityBase(AdvancedModelBase mod, ResourceLocation res)
 	{
 		model = mod;
 		texture = res;
-		
+		typeRender = 0;
+	}
+	public RenderTileEntityBase(ResourceLocation mod, ResourceLocation tex)
+	{
+		texture = tex;
+		cusmod = AdvancedModelLoader.loadModel(mod);
+		typeRender = 1;
 	}
 	
 	@Override
@@ -58,8 +68,14 @@ public class RenderTileEntityBase implements IItemRenderer
 			  GL11.glTranslatef(-0.5F, -1.27F, 0.5F);      
 			  
 			  Minecraft.getMinecraft().renderEngine.bindTexture(texture);
-
-			  model.render(0.0625F);  
+			  if(typeRender == 0)
+				  model.render(0.0625F);  
+			  if(typeRender == 1)
+			  {
+				  GL11.glTranslated(-0.5F, 0.7F, 0.5F);
+				  GL11.glScalef(0.0825F, 0.0825F, 0.0825F);
+				  cusmod.renderAll();
+			  }
 			  GL11.glPopMatrix();
 			  break;
 		}
@@ -72,7 +88,14 @@ public class RenderTileEntityBase implements IItemRenderer
 			  
 			  Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
-			  model.render(0.0625F);  
+			  if(typeRender == 0)
+				  model.render(0.0625F);  
+			  if(typeRender == 1)
+			  {
+				  GL11.glTranslated(-0.5F, 0.7F, 0.5F);
+				  GL11.glScalef(0.0825F, 0.0825F, 0.0825F);
+				  cusmod.renderAll();
+			  }
 			  GL11.glPopMatrix();
 			  break;
 		}
@@ -87,7 +110,14 @@ public class RenderTileEntityBase implements IItemRenderer
 			  
 			  Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
-			  model.render(0.0625F);  
+			  if(typeRender == 0)
+				  model.render(0.0625F);  
+			  if(typeRender == 1)
+			  {
+				  GL11.glTranslated(0F, 0.7F, 0.5F);
+				  GL11.glScalef(0.0825F, 0.0825F, 0.0825F);
+				  cusmod.renderAll();
+			  }
 			  GL11.glPopMatrix();
 			  break;
 		}
@@ -101,7 +131,14 @@ public class RenderTileEntityBase implements IItemRenderer
 			  
 			  Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
-			  model.render(0.0625F);  
+			  if(typeRender == 0)
+				  model.render(0.0625F);  
+			  if(typeRender == 1)
+			  {
+				  GL11.glTranslated(-0.5F, 0.7F, 0.5F);
+				  GL11.glScalef(0.0825F, 0.0825F, 0.0825F);
+				  cusmod.renderAll();
+			  }
 			  GL11.glPopMatrix();
 			  break;
 		}

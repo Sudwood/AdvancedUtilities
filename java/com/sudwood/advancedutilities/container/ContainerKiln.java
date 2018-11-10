@@ -21,10 +21,11 @@ public class ContainerKiln extends Container
     private int lastCookTime = 0;
     private int lastBurnTime = 0;
     private int lastItemBurnTime = 0;
-
+    private int sizeInventory = 0;
     public ContainerKiln(InventoryPlayer par1InventoryPlayer, TileEntityKiln par2TileEntityFurnace)
     {
         this.furnace = par2TileEntityFurnace;
+        sizeInventory = furnace.getSizeInventory();
         this.addSlotToContainer(new Slot(par2TileEntityFurnace, 0, 38, 11));
         this.addSlotToContainer(new Slot(par2TileEntityFurnace, 1, 16, 33));
         this.addSlotToContainer(new Slot(par2TileEntityFurnace, 2, 38, 33));
@@ -115,87 +116,38 @@ public class ContainerKiln extends Container
     /**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */
-    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
     {
-        ItemStack var3 = null;
-        Slot var4 = (Slot)this.inventorySlots.get(par2);
-
-        if (var4 != null && var4.getHasStack())
-        {
-            ItemStack var5 = var4.getStack();
-            var3 = var5.copy();
-
-            if (par2 == 2)
-            {
-                if (!this.mergeItemStack(var5, 3, 39, true))
-                {
-                    return null;
-                }
-
-                var4.onSlotChange(var5, var3);
-            }
-            else if (par2 != 1 && par2 != 0)
-            {
-                if (FurnaceRecipes.smelting().getSmeltingResult(var5) != null)
-                {
-                    if (!this.mergeItemStack(var5, 0, 1, false))
-                    {
-                        return null;
-                    }
-                    if (!this.mergeItemStack(var5, 1, 2, false))
-                    {
-                        return null;
-                    }
-                    if (!this.mergeItemStack(var5, 2, 3, false))
-                    {
-                        return null;
-                    }
-                    if (!this.mergeItemStack(var5, 3, 4, false))
-                    {
-                        return null;
-                    }
-                }
-                else if (TileEntityFurnace.isItemFuel(var5))
-                {
-                    if (!this.mergeItemStack(var5, 4, 5, false))
-                    {
-                        return null;
-                    }
-                }
-                else if (par2 >= 3 && par2 < 30)
-                {
-                    if (!this.mergeItemStack(var5, 30, 39, false))
-                    {
-                        return null;
-                    }
-                }
-                else if (par2 >= 30 && par2 < 39 && !this.mergeItemStack(var5, 3, 30, false))
-                {
-                    return null;
-                }
-            }
-            else if (!this.mergeItemStack(var5, 3, 39, false))
-            {
-                return null;
-            }
-
-            if (var5.stackSize == 0)
-            {
-                var4.putStack((ItemStack)null);
-            }
-            else
-            {
-                var4.onSlotChanged();
-            }
-
-            if (var5.stackSize == var3.stackSize)
-            {
-                return null;
-            }
-
-            var4.onPickupFromSlot(par1EntityPlayer, var5);
-        }
-
-        return var3;
+    	 ItemStack itemstack = null;
+         Slot slot = (Slot) inventorySlots.get(i);
+         if (slot != null && slot.getHasStack())
+         {
+             ItemStack itemstack1 = slot.getStack();
+             itemstack = itemstack1.copy();
+             if (i < sizeInventory)
+             {
+                 if (!mergeItemStack(itemstack1, sizeInventory, inventorySlots.size(), true))
+                 {
+                     return null;
+                 }
+             }
+             else if (!furnace.isItemValidForSlot(i, slot.getStack()))
+             {
+                 return null;
+             }
+             else if (!mergeItemStack(itemstack1, 0, sizeInventory, false))
+             {
+                 return null;
+             }
+             if (itemstack1.stackSize == 0)
+             {
+                 slot.putStack(null);
+             }
+             else
+             {
+                 slot.onSlotChanged();
+             }
+         }
+         return itemstack;
     }
 }

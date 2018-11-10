@@ -1,6 +1,9 @@
 package com.sudwood.advancedutilities.items;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import net.minecraft.block.Block;
@@ -13,6 +16,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -24,6 +28,7 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.server.S23PacketBlockChange;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
@@ -31,6 +36,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.world.BlockEvent;
 
 import com.google.common.collect.Sets;
@@ -46,30 +52,48 @@ public class ItemBETool extends ItemTool
 	
 	public int hamBreakRadius = 1;
     public int hamBreakDepth = 0;
+    
+    public int exBreakRadius = 1;
+    public int exBreakDepth = 0;
 	
-	private IIcon[] icons = new IIcon[30];
+	private IIcon[] icons = new IIcon[42];
 	
 	public static final int PICK = 0;
 	public static final int SWORD = 1;
 	public static final int SHOVEL = 2;
 	public static final int AXE = 3;
 	public static final int HAMMER = 4;
+	public static final int EXCAVATOR = 5;
 	
 	private static final int WOODB = 100;
 	private static final int IRONB = 190;
 	private static final int BRONZEB = 350;
+	private static final int STEELB = 800;
 	
 	private static final int IRONT = 210;
 	private static final int BRONZET = 350;
+	private static final int STEELT = 800;
 	
 	private static final int IRONHAM = 1100;
 	private static final int BRONZEHAM = 1500;
+	private static final int STEELHAM = 2800;
+	
+	private static final int IRONEX = 1100;
+	private static final int BRONZEEX = 1500;
+	private static final int STEELEX = 2800;
+	
+	private static final float BASEDIGSPEED = 10F;
+	private static final float STEELDIGMODIFIER = 1.5F;
+	private float DIGSPEED = 10F;
+	private static final float BADSPEED = 3F;
+	private static final float DEFAULTSPEED = 1.5F;
 	
 	 private static final Set field_150915_c = Sets.newHashSet(new Block[] {Blocks.cobblestone, Blocks.double_stone_slab, Blocks.stone_slab, Blocks.stone, Blocks.sandstone, Blocks.mossy_cobblestone, Blocks.iron_ore, Blocks.iron_block, Blocks.coal_ore, Blocks.gold_block, Blocks.gold_ore, Blocks.diamond_ore, Blocks.diamond_block, Blocks.ice, Blocks.netherrack, Blocks.lapis_ore, Blocks.lapis_block, Blocks.redstone_ore, Blocks.lit_redstone_ore, Blocks.rail, Blocks.detector_rail, Blocks.golden_rail, Blocks.activator_rail});
 	
 	private String[] names = {"IronPickaxe", "IronSword", "IronShovel", "IronAxe", 
 			"BronzePickaxe", "BronzeSword", "BronzeShovel", "BronzeAxe",
-			"BronzeHammer", "IronHammer"};
+			"BronzeHammer", "IronHammer", "BronzeExcavator", "IronExcavator", "SteelPickaxe",
+			"SteelSword", "SteelShovel", "SteelAxe", "SteelHammer", "SteelExcavator"};
 	
 	public ItemBETool()
 	{
@@ -94,10 +118,39 @@ public class ItemBETool extends ItemTool
     	NBTTagCompound tag = stack.getTagCompound();
     	par3List.add("Damage: "+tag.getInteger("CurrentDamage")+" / "+tag.getInteger("MaxDamage"));
     	par3List.add("Attack: "+((tag.getInteger("Attack")+2*EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, stack))/2)+" Hearts");
+    	par3List.add("Level: "+tag.getInteger("ItemLevel"));
+    	par3List.add("EXP: "+tag.getInteger("CurrentXP")+" / "+this.getMaxXPForType(tag.getInteger("Type")));
     	if(tag.getInteger("CurrentDamage")<=0)
     	{
     		par3List.add("BROKEN!");
     	}
+    }
+    
+    public static int getMaxXPForType(int type)
+    {
+    	int temp = -1;
+    	switch(type)
+    	{
+    	case PICK:
+    		temp = 100;
+    		break;
+    	case SHOVEL:
+    		temp = 100;
+    		break;
+    	case SWORD:
+    		temp = 100;
+    		break;
+    	case AXE:
+    		temp = 100;
+    		break;
+    	case HAMMER:
+    		temp = 500;
+    		break;
+    	case EXCAVATOR:
+    		temp = 500;
+    		break;
+    	}
+    	return temp;
     }
     
     public int getItemEnchantability()
@@ -120,23 +173,69 @@ public class ItemBETool extends ItemTool
     	switch(tag.getInteger("Type"))
     	{
     	case PICK:
-    		if(par1Block.isToolEffective("pickaxe", 2))
-    			return true;
+    		int templevel = tag.getInteger("ItemLevel");
+    		if(templevel >= 15)
+    		{
+    			if((par1Block.isToolEffective("pickaxe", 3)&&par1Block.getHarvestTool(3)=="pickaxe")||par1Block == Blocks.obsidian | par1Block == Blocks.redstone_ore || par1Block == Blocks.lit_redstone_ore)
+    			{
+        			return true;
+    			}
+    			else if((par1Block.getMaterial()==Material.rock ||par1Block.getMaterial()==Material.anvil|| par1Block.getMaterial()==Material.iron) && par1Block.isToolEffective("pickaxe", 3) == false && par1Block.getHarvestTool(3)== null)
+    			{
+    				return true;
+    			}
+    			else return false;
+    		}
+    		else{
+	    		if(par1Block.isToolEffective("pickaxe", 2)&&par1Block.getHarvestTool(2)=="pickaxe")
+	    		{
+	    			return true;
+	    		}
+	    		else if((par1Block.getMaterial()==Material.rock ||par1Block.getMaterial()==Material.anvil|| par1Block.getMaterial()==Material.iron) && par1Block.isToolEffective("pickaxe", 2) == false && par1Block.getHarvestTool(2)== null)
+	    		{
+	    			return true;
+	    		}
+    		}
     		break;
     	case HAMMER:
-    		if(par1Block.isToolEffective("pickaxe", 2))
-    			return true;
+    		int templevel1 = tag.getInteger("ItemLevel");
+    		if(templevel1 >= 10)
+    		{
+    			if((par1Block.isToolEffective("pickaxe", 3)&&par1Block.getHarvestTool(3)=="pickaxe")||par1Block == Blocks.obsidian | par1Block == Blocks.redstone_ore || par1Block == Blocks.lit_redstone_ore)
+    			{
+        			return true;
+    			}
+    			else if((par1Block.getMaterial()==Material.rock ||par1Block.getMaterial()==Material.anvil|| par1Block.getMaterial()==Material.iron) && par1Block.isToolEffective("pickaxe", 3) == false && par1Block.getHarvestTool(3)== null)
+    			{
+    				return true;
+    			}
+    			else return false;
+    		}
+    		else{
+	    		if(par1Block.isToolEffective("pickaxe", 2)&&par1Block.getHarvestTool(2)=="pickaxe")
+	    		{
+	    			return true;
+	    		}
+	    		else if((par1Block.getMaterial()==Material.rock ||par1Block.getMaterial()==Material.anvil|| par1Block.getMaterial()==Material.iron) && par1Block.isToolEffective("pickaxe", 2) == false && par1Block.getHarvestTool(2)== null)
+	    		{
+	    			return true;
+	    		}
+    		}
     		break;
     	case SWORD:
     		if(par1Block.isToolEffective("sword", 2))
     			return true;
     		break;
     	case SHOVEL:
-    		if(par1Block.isToolEffective("shovel", 2))
+    		if(par1Block.isToolEffective("shovel", 2) || par1Block.getMaterial() == Material.grass || par1Block.getMaterial() == Material.ground)
+    			return true;
+    		break;
+    	case EXCAVATOR:
+    		if(par1Block.isToolEffective("shovel", 2) || par1Block.getMaterial() == Material.grass || par1Block.getMaterial() == Material.ground)
     			return true;
     		break;
     	case AXE:
-    		if(par1Block.isToolEffective("axe", 2))
+    		if(par1Block.isToolEffective("axe", 2) || par1Block.getMaterial() == Material.wood)
     			return true;
     		break;
     	}
@@ -219,32 +318,81 @@ public class ItemBETool extends ItemTool
      */
     public float getDigSpeed(ItemStack itemstack, Block block, int metadata)
     {
+    	if(itemstack.getTagCompound().getBoolean("isSteel"))
+    	{
+    		this.DIGSPEED = this.BASEDIGSPEED*this.STEELDIGMODIFIER;
+    	}
+    	else this.DIGSPEED = this.BASEDIGSPEED;
     	switch(itemstack.getTagCompound().getInteger("Type"))
     	{
     	case PICK:
-    		if(block.isToolEffective("pickaxe", 2))
-    			return 10F;
+    		int templevel = itemstack.getTagCompound().getInteger("ItemLevel");
+    		if(templevel >= 15)
+    		{
+    			if((block.isToolEffective("pickaxe", 3)&&block.getHarvestTool(3)=="pickaxe")||block == Blocks.obsidian | block == Blocks.redstone_ore || block == Blocks.lit_redstone_ore)
+    			{
+    				return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
+    			}
+    			else if((block.getMaterial()==Material.rock ||block.getMaterial()==Material.anvil|| block.getMaterial()==Material.iron) && block.isToolEffective("pickaxe", 3) == false && block.getHarvestTool(3)== null)
+	    		{
+	    			return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
+	    		}
+    		}
+    		else{
+	    		if(block.isToolEffective("pickaxe", 2)&&block.getHarvestTool(2)=="pickaxe")
+	    		{
+	    			return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
+	    		}
+	    		else if((block.getMaterial()==Material.rock ||block.getMaterial()==Material.anvil|| block.getMaterial()==Material.iron) && block.isToolEffective("pickaxe", 2) == false && block.getHarvestTool(2)== null)
+	    		{
+	    			return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
+	    		}
+    		}
     		break;
     	case HAMMER:
-    		if(block.isToolEffective("pickaxe", 2))
-    			return 10F;
+    		int templevel1 = itemstack.getTagCompound().getInteger("ItemLevel");
+    		if(templevel1 >= 10)
+    		{
+    			if((block.isToolEffective("pickaxe", 3)&&block.getHarvestTool(3)=="pickaxe")||block == Blocks.obsidian | block == Blocks.redstone_ore || block == Blocks.lit_redstone_ore)
+    			{
+    				return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
+    			}
+    			else if((block.getMaterial()==Material.rock ||block.getMaterial()==Material.anvil|| block.getMaterial()==Material.iron) && block.isToolEffective("pickaxe", 3) == false && block.getHarvestTool(3)== null)
+	    		{
+	    			return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
+	    		}
+    		}
+    		else{
+	    		if(block.isToolEffective("pickaxe", 2)&&block.getHarvestTool(2)=="pickaxe")
+	    		{
+	    			return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
+	    		}
+	    		else if(((block.getMaterial()==Material.rock ||block.getMaterial()==Material.anvil|| block.getMaterial()==Material.iron) && block.isToolEffective("pickaxe", 2) == false && block.getHarvestTool(2)== null)&& block != Blocks.obsidian && block != Blocks.redstone_ore && block!=Blocks.lit_redstone_ore)
+	    		{
+	    			return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
+	    		}
+    		}
+    		break;
+    	case EXCAVATOR:
+    		if(block.isToolEffective("shovel", 2) || block.getMaterial() == Material.grass || block.getMaterial() == Material.ground)
+    			return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
     		break;
     	case SWORD:
-    		if(block.isToolEffective("sword", 2))
-    		return 10F;
+    		if(block.isToolEffective("sword", 2) || block.getMaterial() == Material.cloth ||block.getMaterial() == Material.carpet|| block.getMaterial() == Material.web)
+    			return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
     		break;
     	case SHOVEL:
-    		if(block.isToolEffective("shovel", 2))
-    			return 10F;
+    		if(block.isToolEffective("shovel", 2) || block.getMaterial() == Material.grass || block.getMaterial() == Material.ground)
+    			return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
     		break;
     	case AXE:
-    		if(block.isToolEffective("axe", 2))
-    			return 10F;
+    		if(block.isToolEffective("axe", 2) || block.getMaterial() == Material.wood)
+    			return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
     		break;
     	default:
-    		return 3F;
+    		return BADSPEED+(BADSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
     	}
-    	return 1.5F;
+    	return DEFAULTSPEED+(DEFAULTSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
     }
     
     /**
@@ -259,13 +407,49 @@ public class ItemBETool extends ItemTool
     	{
 	      	 if(tag.getInteger("CurrentDamage") >= 1)
 	      	 {
+	      		if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, par1ItemStack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, par1ItemStack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+					}
+				}
+				else
+				{
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
-		      	int damage = tag.getInteger("Attack");
+				}
+		      	 int tempDam = 0;
+		      	 if(tag.getInteger("ItemLevel")>= 5)
+		      	 {
+		      		 tempDam = tag.getInteger("ItemLevel")/5;
+		      	 }
+		      	int damage = tag.getInteger("Attack")+tempDam;
 			     if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack) > 0)
 			     {
 			    	 damage+=EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack)*2;
 			     }
 		      	par2EntityLivingBase.attackEntityFrom(DamageSource.generic, damage);
+		      	tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+1);
+		      	if(tag.getInteger("CurrentXP") >= this.getMaxXPForType(tag.getInteger("Type")))
+		      	{
+		      		tag.setInteger("ItemLevel", tag.getInteger("ItemLevel")+1);
+		      		tag.setInteger("CurrentXP", 0);
+		      		par3EntityLivingBase.worldObj.playSoundAtEntity(par3EntityLivingBase, "minecraft:random.levelup", 1F, 1F);
+		      		if(tag.getInteger("ItemLevel")/50 > 0 )
+		      		{
+		      			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.looting.effectId, par1ItemStack)<=0)
+		      			{
+		      				par1ItemStack.addEnchantment(Enchantment.looting, tag.getInteger("ItemLevel")/50);
+		      			}
+		      			else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.looting.effectId, par1ItemStack) < tag.getInteger("ItemLevel")/50)
+		      			{
+		      				Map map = EnchantmentHelper.getEnchantments(par1ItemStack);
+	    					map.put(Enchantment.looting.effectId, tag.getInteger("ItemLevel")/50);
+	    					EnchantmentHelper.setEnchantments(map, par1ItemStack);
+		      			}
+		      		}
+		      	}
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		par3EntityLivingBase.worldObj.playSoundAtEntity(par3EntityLivingBase, "minecraft:random.break", 1F, 1F);
@@ -278,7 +462,18 @@ public class ItemBETool extends ItemTool
     	{
     		if(tag.getInteger("CurrentDamage") >= 2)
 	      	 {
+    			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, par1ItemStack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, par1ItemStack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+					}
+				}
+				else
+				{
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+				}
 		      	int damage = tag.getInteger("Attack");
 			     if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack) > 0)
 			     {
@@ -302,7 +497,38 @@ public class ItemBETool extends ItemTool
     	{
 			if(block.isToolEffective("pickaxe", 2) && tag.getInteger("CurrentDamage") >= 1)
 	      	 {
+				if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+					}
+				}
+				else
+				{
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+				}
+		      	tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+1);
+		      	if(tag.getInteger("CurrentXP") >= this.getMaxXPForType(tag.getInteger("Type")))
+		      	{
+		      		tag.setInteger("ItemLevel", tag.getInteger("ItemLevel")+1);
+		      		tag.setInteger("CurrentXP", 0);
+		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.levelup", 1F, 1F);
+		      		if(tag.getInteger("ItemLevel")/50 > 0 )
+		      		{
+		      			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack)<=0)
+		      			{
+		      				stack.addEnchantment(Enchantment.fortune, tag.getInteger("ItemLevel")/50);
+		      			}
+		      			else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack) < tag.getInteger("ItemLevel")/50)
+		      			{
+		      				Map map = EnchantmentHelper.getEnchantments(stack);
+	    					map.put(Enchantment.fortune.effectId, tag.getInteger("ItemLevel")/50);
+	    					EnchantmentHelper.setEnchantments(map, stack);
+		      			}
+		      		}
+		      	}
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
@@ -311,7 +537,18 @@ public class ItemBETool extends ItemTool
 	      	 }
 	   		if(!block.isToolEffective("pickaxe", 2) && tag.getInteger("CurrentDamage") >= 2)
 	      	 {
-		      	tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+	   			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+					}
+				}
+				else
+				{
+		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+				}
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
@@ -324,7 +561,38 @@ public class ItemBETool extends ItemTool
     	{
     		if(block.isToolEffective("pickaxe", 2) && tag.getInteger("CurrentDamage") >= 1)
 	      	 {
-		      	tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+    			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+					}
+				}
+				else
+				{
+		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+				}
+		      	tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+1);
+		      	if(tag.getInteger("CurrentXP") >= this.getMaxXPForType(tag.getInteger("Type")))
+		      	{
+		      		tag.setInteger("ItemLevel", tag.getInteger("ItemLevel")+1);
+		      		tag.setInteger("CurrentXP", 0);
+		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.levelup", 1F, 1F);
+		      		if(tag.getInteger("ItemLevel")/50 > 0 )
+		      		{
+		      			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack)<=0)
+		      			{
+		      				stack.addEnchantment(Enchantment.fortune, tag.getInteger("ItemLevel")/50);
+		      			}
+		      			else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack) < tag.getInteger("ItemLevel")/50)
+		      			{
+		      				Map map = EnchantmentHelper.getEnchantments(stack);
+	    					map.put(Enchantment.fortune.effectId, tag.getInteger("ItemLevel")/50);
+	    					EnchantmentHelper.setEnchantments(map, stack);
+		      			}
+		      		}
+		      	}
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
@@ -333,7 +601,83 @@ public class ItemBETool extends ItemTool
 	      	 }
 	   		if(!block.isToolEffective("pickaxe", 2) && tag.getInteger("CurrentDamage") >= 2)
 	      	 {
-		      	tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+	   			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+					}
+				}
+				else
+				{
+		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+				}
+		      	if(tag.getInteger("CurrentDamage") <= 0)
+		      	{
+		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
+		      	}
+		      	 return true;
+	      	 }
+	        return false;
+    	}
+    	if(tag.getInteger("Type") == EXCAVATOR)
+    	{
+    		if(block.isToolEffective("shovel", 2) && tag.getInteger("CurrentDamage") >= 1)
+	      	 {
+    			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+					}
+				}
+				else
+				{
+		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+				}
+		      	tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+1);
+		      	if(tag.getInteger("CurrentXP") >= this.getMaxXPForType(tag.getInteger("Type")))
+		      	{
+		      		tag.setInteger("ItemLevel", tag.getInteger("ItemLevel")+1);
+		      		tag.setInteger("CurrentXP", 0);
+		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.levelup", 1F, 1F);
+		      		if(tag.getInteger("ItemLevel")/50 > 0 )
+		      		{
+		      			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack)<=0)
+		      			{
+		      				stack.addEnchantment(Enchantment.fortune, tag.getInteger("ItemLevel")/50);
+		      			}
+		      			else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack) < tag.getInteger("ItemLevel")/50)
+		      			{
+		      				Map map = EnchantmentHelper.getEnchantments(stack);
+	    					map.put(Enchantment.fortune.effectId, tag.getInteger("ItemLevel")/50);
+	    					EnchantmentHelper.setEnchantments(map, stack);
+		      			}
+		      		}
+		      	}
+		      	if(tag.getInteger("CurrentDamage") <= 0)
+		      	{
+		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
+		      	}
+		      	 return true;
+	      	 }
+	   		if(!block.isToolEffective("shovel", 2) && tag.getInteger("CurrentDamage") >= 2)
+	      	 {
+	   			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+					}
+				}
+				else
+				{
+		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+				}
+	   			
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
@@ -346,7 +690,18 @@ public class ItemBETool extends ItemTool
     	{
     		if(tag.getInteger("CurrentDamage") >= 2)
 	      	 {
+    			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+					}
+				}
+				else
+				{
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+				}
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
@@ -359,7 +714,38 @@ public class ItemBETool extends ItemTool
     	{
     		if(block.isToolEffective("shovel", 2) && tag.getInteger("CurrentDamage") >= 1)
 	      	 {
+    			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+					}
+				}
+				else
+				{
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+				}
+		      	tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+1);
+		      	if(tag.getInteger("CurrentXP") >= this.getMaxXPForType(tag.getInteger("Type")))
+		      	{
+		      		tag.setInteger("ItemLevel", tag.getInteger("ItemLevel")+1);
+		      		tag.setInteger("CurrentXP", 0);
+		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.levelup", 1F, 1F);
+		      		if(tag.getInteger("ItemLevel")/50 > 0 )
+		      		{
+		      			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack)<=0)
+		      			{
+		      				stack.addEnchantment(Enchantment.fortune, tag.getInteger("ItemLevel")/50);
+		      			}
+		      			else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack) < tag.getInteger("ItemLevel")/50)
+		      			{
+		      				Map map = EnchantmentHelper.getEnchantments(stack);
+	    					map.put(Enchantment.fortune.effectId, tag.getInteger("ItemLevel")/50);
+	    					EnchantmentHelper.setEnchantments(map, stack);
+		      			}
+		      		}
+		      	}
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
@@ -368,7 +754,18 @@ public class ItemBETool extends ItemTool
 	      	 }
     		if(!block.isToolEffective("shovel", 2) && tag.getInteger("CurrentDamage") >= 2)
 	      	 {
+    			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+					}
+				}
+				else
+				{
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+				}
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
@@ -381,8 +778,40 @@ public class ItemBETool extends ItemTool
     	{
     		if(tag.getInteger("GoingDamage")>0 && tag.getInteger("CurrentDamage") >= tag.getInteger("GoingDamage"))
 	      	 {
+    			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-tag.getInteger("GoingDamage"));
+					}
+				}
+				else
+				{
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-tag.getInteger("GoingDamage"));
-		      	 tag.setInteger("GoingDamage", 0);
+				}
+		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-tag.getInteger("GoingDamage"));
+		      	tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+tag.getInteger("GoingDamage"));
+		      	tag.setInteger("GoingDamage", 0);
+		      	if(tag.getInteger("CurrentXP") >= this.getMaxXPForType(tag.getInteger("Type")))
+		      	{
+		      		tag.setInteger("ItemLevel", tag.getInteger("ItemLevel")+1);
+		      		tag.setInteger("CurrentXP", 0);
+		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.levelup", 1F, 1F);
+		      		if(tag.getInteger("ItemLevel")/50 > 0 )
+		      		{
+		      			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack)<=0)
+		      			{
+		      				stack.addEnchantment(Enchantment.fortune, tag.getInteger("ItemLevel")/50);
+		      			}
+		      			else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack) < tag.getInteger("ItemLevel")/50)
+		      			{
+		      				Map map = EnchantmentHelper.getEnchantments(stack);
+	    					map.put(Enchantment.fortune.effectId, tag.getInteger("ItemLevel")/50);
+	    					EnchantmentHelper.setEnchantments(map, stack);
+		      			}
+		      		}
+		      	}
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
@@ -391,7 +820,18 @@ public class ItemBETool extends ItemTool
 	      	 }
     		else if(!block.isToolEffective("axe", 2) && tag.getInteger("CurrentDamage") >= 2)
 	      	 {
+    			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack)>0)
+				{
+					Random rand = new Random();
+					if(!(rand.nextInt(10) <=(0+EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack))))
+					{
+						tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+					}
+				}
+				else
+				{
 		      	 tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-2);
+				}
 		      	if(tag.getInteger("CurrentDamage") <= 0)
 		      	{
 		      		player.worldObj.playSoundAtEntity(player, "minecraft:random.break", 1F, 1F);
@@ -487,6 +927,60 @@ public class ItemBETool extends ItemTool
     		else
     		return true;
     	}
+    	if(tag.getInteger("Type") == EXCAVATOR)
+    	{
+    		if(tag.getInteger("CurrentDamage") >= 9)
+    		{
+    			Block block = player.worldObj.getBlock(x,y,z);
+    	        int meta = player.worldObj.getBlockMetadata(x,y,z);
+    	        
+    	        if(block == null || !this.canHarvestBlock(block, stack))
+    	            return super.onBlockStartBreak(stack, x,y,z, player);
+    	        
+    	        MovingObjectPosition mop = HelperLibrary.raytraceFromEntity(player.worldObj, player, false,  4.5d);
+    	        if(mop == null)
+    	            return super.onBlockStartBreak(stack, x,y,z, player);
+    	        int sideHit = mop.sideHit;
+    	        
+    	        int xRange = exBreakRadius;
+    	        int yRange = exBreakRadius;
+    	        int zRange = exBreakDepth;
+    	        switch (sideHit) 
+    	        {
+    	            case 0:
+    	            case 1:
+    	                yRange = exBreakDepth;
+    	                zRange = exBreakRadius;
+    	                break;
+    	            case 2:
+    	            case 3:
+    	                xRange = exBreakRadius;
+    	                zRange = exBreakDepth;
+    	                break;
+    	            case 4:
+    	            case 5:
+    	                xRange = exBreakDepth;
+    	                zRange = exBreakRadius;
+    	                break;
+    	        }
+    	        
+    	        for (int xPos = x - xRange; xPos <= x + xRange; xPos++)
+    	            for (int yPos = y - yRange; yPos <= y + yRange; yPos++)
+    	                for (int zPos = z - zRange; zPos <= z + zRange; zPos++) {
+    	                    // don't break the originally already broken block, duh
+    	                    if (xPos == x && yPos == y && zPos == z)
+    	                    {
+    	                    	continue;
+    	                    }
+    	                    	
+    	                        breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x,y,z);
+    	                }
+    	        
+    			return false;
+    		}
+    		else
+    		return true;
+    	}
     	if(tag.getInteger("Type") == AXE)
     	{
     		 if (!stack.hasTagCompound())
@@ -530,44 +1024,70 @@ public class ItemBETool extends ItemTool
     	if(stack.getTagCompound() == null)
     		stack.setTagCompound(new NBTTagCompound());
     	NBTTagCompound tag = stack.getTagCompound();
+    	if(tag.getBoolean("hasCreated"))
+    	{
+    		return;
+    	}
     	if(stack.getItemDamage() == 0 || stack.getItemDamage() == 3 || stack.getItemDamage() == 6 || stack.getItemDamage() == 9)
     	{
     		tag.setInteger("MaxDamage", IRONT+WOODB);
     		tag.setInteger("CurrentDamage", IRONT+WOODB);
+    		tag.setBoolean("isSteel", false);
     	}
     	if(stack.getItemDamage() == 12 || stack.getItemDamage() == 15 || stack.getItemDamage() == 18 || stack.getItemDamage() == 21)
     	{
     		tag.setInteger("MaxDamage", BRONZET+WOODB);
     		tag.setInteger("CurrentDamage", BRONZET+WOODB);
+    		tag.setBoolean("isSteel", false);
     	}
     	if(stack.getItemDamage() == 1 || stack.getItemDamage() == 4 || stack.getItemDamage() == 7 || stack.getItemDamage() == 10)
     	{
     		tag.setInteger("MaxDamage", IRONT+IRONB);
     		tag.setInteger("CurrentDamage", IRONT+IRONB);
+    		tag.setBoolean("isSteel", false);
     	}
     	if(stack.getItemDamage() == 13 || stack.getItemDamage() == 16 || stack.getItemDamage() == 19 || stack.getItemDamage() == 22)
     	{
     		tag.setInteger("MaxDamage", BRONZET+IRONB);
     		tag.setInteger("CurrentDamage", BRONZET+IRONB);
+    		tag.setBoolean("isSteel", false);
     	}
     	if(stack.getItemDamage() == 2 || stack.getItemDamage() == 5 || stack.getItemDamage() == 8 || stack.getItemDamage() == 11)
     	{
     		tag.setInteger("MaxDamage", IRONT+BRONZEB);
     		tag.setInteger("CurrentDamage", IRONT+BRONZEB);
+    		tag.setBoolean("isSteel", false);
     	}
     	if(stack.getItemDamage() == 14 || stack.getItemDamage() == 17 || stack.getItemDamage() == 20 || stack.getItemDamage() == 23)
     	{
     		tag.setInteger("MaxDamage", BRONZET+BRONZEB);
     		tag.setInteger("CurrentDamage", BRONZET+BRONZEB);
+    		tag.setBoolean("isSteel", false);
     	}
-    	if(stack.getItemDamage() == 0 || stack.getItemDamage() == 1 || stack.getItemDamage() == 2 || stack.getItemDamage() == 12 || stack.getItemDamage() == 13 || stack.getItemDamage() == 14)
+    	if(stack.getItemDamage() == 36 || stack.getItemDamage() == 37 || stack.getItemDamage() == 38 || stack.getItemDamage() == 39)
+    	{
+    		tag.setInteger("MaxDamage", STEELT+STEELB);
+    		tag.setInteger("CurrentDamage", STEELT+STEELB);
+    		tag.setBoolean("isSteel", true);
+    	}
+    	if(stack.getItemDamage() == 0 || stack.getItemDamage() == 1 || stack.getItemDamage() == 2 || stack.getItemDamage() == 12 || stack.getItemDamage() == 13 || stack.getItemDamage() == 14 || stack.getItemDamage() == 36)
     	{
     		tag.setInteger("Type", PICK);
+    		if(tag.getBoolean("isSteel"))
+    		{
+    			tag.setInteger("Attack", 6);
+    		}
+    		else
     		tag.setInteger("Attack", 3);
     	}
-    	if(stack.getItemDamage() == 3 || stack.getItemDamage() == 4 || stack.getItemDamage() == 5 )
+    	if(stack.getItemDamage() == 3 || stack.getItemDamage() == 4 || stack.getItemDamage() == 5  || stack.getItemDamage() == 37)
     	{
     		tag.setInteger("Type", SWORD);
+    		if(tag.getBoolean("isSteel"))
+    		{
+    			tag.setInteger("Attack", 16);
+    		}
+    		else
     		tag.setInteger("Attack", 6);
     	}
     	if(stack.getItemDamage() == 15 || stack.getItemDamage() == 16 || stack.getItemDamage() == 17)
@@ -575,17 +1095,113 @@ public class ItemBETool extends ItemTool
     		tag.setInteger("Type", SWORD);
     		tag.setInteger("Attack", 8);
     	}
-    	if(stack.getItemDamage() == 6 || stack.getItemDamage() == 7 || stack.getItemDamage() == 8 || stack.getItemDamage() == 18 || stack.getItemDamage() == 19 || stack.getItemDamage() == 20)
+    	if(stack.getItemDamage() == 6 || stack.getItemDamage() == 7 || stack.getItemDamage() == 8 || stack.getItemDamage() == 18 || stack.getItemDamage() == 19 || stack.getItemDamage() == 20  || stack.getItemDamage() == 38)
     	{
     		tag.setInteger("Type", SHOVEL);
+    		if(tag.getBoolean("isSteel"))
+    		{
+    			tag.setInteger("Attack", 6);
+    		}
+    		else
     		tag.setInteger("Attack", 3);
     	}
-    	if(stack.getItemDamage() == 9 || stack.getItemDamage() == 10 || stack.getItemDamage() == 11 || stack.getItemDamage() == 21 || stack.getItemDamage() == 22 || stack.getItemDamage() == 23)
+    	if(stack.getItemDamage() == 9 || stack.getItemDamage() == 10 || stack.getItemDamage() == 11 || stack.getItemDamage() == 21 || stack.getItemDamage() == 22 || stack.getItemDamage() == 23 || stack.getItemDamage() == 39)
     	{
     		tag.setInteger("Type", AXE);
+    		if(tag.getBoolean("isSteel"))
+    		{
+    			tag.setInteger("Attack", 6);
+    		}
+    		else
     		tag.setInteger("Attack", 3);
     	}
-    	if(stack.getItemDamage() == 24 || stack.getItemDamage() == 25 || stack.getItemDamage() == 26)
+    	
+    	if(stack.getItemDamage() == 24)
+    	{
+    		tag.setInteger("MaxDamage", BRONZEHAM+WOODB);
+    		tag.setInteger("CurrentDamage", BRONZEHAM+WOODB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 25)
+    	{
+    		tag.setInteger("MaxDamage", BRONZEHAM+IRONB);
+    		tag.setInteger("CurrentDamage", BRONZEHAM+IRONB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 26)
+    	{
+    		tag.setInteger("MaxDamage", BRONZEHAM+BRONZEB);
+    		tag.setInteger("CurrentDamage", BRONZEHAM+BRONZEB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 27)
+    	{
+    		tag.setInteger("MaxDamage", IRONHAM+WOODB);
+    		tag.setInteger("CurrentDamage", IRONHAM+WOODB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 28)
+    	{
+    		tag.setInteger("MaxDamage", IRONHAM+BRONZEB);
+    		tag.setInteger("CurrentDamage", IRONHAM+BRONZEB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 29)
+    	{
+    		tag.setInteger("MaxDamage", IRONHAM+IRONB);
+    		tag.setInteger("CurrentDamage", IRONHAM+IRONB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 30)
+    	{
+    		tag.setInteger("MaxDamage", BRONZEEX+WOODB);
+    		tag.setInteger("CurrentDamage", BRONZEEX+WOODB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 31)
+    	{
+    		tag.setInteger("MaxDamage", BRONZEEX+IRONB);
+    		tag.setInteger("CurrentDamage", BRONZEEX+IRONB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 32)
+    	{
+    		tag.setInteger("MaxDamage", BRONZEEX+BRONZEB);
+    		tag.setInteger("CurrentDamage", BRONZEEX+BRONZEB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 33)
+    	{
+    		tag.setInteger("MaxDamage", IRONEX+WOODB);
+    		tag.setInteger("CurrentDamage", IRONEX+WOODB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 34)
+    	{
+    		tag.setInteger("MaxDamage", IRONEX+BRONZEB);
+    		tag.setInteger("CurrentDamage", IRONEX+BRONZEB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 35)
+    	{
+    		tag.setInteger("MaxDamage", IRONEX+IRONB);
+    		tag.setInteger("CurrentDamage", IRONEX+IRONB);
+    		tag.setBoolean("isSteel", false);
+    	}
+    	if(stack.getItemDamage() == 41)
+    	{
+    		tag.setInteger("MaxDamage",STEELEX+STEELB);
+    		tag.setInteger("CurrentDamage", STEELEX+STEELB);
+    		tag.setBoolean("isSteel", true);
+    	}
+    	if(stack.getItemDamage() == 40)
+    	{
+    		tag.setInteger("MaxDamage", STEELHAM+STEELB);
+    		tag.setInteger("CurrentDamage", STEELHAM+STEELB);
+    		tag.setBoolean("isSteel", true);
+    	}
+    	
+    	if(stack.getItemDamage() == 24 || stack.getItemDamage() == 25 || stack.getItemDamage() == 26  || stack.getItemDamage() == 40)
     	{
     		tag.setInteger("Type", HAMMER);
     		tag.setInteger("Attack", 7);
@@ -595,36 +1211,27 @@ public class ItemBETool extends ItemTool
     		tag.setInteger("Type", HAMMER);
     		tag.setInteger("Attack", 7);
     	}
-    	if(stack.getItemDamage() == 24)
+    	if(stack.getItemDamage() == 30 || stack.getItemDamage() == 31 || stack.getItemDamage() == 32  || stack.getItemDamage() == 41)
     	{
-    		tag.setInteger("MaxDamage", BRONZEHAM+WOODB);
-    		tag.setInteger("CurrentDamage", BRONZEHAM+WOODB);
+    		tag.setInteger("Type", EXCAVATOR);
+    		if(tag.getBoolean("isSteel"))
+    		{
+    			tag.setInteger("Attack", 14);
+    		}
+    		else
+    		tag.setInteger("Attack", 7);
     	}
-    	if(stack.getItemDamage() == 25)
+    	if(stack.getItemDamage() == 33 || stack.getItemDamage() == 34 || stack.getItemDamage() == 35)
     	{
-    		tag.setInteger("MaxDamage", BRONZEHAM+IRONB);
-    		tag.setInteger("CurrentDamage", BRONZEHAM+IRONB);
+    		tag.setInteger("Type", EXCAVATOR);
+    		if(tag.getBoolean("isSteel"))
+    		{
+    			tag.setInteger("Attack", 14);
+    		}
+    		else
+    		tag.setInteger("Attack", 7);
     	}
-    	if(stack.getItemDamage() == 26)
-    	{
-    		tag.setInteger("MaxDamage", BRONZEHAM+BRONZEB);
-    		tag.setInteger("CurrentDamage", BRONZEHAM+BRONZEB);
-    	}
-    	if(stack.getItemDamage() == 27)
-    	{
-    		tag.setInteger("MaxDamage", IRONHAM+WOODB);
-    		tag.setInteger("CurrentDamage", IRONHAM+WOODB);
-    	}
-    	if(stack.getItemDamage() == 28)
-    	{
-    		tag.setInteger("MaxDamage", IRONHAM+BRONZEB);
-    		tag.setInteger("CurrentDamage", IRONHAM+BRONZEB);
-    	}
-    	if(stack.getItemDamage() == 29)
-    	{
-    		tag.setInteger("MaxDamage", IRONHAM+IRONB);
-    		tag.setInteger("CurrentDamage", IRONHAM+IRONB);
-    	}
+    	
     	if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, stack) == 1)
 		{
     		tag.setInteger("Attack", tag.getInteger("Attack")+2);
@@ -637,7 +1244,7 @@ public class ItemBETool extends ItemTool
 		{
     		tag.setInteger("Attack", tag.getInteger("Attack")+10);
 		}
-
+    	tag.setBoolean("checkCreated", true);
     }
 	
 	/**
@@ -646,7 +1253,7 @@ public class ItemBETool extends ItemTool
      */
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
-        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 30);
+        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 42);
         switch(i)
         {
         case 0:
@@ -709,6 +1316,31 @@ public class ItemBETool extends ItemTool
         	return names[9];
         case 29:
         	return names[9];
+        case 30:
+        	return names[10];
+        case 31:
+        	return names[10];
+        case 32:
+        	return names[10];
+        case 33:
+        	return names[11];
+        case 34:
+        	return names[11];
+        case 35:
+        	return names[11];
+        case 36:
+        	return names[12];
+        case 37:
+        	return names[13];
+        case 38:
+        	return names[14];
+        case 39:
+        	return names[15];
+        case 40:
+        	return names[16];
+        case 41:
+        	return names[17];
+        	
         default: return "";
         }
     }
@@ -730,9 +1362,11 @@ public class ItemBETool extends ItemTool
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List list)
     {
-        for (int i = 0; i < 30; ++i)
+        for (int i = 0; i < 42; ++i)
         {
-            list.add(new ItemStack(item, 1, i));
+        	ItemStack temp = new ItemStack(item, 1, i);
+        	this.checkCreated(temp);
+            list.add(temp);
             item.setCreativeTab(AdvancedUtilities.advancedBEToolsTab);
         }
     }
@@ -755,6 +1389,9 @@ public class ItemBETool extends ItemTool
         this.icons[27] = par1IconRegister.registerIcon("advancedutilities:ironham");
         this.icons[28] = par1IconRegister.registerIcon("advancedutilities:ironhamirod");
         this.icons[29] = par1IconRegister.registerIcon("advancedutilities:ironhambrod");
+        this.icons[33] = par1IconRegister.registerIcon("advancedutilities:ironexcavator");
+        this.icons[34] = par1IconRegister.registerIcon("advancedutilities:ironexcavatorirod");
+        this.icons[35] = par1IconRegister.registerIcon("advancedutilities:ironexcavatorbrod");
         
         this.icons[12] = par1IconRegister.registerIcon("advancedutilities:bronzepick");
         this.icons[13] = par1IconRegister.registerIcon("advancedutilities:bronzepickirod");
@@ -771,13 +1408,33 @@ public class ItemBETool extends ItemTool
         this.icons[24] = par1IconRegister.registerIcon("advancedutilities:bronzeham");
         this.icons[25] = par1IconRegister.registerIcon("advancedutilities:bronzehamirod");
         this.icons[26] = par1IconRegister.registerIcon("advancedutilities:bronzehambrod");
+        this.icons[30] = par1IconRegister.registerIcon("advancedutilities:bronzeexcavator");
+        this.icons[31] = par1IconRegister.registerIcon("advancedutilities:bronzeexcavatorirod");
+        this.icons[32] = par1IconRegister.registerIcon("advancedutilities:bronzeexcavatorbrod");
+        
+        this.icons[36] = par1IconRegister.registerIcon("advancedutilities:steelpicksrod");
+        this.icons[37] = par1IconRegister.registerIcon("advancedutilities:steelswordsrod");
+        this.icons[38] = par1IconRegister.registerIcon("advancedutilities:steelshovelsrod");
+        this.icons[39] = par1IconRegister.registerIcon("advancedutilities:steelaxesrod");
+        this.icons[40] = par1IconRegister.registerIcon("advancedutilities:steelhamsrod");
+        this.icons[41] = par1IconRegister.registerIcon("advancedutilities:steelexcavatorsrod");
+        
         
     }
 	public void func_150999_a(World world, Block block, int x, int y, int z, EntityPlayer player)
     {
 		NBTTagCompound tag = player.getCurrentEquippedItem().getTagCompound();
 		tag.setInteger("CurrentDamage", tag.getInteger("CurrentDamage")-1);
+		tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+1);
+      	if(tag.getInteger("CurrentXP") >= this.getMaxXPForType(tag.getInteger("Type")))
+      	{
+      		tag.setInteger("ItemLevel", tag.getInteger("ItemLevel")+1);
+      		tag.setInteger("CurrentXP", 0);
+      		player.worldObj.playSoundAtEntity(player, "minecraft:random.levelup", 1F, 1F);
+      	}
     }
+	
+	
 	
 	protected void breakExtraBlock(World world, int x, int y, int z, int sidehit, EntityPlayer player, int refX, int refY, int refZ) 
 	{
@@ -827,7 +1484,7 @@ public class ItemBETool extends ItemTool
             if(block.removedByPlayer(world, player, x,y,z, true)) // boolean is if block can be harvested, checked above
             {
                 block.onBlockDestroyedByPlayer( world, x,y,z, meta);
-                block.harvestBlock(world, player, x,y,z, meta);
+                block.harvestBlock(world, player, x, y, z, meta);
             }
 
             // always send block update to client
@@ -938,9 +1595,10 @@ public class ItemBETool extends ItemTool
 	                                        if (!player.capabilities.isCreativeMode)
 	                                        {
 	                                            localBlock.harvestBlock(world, player, x,y,z, localMeta);
-	                                            onBlockDestroyed(stack, world, localBlock, xPos, yPos, zPos, player);
 	                                            if(stack.getTagCompound()!= null)
-	                                            stack.getTagCompound().setInteger("CurrentDamage", stack.getTagCompound().getInteger("CurrentDamage")-1);
+	                                            //stack.getTagCompound().setInteger("CurrentDamage", stack.getTagCompound().getInteger("CurrentDamage")-1);
+	                                            stack.getTagCompound().setInteger("GoingDamage",  stack.getTagCompound().getInteger("goingDamage")+1);
+	                                            
 	                                        }
 
 	                                        world.setBlockToAir(xPos, yPos, zPos);
@@ -954,6 +1612,22 @@ public class ItemBETool extends ItemTool
 	                }
 	            }
 	        }
+	        onBlockDestroyed(stack, world, bID, x, y, z, player);
 	        return count;
 	    }
+	    
+	   /* @Override
+	    public void onUpdate(ItemStack stack, World world, Entity ent, int huh, boolean wut) 
+	    {
+	    	if(stack.getTagCompound() == null)
+	    	{
+	    		stack.setTagCompound(new NBTTagCompound());
+	    	}
+	    	if(!stack.getTagCompound().getBoolean("hasCreated"))
+	    	{
+	    		this.checkCreated(stack);
+	    	}
+	    }*/
+	    
+	    
 }

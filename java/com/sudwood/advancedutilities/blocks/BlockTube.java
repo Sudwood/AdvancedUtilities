@@ -2,6 +2,20 @@ package com.sudwood.advancedutilities.blocks;
 
 import java.util.Random;
 
+import com.sudwood.advancedutilities.AdvancedUtilities;
+import com.sudwood.advancedutilities.HelperLibrary;
+import com.sudwood.advancedutilities.client.ClientRegistering;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
+import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
+import com.sudwood.advancedutilities.tileentity.TileEntityMagnetTube;
+import com.sudwood.advancedutilities.tileentity.TileEntityRationedItemTube;
+import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
+import com.sudwood.advancedutilities.tileentity.TileEntitySplitterFluidTube;
+import com.sudwood.advancedutilities.tileentity.TileEntitySplitterItemTube;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -9,6 +23,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,18 +35,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
-
-import com.sudwood.advancedutilities.AdvancedUtilities;
-import com.sudwood.advancedutilities.client.ClientRegistering;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
-import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
-import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
-import com.sudwood.advancedutilities.tileentity.TileEntitySplitterFluidTube;
-import com.sudwood.advancedutilities.tileentity.TileEntitySplitterItemTube;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockTube extends BlockContainer
 {
@@ -77,7 +80,7 @@ public class BlockTube extends BlockContainer
 	@SideOnly(Side.CLIENT)
 	public int getRenderType()
     {
-		if(Type <= 2)
+		if(Type <= 2 || Type >=5)
 			return ClientRegistering.tubeId;
 		else
 			return ClientRegistering.splitterTubeId;
@@ -169,6 +172,10 @@ public class BlockTube extends BlockContainer
 			return new TileEntitySplitterItemTube();
 		if(Type == 4)
 			return new TileEntitySplitterFluidTube();
+		if(Type == 5)
+			return new TileEntityMagnetTube();
+		if(Type == 6)
+			return new TileEntityRationedItemTube();
 		return null;
 	}
 	@Override
@@ -199,6 +206,8 @@ public class BlockTube extends BlockContainer
 				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.splitterItemTube, 1)));
 			if(Type == 4)
 				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.splitterFluidTube, 1)));
+			if(Type == 5)
+				world.spawnEntityInWorld(new EntityItem(world, x, y, z, new ItemStack(AdvancedUtilitiesBlocks.magnetItemTube, 1)));
 			this.breakBlock(world, x, y, z, this, world.getBlockMetadata(x, y, z));
 		}
 		this.removedByPlayer(world, player, x, y, z);
@@ -213,6 +222,21 @@ public class BlockTube extends BlockContainer
 		}
 		if(Type == 0 && !player.isSneaking() && (player.getCurrentEquippedItem() == null || player.getCurrentEquippedItem().getItem() != AdvancedUtilitiesItems.bronzeWrench))
 		{
+			if(player.getHeldItem()!=null&& HelperLibrary.areItemStacksSameItemAndDamage(player.getHeldItem(), new ItemStack(Blocks.redstone_torch, 1)))
+			{
+				TileEntityItemTube tile = (TileEntityItemTube) world.getTileEntity(x, y, z);
+				if(tile.checkPower)
+				{
+					tile.checkPower = false;
+					if(player.getHeldItem().stackSize == 1)
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+					else
+					{
+						ItemStack temp = player.getHeldItem().copy();
+						player.inventory.setInventorySlotContents(player.inventory.currentItem, temp);
+					}
+				}
+			}
 			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.itemTubeGui, world, x, y, z);
 			return true;
 		}
@@ -252,6 +276,16 @@ public class BlockTube extends BlockContainer
 			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.fluidTubeGui, world, x, y, z);
 			return true;
 		}
+		if(Type == 5 && !player.isSneaking() && (player.getCurrentEquippedItem() == null || player.getCurrentEquippedItem().getItem() != AdvancedUtilitiesItems.bronzeWrench))
+		{
+			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.itemTubeGui, world, x, y, z);
+			return true;
+		}
+		if(Type == 6 && !player.isSneaking() && (player.getCurrentEquippedItem() == null || player.getCurrentEquippedItem().getItem() != AdvancedUtilitiesItems.bronzeWrench))
+		{
+			player.openGui(AdvancedUtilities.instance, AdvancedUtilities.itemTubeGui, world, x, y, z);
+			return true;
+		}
 		return false;
     }
 	
@@ -264,6 +298,10 @@ public class BlockTube extends BlockContainer
         	{
         	case 0:
         		tileentityfurnace = (TileEntityItemTube)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
+        		ItemStack temp = new ItemStack(Blocks.redstone_torch, 1);
+        		EntityItem temp2 = new EntityItem(p_149749_1_);
+        		temp2.setEntityItemStack(temp);
+        		p_149749_1_.spawnEntityInWorld(temp2);
         		break;
         	case 1:
         		return;
@@ -275,7 +313,16 @@ public class BlockTube extends BlockContainer
     			break;
     		case 4:
     			return;
-    			
+    		case 5:
+    			tileentityfurnace = (TileEntityMagnetTube)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
+        		ItemStack temp3 = new ItemStack(Blocks.redstone_torch, 1);
+        		EntityItem temp4 = new EntityItem(p_149749_1_);
+        		temp4.setEntityItemStack(temp3);
+        		p_149749_1_.spawnEntityInWorld(temp4);
+    			break;
+    		case 6:
+    			tileentityfurnace = (TileEntityRationedItemTube)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
+    			break;
 
     			default:
     				tileentityfurnace = (TileEntityItemTube)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);

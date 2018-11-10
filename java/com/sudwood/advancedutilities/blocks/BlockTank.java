@@ -2,26 +2,29 @@ package com.sudwood.advancedutilities.blocks;
 
 import java.util.ArrayList;
 
+import com.sudwood.advancedutilities.client.ClientRegistering;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.tileentity.TileEntityPortaChest;
+import com.sudwood.advancedutilities.tileentity.TileEntityTank;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
-
-import com.sudwood.advancedutilities.client.ClientRegistering;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-import com.sudwood.advancedutilities.tileentity.TileEntityTank;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockTank extends BlockContainer
 {
@@ -85,11 +88,31 @@ public class BlockTank extends BlockContainer
   {
       return 0;
   }
+  @Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
+  {
+	  TileEntityTank tile = (TileEntityTank) world.getTileEntity(target.blockX, target.blockY, target.blockZ);
+		ItemStack temp = null;
+		if(tile!=null)
+		{
+			temp = new ItemStack(AdvancedUtilitiesBlocks.blockTank);
+			NBTTagCompound tag = new NBTTagCompound();
+			tile.tank.writeToNBT(tag);
+			temp.setTagCompound(tag);
+		}
+		
+      return temp;
+  }
   
   public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_)
   {
 	  if(player.getCurrentEquippedItem() != null)
 	  {
+		  if(player.isSneaking()&&player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.bronzeWrench)
+			{
+				this.sneakWrench(world, x, y, z, player);
+				return true;
+			}
 		  if(FluidContainerRegistry.isFilledContainer(player.getCurrentEquippedItem()))
 		  {
 			  if(world.getTileEntity(x, y, z) != null)
@@ -98,8 +121,9 @@ public class BlockTank extends BlockContainer
 				  tile.fill(ForgeDirection.UNKNOWN, FluidContainerRegistry.getFluidForFilledItem(player.getCurrentEquippedItem()), true);
 				  if(!player.capabilities.isCreativeMode)
 				  {
-					  player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
-					  player.inventory.addItemStackToInventory(new ItemStack(Items.bucket, 1));
+					  player.inventory.mainInventory[player.inventory.currentItem] = new ItemStack(Items.bucket);
+					 // player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
+					 // player.inventory.addItemStackToInventory(new ItemStack(Items.bucket, 1));
 				  }
 				  world.markBlockForUpdate(x, y, z);
 			  }
@@ -110,17 +134,30 @@ public class BlockTank extends BlockContainer
 			  if(world.getTileEntity(x, y, z) != null)
 			  {
 				  TileEntityTank tile = (TileEntityTank) world.getTileEntity(x, y, z);
-				  if(tile.tank.getFluidAmount() > 0 && tile.tank.getFluid().getFluid()!= AdvancedUtilitiesBlocks.fluidSteam)
+				  if(tile.tank.getFluidAmount() > 0 && tile.tank.getFluid().getFluid()!= AdvancedUtilitiesFluids.fluidSteam)
 				  {
-					  player.inventory.addItemStackToInventory(FluidContainerRegistry.fillFluidContainer(tile.drain(ForgeDirection.UNKNOWN, FluidContainerRegistry.BUCKET_VOLUME, true), player.getCurrentEquippedItem()));
-					  if(!player.capabilities.isCreativeMode)
+					  if(player.inventory.getCurrentItem().stackSize >1)
 					  {
-						  player.inventory.getCurrentItem().stackSize-=1;
-						  if(player.inventory.getCurrentItem().stackSize <= 0)
+						  player.inventory.addItemStackToInventory(FluidContainerRegistry.fillFluidContainer(tile.drain(ForgeDirection.UNKNOWN, FluidContainerRegistry.BUCKET_VOLUME, true), player.getCurrentEquippedItem()));
+						  if(!player.capabilities.isCreativeMode)
 						  {
-							  player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+							  player.inventory.getCurrentItem().stackSize-=1;
+							  if(player.inventory.getCurrentItem().stackSize <= 0)
+							  {
+								  player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+							  }
 						  }
 					  }
+					  else
+					  {
+						  if(!player.capabilities.isCreativeMode)
+							  player.inventory.mainInventory[player.inventory.currentItem] = FluidContainerRegistry.fillFluidContainer(tile.drain(ForgeDirection.UNKNOWN, FluidContainerRegistry.BUCKET_VOLUME, true), player.getCurrentEquippedItem());
+						  else
+						  {
+							  tile.drain(ForgeDirection.UNKNOWN, FluidContainerRegistry.BUCKET_VOLUME, true);
+						  }
+					  }
+					  
 					  world.markBlockForUpdate(x, y, z);
 				  }
 			  }
@@ -139,7 +176,7 @@ public class BlockTank extends BlockContainer
 		  if(((TileEntityTank)world.getTileEntity(x, y, z)).tank.getFluidAmount() > 0)
 			  player.addChatComponentMessage(new ChatComponentText(((TileEntityTank)world.getTileEntity(x, y, z)).tank.getFluidAmount()+" mB " +((TileEntityTank)world.getTileEntity(x, y, z)).tank.getFluid().getFluid().getName()));
 		  else
-			  player.addChatComponentMessage(new ChatComponentText(((TileEntityTank)world.getTileEntity(x, y, z)).tank.getFluidAmount()+"Empty"));
+			  player.addChatComponentMessage(new ChatComponentText(((TileEntityTank)world.getTileEntity(x, y, z)).tank.getFluidAmount()+" Empty"));
 		  world.markBlockForUpdate(x, y, z);
 	  }
 	  return true;
@@ -153,7 +190,7 @@ public class BlockTank extends BlockContainer
 		  return 0;
   }
   
-  @Override
+/*  @Override
   public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
   {
 	  ArrayList<ItemStack> item = new ArrayList<ItemStack>();
@@ -168,14 +205,68 @@ public class BlockTank extends BlockContainer
 		  if(world.getTileEntity(x, y, z) instanceof TileEntityTank)
 		  {
 			  TileEntityTank tile = (TileEntityTank) world.getTileEntity(x, y, z);
-			  tag.setInteger("fluidamount", tile.tank.getFluidAmount());
-			  tag.setString("fluid", tile.tank.getFluid().getFluid().getName());
+			  tile.tank.writeToNBT(tag);
 			  stack.setTagCompound(tag);
 			  
 		  }
 	  }
 	  item.add(stack);
 	  return item;
+  }*/
+  
+  @Override
+  public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
+  {
+      ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
+      TileEntityTank te = (TileEntityTank)world.getTileEntity(x, y, z);
+      if (te != null && te.tank != null)
+      {
+    	  NBTTagCompound tag = new NBTTagCompound();
+    	  te.tank.writeToNBT(tag);
+    	  ItemStack temp = new ItemStack(AdvancedUtilitiesBlocks.blockTank ,1);
+    	  temp.setTagCompound(tag);
+    	  ret.remove(0);
+    	  ret.add(temp);
+      }
+      return ret;
   }
+  @Override
+  public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
+  {
+      if (willHarvest) return true; //If it will harvest, delay deletion of the block until after getDrops
+      return super.removedByPlayer(world, player, x, y, z, willHarvest);
+  }
+  /**
+   * Called when the player destroys a block with an item that can harvest it. (i, j, k) are the coordinates of the
+   * block and l is the block's subtype/damage.
+   */
+  @Override
+  public void harvestBlock(World world, EntityPlayer player, int x, int y, int z, int meta)
+  {
+      super.harvestBlock(world, player, x, y, z, meta);
+      world.setBlockToAir(x, y, z);
+  }
+  
+  public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase placer, ItemStack stack) 
+  {
+	  super.onBlockPlacedBy(world, x, y, z, placer, stack);
+	  if(stack.getItem() != null)
+	  {
+		  NBTTagCompound tag = stack.getTagCompound();
+		  TileEntityTank te = (TileEntityTank) world.getTileEntity(x, y, z);
+		  if(tag!=null)
+		  te.tank.readFromNBT(tag);
+	  }
+  }
+  
+  
+  public void sneakWrench(World world, int x, int y, int z, EntityPlayer player)
+	{
+		if(!world.isRemote)
+		{
+			this.harvestBlock(world, player, x,y,z, world.getBlockMetadata(x, y, z));
+		}
+		this.removedByPlayer(world, player, x, y, z, true);
+	}
 
 }

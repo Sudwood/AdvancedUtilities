@@ -16,15 +16,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerArmorForge extends Container
 {
-    private TileEntityArmorForge tileFurnace;
+    private TileEntityArmorForge tile;
     private int lastCookTime;
     private int lastBurnTime;
     private int lastItemBurnTime;
     private static final String __OBFID = "CL_00001748";
+    private int sizeInventory = 0;
 
     public ContainerArmorForge(InventoryPlayer par1InventoryPlayer, TileEntityArmorForge par2TileEntityArmorForge)
     {
-        this.tileFurnace = par2TileEntityArmorForge;
+        this.tile = par2TileEntityArmorForge;
+        sizeInventory = tile.getSizeInventory();
         this.addSlotToContainer(new Slot(par2TileEntityArmorForge, 0, 42, 27));
         this.addSlotToContainer(new Slot(par2TileEntityArmorForge, 1, 42, 45));
         this.addSlotToContainer(new SlotForged(par2TileEntityArmorForge, 2, 116, 35));
@@ -47,7 +49,7 @@ public class ContainerArmorForge extends Container
     public void addCraftingToCrafters(ICrafting par1ICrafting)
     {
         super.addCraftingToCrafters(par1ICrafting);
-        par1ICrafting.sendProgressBarUpdate(this, 0, this.tileFurnace.furnaceCookTime);
+        par1ICrafting.sendProgressBarUpdate(this, 0, this.tile.furnaceCookTime);
 
     }
 
@@ -62,15 +64,15 @@ public class ContainerArmorForge extends Container
         {
             ICrafting icrafting = (ICrafting)this.crafters.get(i);
 
-            if (this.lastCookTime != this.tileFurnace.furnaceCookTime)
+            if (this.lastCookTime != this.tile.furnaceCookTime)
             {
-                icrafting.sendProgressBarUpdate(this, 0, this.tileFurnace.furnaceCookTime);
+                icrafting.sendProgressBarUpdate(this, 0, this.tile.furnaceCookTime);
             }
 
           
         }
 
-        this.lastCookTime = this.tileFurnace.furnaceCookTime;
+        this.lastCookTime = this.tile.furnaceCookTime;
 
     }
 
@@ -79,7 +81,7 @@ public class ContainerArmorForge extends Container
     {
         if (par1 == 0)
         {
-            this.tileFurnace.furnaceCookTime = par2;
+            this.tile.furnaceCookTime = par2;
         }
 
        
@@ -87,75 +89,44 @@ public class ContainerArmorForge extends Container
 
     public boolean canInteractWith(EntityPlayer par1EntityPlayer)
     {
-        return this.tileFurnace.isUseableByPlayer(par1EntityPlayer);
+        return this.tile.isUseableByPlayer(par1EntityPlayer);
     }
 
     /**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */
-    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
     {
-        ItemStack itemstack = null;
-        Slot slot = (Slot)this.inventorySlots.get(par2);
-
-        if (slot != null && slot.getHasStack())
-        {
-            ItemStack itemstack1 = slot.getStack();
-            itemstack = itemstack1.copy();
-
-            if (par2 == 2)
-            {
-                if (!this.mergeItemStack(itemstack1, 3, 39, true))
-                {
-                    return null;
-                }
-
-                slot.onSlotChange(itemstack1, itemstack);
-            }
-            else if (par2 != 1 && par2 != 0)
-            {
-                if (FurnaceRecipes.smelting().getSmeltingResult(itemstack1) != null)
-                {
-                    if (!this.mergeItemStack(itemstack1, 0, 1, false))
-                    {
-                        return null;
-                    }
-                }
-                
-                else if (par2 >= 3 && par2 < 30)
-                {
-                    if (!this.mergeItemStack(itemstack1, 30, 39, false))
-                    {
-                        return null;
-                    }
-                }
-                else if (par2 >= 30 && par2 < 39 && !this.mergeItemStack(itemstack1, 3, 30, false))
-                {
-                    return null;
-                }
-            }
-            else if (!this.mergeItemStack(itemstack1, 3, 39, false))
-            {
-                return null;
-            }
-
-            if (itemstack1.stackSize == 0)
-            {
-                slot.putStack((ItemStack)null);
-            }
-            else
-            {
-                slot.onSlotChanged();
-            }
-
-            if (itemstack1.stackSize == itemstack.stackSize)
-            {
-                return null;
-            }
-
-            slot.onPickupFromSlot(par1EntityPlayer, itemstack1);
-        }
-
-        return itemstack;
+    	 ItemStack itemstack = null;
+         Slot slot = (Slot) inventorySlots.get(i);
+         if (slot != null && slot.getHasStack())
+         {
+             ItemStack itemstack1 = slot.getStack();
+             itemstack = itemstack1.copy();
+             if (i < sizeInventory)
+             {
+                 if (!mergeItemStack(itemstack1, sizeInventory, inventorySlots.size(), true))
+                 {
+                     return null;
+                 }
+             }
+             else if (!tile.isItemValidForSlot(i, slot.getStack()))
+             {
+                 return null;
+             }
+             else if (!mergeItemStack(itemstack1, 0, sizeInventory, false))
+             {
+                 return null;
+             }
+             if (itemstack1.stackSize == 0)
+             {
+                 slot.putStack(null);
+             }
+             else
+             {
+                 slot.onSlotChanged();
+             }
+         }
+         return itemstack;
     }
 }

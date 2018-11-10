@@ -15,8 +15,6 @@ public class WorldGenAdvancedTree extends WorldGenerator
 {
 /** The minimum height of a generated tree. */
 private final int minTreeHeight;
-/** True if this tree should grow Vines. */
-private final boolean vinesGrow;
 /** The metadata value of the wood to use in tree generation. */
 private final int metaWood;
 /** The metadata value of the leaves to use in tree generation. */
@@ -31,7 +29,6 @@ public WorldGenAdvancedTree(boolean par1, int par2, int par3, int par4, boolean 
          this.minTreeHeight = par2;
          this.metaWood = par3;
          this.metaLeaves = par4;
-         this.vinesGrow = par5;
 }
 public boolean generate(World par1World, Random par2Random, int par3, int par4, int par5)
 {
@@ -118,7 +115,6 @@ public boolean generate(World par1World, Random par2Random, int par3, int par4, 
                                  }
                                  for (j1 = 0; j1 < l; ++j1)
                                  {
-                                         Block block = par1World.getBlock(par3, par4 + j1, par5);
                                          if ( true)
                                          {
                                                  this.setBlockAndNotifyAdequately(par1World, par3, par4 + j1, par5, AdvancedUtilitiesBlocks.blockRubberLog, this.metaWood);

@@ -3,7 +3,15 @@ package com.sudwood.advancedutilities;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import com.sudwood.advancedutilities.container.InventoryVoidRing;
+import com.sudwood.advancedutilities.entity.minecart.IChunkCart;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 
+import baubles.api.BaublesApi;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -11,6 +19,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
@@ -23,15 +32,9 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
-
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.entity.minecart.IChunkCart;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class AUEventHandler 
 {
@@ -51,14 +54,15 @@ public class AUEventHandler
 	    {
 	        if (event.map.getTextureType() == 0)
 	        {   
-	            AdvancedUtilitiesBlocks.fluidSteam.setIcons(AdvancedUtilitiesBlocks.blockFluidSteam.getIcon(0, 0), AdvancedUtilitiesBlocks.blockFluidSteam.getIcon(1, 0));
+	            AdvancedUtilitiesFluids.fluidSteam.setIcons(AdvancedUtilitiesFluids.blockFluidSteam.getIcon(0, 0), AdvancedUtilitiesFluids.blockFluidSteam.getIcon(1, 0));
+	            AdvancedUtilitiesFluids.fluidOil.setIcons(AdvancedUtilitiesFluids.blockFluidOil.getIcon(0, 0), AdvancedUtilitiesFluids.blockFluidOil.getIcon(1, 0));
 	        }
 	    }
 	
 	@SubscribeEvent
 	public void serverChat(ServerChatEvent event)
 	    {
-	        String chatMessage = event.message;
+	        //String chatMessage = event.message;
 	        /*if(chatMessage.startsWith("test") && chatMessage.endsWith("sound"))
 	        {
 	        	SoundHandler.playAtEntity(event.player.worldObj, event.player, "gunshot", 1.4F, 0.6F);
@@ -98,6 +102,14 @@ public class AUEventHandler
 			ExtendedPlayer.loadProxyData((EntityPlayer)event.entity);
 			// finally, we sync the data between server and client (we did this earlier in 3.3)
 		}
+	}
+	
+	@SubscribeEvent 
+	public void onClonePlayer(PlayerEvent.Clone event)
+	{
+		NBTTagCompound compound = new NBTTagCompound();
+		ExtendedPlayer.get(event.original).saveNBTData(compound);
+		ExtendedPlayer.get(event.entityPlayer).loadNBTData(compound);
 	}
 	
 	@SubscribeEvent
@@ -345,6 +357,141 @@ public class AUEventHandler
 			NBTTagByte tag = new NBTTagByte((byte) 0);
 			additionalProperties.put("AdvancedUtilities:WorldLoaded", tag);
 			event.world.getWorldInfo().setAdditionalProperties(additionalProperties);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityItemPickupEvent(EntityItemPickupEvent event)
+	{
+		if(AdvancedUtilities.isBaubles)
+		{
+		IInventory inv = BaublesApi.getBaubles(event.entityPlayer);
+		if(inv!=null)
+		{
+			boolean hasVoidRing = false;
+			int slot =0;
+			for(int i = 0; i<inv.getSizeInventory(); i++)
+			{
+				if(inv.getStackInSlot(i)!=null && inv.getStackInSlot(i).getItem() == AdvancedUtilitiesItems.voidRing)
+				{
+					hasVoidRing = true;
+					slot = i;
+					break;
+					
+				}
+			}
+			if(hasVoidRing)
+			{
+				ItemStack ring = inv.getStackInSlot(slot);
+				InventoryVoidRing invRing = new InventoryVoidRing(ring);
+				NBTTagCompound tag = ring.getTagCompound();
+				if(tag==null)
+				{
+					tag = new NBTTagCompound();
+				}
+				if(tag.getBoolean("Void"))
+				{
+					if(invRing.hasItem(event.item.getEntityItem()))
+					{
+						event.item.setDead();
+						event.setCanceled(true);
+					}
+				}
+				else
+				{
+					if(invRing.hasItem(event.item.getEntityItem()))
+					{
+						if(TransferHelper.canFitInInventory(event.item.getEntityItem(), invRing))
+						{
+							boolean did = invRing.addItemStackToInventory(event.item.getEntityItem());
+							if(did)
+							{
+								event.item.setDead();
+								event.setCanceled(true);
+							}
+							else
+							{
+								event.item.setDead();
+								event.setCanceled(true);
+							}
+						}
+						else
+						{
+							event.item.setDead();
+							event.setCanceled(true);
+						}
+					}
+				}
+			}
+		}
+		}
+		boolean hasRing = false;
+		int slot = 0;
+		EntityPlayer player = event.entityPlayer;
+		if(player.getHeldItem()!=null&&player.getHeldItem().getItem() == AdvancedUtilitiesItems.voidRing)
+		{
+			hasRing = true;
+			slot = player.inventory.currentItem;
+		}
+
+		if(!hasRing)
+		{
+			for(int i = 0; i  <9; i++)
+			{
+				if(player.inventory.mainInventory[i]!=null && player.inventory.mainInventory[i].getItem() == AdvancedUtilitiesItems.voidRing)
+				{
+					hasRing = true;
+					slot = i;
+					break;
+				}
+			}
+		}
+		if(hasRing)
+		{
+			
+			ItemStack ring = player.inventory.mainInventory[slot];
+			InventoryVoidRing invRing = new InventoryVoidRing(ring);
+			NBTTagCompound tag = ring.getTagCompound();
+			if(tag==null)
+			{
+				tag = new NBTTagCompound();
+			}
+			
+			
+			if(tag.getBoolean("Void"))
+			{
+				if(invRing.hasItem(event.item.getEntityItem()))
+				{
+					event.item.setDead();
+					event.setCanceled(true);
+				}
+			}
+			if(!tag.getBoolean("Void"))
+			{
+				if(invRing.hasItem(event.item.getEntityItem()))
+				{
+					
+					if(TransferHelper.canFitInInventory(event.item.getEntityItem(), invRing))
+					{
+						boolean did = invRing.addItemStackToInventory(event.item.getEntityItem());
+						if(did)
+						{
+							event.item.setDead();
+							event.setCanceled(true);
+						}
+						else
+						{
+							event.item.setDead();
+							event.setCanceled(true);
+						}
+					}
+					else
+					{
+						event.item.setDead();
+						event.setCanceled(true);
+					}
+				}
+			}
 		}
 	}
 	

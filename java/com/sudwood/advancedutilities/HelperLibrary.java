@@ -4,11 +4,13 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class HelperLibrary 
@@ -72,9 +74,17 @@ public class HelperLibrary
 		{
 			if(compare!= null && OreDictionary.getOreIDs(compare)!= null && OreDictionary.getOreIDs(compare).length > 0)
 			{
-				if(OreDictionary.getOreIDs(stack)[0] == OreDictionary.getOreIDs(compare)[0])
+				int[] temp1 = OreDictionary.getOreIDs(stack);
+				int[] temp2 = OreDictionary.getOreIDs(compare);
+				for(int i =0; i<temp1.length;i++)
 				{
-					return true;
+					for(int e=0; e<temp2.length;e++)
+					{
+						if(temp1[i]==temp2[e])
+						{
+							return true;
+						}
+					}
 				}
 			}
 		}
@@ -85,7 +95,7 @@ public class HelperLibrary
 	 * Returns true if the item is OreDictionary the same - false if not
 	 * @param stack the item stack that is being checked
 	 * @param compare the item stack of the Item that you are looking for
-	 * @param isInt put whatever determines if a answer besides yes or no is needed
+	 * @param isInt determines if a answer besides yes or no is needed
 	 * @return returns 0 - false 1 - true 2 - is not ore dictionary
 	 */
 	public static int isOreDicItem(ItemStack stack, ItemStack compare, boolean isInt)
@@ -131,8 +141,22 @@ public class HelperLibrary
 		return false;
 	}
 	
+	public static boolean areItemStacksSameItem(ItemStack base, ItemStack compare)
+	{
+		if(base == null || compare == null)
+			return false;
+		if(base.getItem() == compare.getItem())
+			return true;
+		return false;
+	}
+	
+	
 	public static boolean areItemStacksSameItemAndDamage(ItemStack base, ItemStack compare)
 	{
+		if(base == null || compare == null)
+		{
+			return false;
+		}
 		if(base.getItem() == compare.getItem())
 		{
 			if(base.getItemDamage() == compare.getItemDamage())
@@ -144,7 +168,7 @@ public class HelperLibrary
 	}
 	public static boolean areItemStacksSameItemAndDamageAndNBT(ItemStack base, ItemStack compare)
 	{
-		if(base.getItem() == compare.getItem())
+		if(base!= null && compare != null && base.getItem() == compare.getItem())
 		{
 			if(base.getItemDamage() == compare.getItemDamage())
 			{
@@ -154,4 +178,98 @@ public class HelperLibrary
 		}
 		return false;
 	}
+	
+	/**
+	 * @param the forge direction being checked
+	 * @return the direction in int form 0 - down 1 - up 2 - north 3 - south 4 - west 5 - east 
+	 */
+	public static int getNumberFromForgeDirection(ForgeDirection dir) 
+	{
+		int rect = -1;
+		if(dir.offsetX!= 0)
+		{
+			if(dir.offsetX > 0)
+			{
+				return 5;
+			}
+			if(dir.offsetX < 0)
+			{
+				return 4;
+			}
+		}
+		if(dir.offsetY!= 0)
+		{
+			if(dir.offsetY > 0)
+			{
+				return 1;
+			}
+			if(dir.offsetY < 0)
+			{
+				return 0;
+			}
+		}
+		if(dir.offsetZ!= 0)
+		{
+			if(dir.offsetZ > 0)
+			{
+				return 3;
+			}
+			if(dir.offsetZ < 0)
+			{
+				return 2;
+			}
+		}
+		return rect;
+	}
+	
+	/**
+	 * @param the direction in int form 0 - down, 1 - up, 2 - north, 3 - south, 4 - west, 5 - east 
+	 * @return the forge direction that is for the number
+	 */
+	public static ForgeDirection getForgeDirectionFromNumber(int dir) 
+	{
+		switch(dir)
+		{
+		case 0:
+			return ForgeDirection.DOWN;
+		case 1:
+			return ForgeDirection.UP;
+		case 2:
+			return ForgeDirection.NORTH;
+		case 3:
+			return ForgeDirection.SOUTH;
+		case 4:
+			return ForgeDirection.WEST;
+		case 5:
+			return ForgeDirection.EAST;
+		default:
+			return ForgeDirection.UNKNOWN;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param s modid:name
+	 * @return
+	 */
+	public static Item getItem(String s)
+    {
+
+		return (Item) Item.itemRegistry.getObject(s);
+	    //return GameRegistry.findItem(parts[0], parts[1]); // Will return null if no item is found.
+
+    }
+	
+	/**
+	 * 
+	 * @param s modid:name
+	 * @return
+	 */
+	public static Block getBlock(String s)
+    {
+
+	    return (Block) Block.blockRegistry.getObject(s);
+	   // return GameRegistry.findBlock(parts[0], parts[1]); // Will return null if no item is found.
+
+    }
 }

@@ -2,9 +2,10 @@ package com.sudwood.advancedutilities.fluids;
 
 import java.util.Random;
 
+import com.sudwood.advancedutilities.AdvancedUtilities;
 
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
@@ -12,8 +13,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockFluidSteam extends BlockFluidClassic
 {
@@ -25,6 +24,7 @@ public class BlockFluidSteam extends BlockFluidClassic
     
     public BlockFluidSteam(Fluid fluid, Material material) {
             super(fluid, material);
+            this.setCreativeTab(AdvancedUtilities.advancedTab);
            // setUnlocalizedName("yourFluid");
     }
     
@@ -47,13 +47,23 @@ public class BlockFluidSteam extends BlockFluidClassic
     }
     
     @Override
+
     public boolean canDisplace(IBlockAccess world, int x, int y, int z) {
-            return false;
+
+            if (world.getBlock(x,  y,  z).getMaterial().isLiquid()) return false;
+
+            return super.canDisplace(world, x, y, z);
+
     }
-    
+
+   
+
     @Override
+
     public boolean displaceIfPossible(World world, int x, int y, int z) {
+
             return false;
+
     }
     @Override
     public void updateTick(World world, int x, int y, int z, Random rand)
@@ -62,7 +72,7 @@ public class BlockFluidSteam extends BlockFluidClassic
     	if(world.getBlock(x, y+1, z).isAir(world, x, y, z))
     	{
     		if(y<250)
-    			world.setBlock(x, y+1, z, AdvancedUtilitiesBlocks.blockFluidSteam);
+    			world.setBlock(x, y+1, z, AdvancedUtilitiesFluids.blockFluidSteam);
     		world.setBlockToAir(x, y, z);
     	}
     }

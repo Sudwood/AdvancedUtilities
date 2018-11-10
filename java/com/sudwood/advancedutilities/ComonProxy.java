@@ -26,4 +26,5 @@ public class ComonProxy
 	{
 		return extendedEntityData.remove(name);
 	}
+
 }

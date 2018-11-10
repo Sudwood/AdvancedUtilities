@@ -5,13 +5,15 @@ import java.util.Random;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.blocks.BlockOre;
 import com.sudwood.advancedutilities.config.ServerOptions;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
 
+import cpw.mods.fml.common.IWorldGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.feature.WorldGenLakes;
 import net.minecraft.world.gen.feature.WorldGenMinable;
-import cpw.mods.fml.common.IWorldGenerator;
 
 public class OreGenerator implements IWorldGenerator
 {
@@ -26,7 +28,13 @@ public class OreGenerator implements IWorldGenerator
             generateSurface(world, random, chunkX * 16, chunkZ * 16);
         case 1:
             generateEnd(world, random, chunkX * 16, chunkZ * 16);
+        default:
+        	if(!world.provider.isHellWorld)
+        	{
+        		generateSurface(world, random, chunkX * 16, chunkZ * 16);
+        	}
         }
+        
     }
  
     private void generateEnd(World world, Random random, int x, int z)
@@ -45,6 +53,15 @@ public class OreGenerator implements IWorldGenerator
         this.addOreSpawn(AdvancedUtilitiesBlocks.blockOre,BlockOre.TUNGSTEN, world, random, x, z, 16, 16, 8 + random.nextInt(3), ServerOptions.tungstenSpawnRate, 8, 26);
         this.addOreSpawn(AdvancedUtilitiesBlocks.blockOre,BlockOre.PLATINUM, world, random, x, z, 16, 16, 8 + random.nextInt(3), ServerOptions.platinumSpawnRate, 2, 16);
         this.addOreSpawn(AdvancedUtilitiesBlocks.blockOre,BlockOre.NICKEL, world, random, x, z, 16, 16, 12 + random.nextInt(3), ServerOptions.nickelSpawnRate, 2, 128);
+        if(ServerOptions.spawnOil &&random.nextInt(10) > 7 && world.getBiomeGenForCoords(x, z).rainfall ==0F)
+        	new WorldGenLakes(AdvancedUtilitiesFluids.blockFluidOil).generate(world, random, x+random.nextInt(16), 50+random.nextInt(30), z+random.nextInt(16));
+        else
+        {
+        	if(ServerOptions.spawnOil &&random.nextInt(30) > 25)
+        	{
+        		new WorldGenLakes(AdvancedUtilitiesFluids.blockFluidOil).generate(world, random, x+random.nextInt(16), 50+random.nextInt(30), z+random.nextInt(16));
+        	}
+        }
     }
  
     private void generateNether(World world, Random random, int x, int z)

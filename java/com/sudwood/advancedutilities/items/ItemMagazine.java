@@ -31,7 +31,8 @@ public class ItemMagazine extends Item
 		}
 		NBTTagCompound tag = par1ItemStack.getTagCompound();
 		InventoryItem inv = new InventoryItem(par1ItemStack);
-		par3List.add("Bullets: "+inv.getTotalItems(AdvancedUtilitiesItems.bronzeBullet));
+		int temp = inv.getTotalItems(AdvancedUtilitiesItems.bronzeBullet)+inv.getTotalItems(AdvancedUtilitiesItems.steelBullet);
+		par3List.add("Bullets: "+temp);
 	}
 	/**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer

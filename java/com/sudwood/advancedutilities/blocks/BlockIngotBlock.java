@@ -7,10 +7,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
 
@@ -93,6 +96,19 @@ public class BlockIngotBlock extends Block{
     public boolean isBeaconBase(IBlockAccess worldObj, int x, int y, int z, int beaconX, int beaconY, int beaconZ)
     {
         return true;
+    }
+    public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity)
+    {
+       return false;
+    }
+    @Override
+    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion)
+    {
+    	return;
+    }
+    public boolean canDropFromExplosion(Explosion p_149659_1_)
+    {
+        return false;
     }
 
 }

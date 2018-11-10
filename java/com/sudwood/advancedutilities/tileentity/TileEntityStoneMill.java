@@ -2,10 +2,10 @@ package com.sudwood.advancedutilities.tileentity;
 
 import java.util.Random;
 
-import com.sudwood.advancedutilities.CrushRecipes;
 import com.sudwood.advancedutilities.HelperLibrary;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.items.ItemIngot;
+import com.sudwood.advancedutilities.recipes.CrushRecipes;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -275,6 +275,7 @@ public class TileEntityStoneMill extends TileEntity implements ISidedInventory
     	if(canCrush())
     	{
 	    	ItemStack output = CrushRecipes.getCrushResult(inventory[1]);
+	    	int size = CrushRecipes.getIngredientSize(inventory[1]);
 	    	if(output.stackSize > 1 && rand.nextInt(2) == 0)
 	    	{
 	    		output.stackSize = output.stackSize/2;
@@ -282,7 +283,7 @@ public class TileEntityStoneMill extends TileEntity implements ISidedInventory
 	    	if(inventory[2] == null)
 	    	{
 	    		inventory[2] = output;
-	    		inventory[1].stackSize--;
+	    		inventory[1].stackSize-=size;
 	    		if(inventory[1].stackSize <= 0)
 	    			inventory[1] = null;
 	    		
@@ -295,8 +296,9 @@ public class TileEntityStoneMill extends TileEntity implements ISidedInventory
 	    	}
 	    	else if(inventory[2].stackSize + output.stackSize < 64)
 	    	{
-	    		this.setInventorySlotContents(2, new ItemStack(output.getItem(), inventory[2].stackSize+output.stackSize, output.getItemDamage()));
-	    		inventory[1].stackSize--;
+	    		output.stackSize+=inventory[2].stackSize;
+	    		this.setInventorySlotContents(2, output);
+	    		inventory[1].stackSize-=size;
 	    		if(inventory[1].stackSize <= 0)
 	    			inventory[1] = null;
 	    		
@@ -330,7 +332,7 @@ public class TileEntityStoneMill extends TileEntity implements ISidedInventory
         {
         	return true;
         }
-        else if(CrushRecipes.getCrushResult(item)!= null && par1 == 1)
+        else if(CrushRecipes.getCrushResultForAutomation(item) && par1 == 1)
         {
         	return true;
         }

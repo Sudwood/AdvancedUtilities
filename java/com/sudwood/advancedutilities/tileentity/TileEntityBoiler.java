@@ -2,7 +2,11 @@ package com.sudwood.advancedutilities.tileentity;
 
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.config.ServerOptions;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,9 +31,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFluidHandler, ISteamTank
 {
@@ -164,10 +165,10 @@ public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFl
 	    		TileEntity tile = worldObj.getTileEntity(xCoord, yCoord+1, zCoord);
 	    		if(tile instanceof ISteamTank && this.tank.getFluidAmount() >= amount)
 	    		{
-	    			if(((IFluidHandler)tile).canFill(ForgeDirection.DOWN, AdvancedUtilitiesBlocks.fluidSteam))
+	    			if(((IFluidHandler)tile).canFill(ForgeDirection.DOWN, AdvancedUtilitiesFluids.fluidSteam))
 	    			{
-		    			((IFluidHandler)tile).fill(ForgeDirection.DOWN, new FluidStack(AdvancedUtilitiesBlocks.fluidSteam, amount), true);
-		    			this.drain(ForgeDirection.UNKNOWN, new FluidStack(AdvancedUtilitiesBlocks.fluidSteam, amount), true);
+		    			((IFluidHandler)tile).fill(ForgeDirection.DOWN, new FluidStack(AdvancedUtilitiesFluids.fluidSteam, amount), true);
+		    			this.drain(ForgeDirection.UNKNOWN, new FluidStack(AdvancedUtilitiesFluids.fluidSteam, amount), true);
 		    			worldObj.markBlockForUpdate(xCoord, yCoord+1, zCoord);
 	    			}
 	    		}
@@ -381,7 +382,7 @@ public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFl
 
     public void makeSteam()
     {
-    	this.fill(ForgeDirection.UNKNOWN, new FluidStack(AdvancedUtilitiesBlocks.fluidSteam, ServerOptions.steamCreationRate*steamMulti), true);
+    	this.fill(ForgeDirection.UNKNOWN, new FluidStack(AdvancedUtilitiesFluids.fluidSteam, ServerOptions.steamCreationRate*steamMulti), true);
     	this.waterTank.drain(ServerOptions.steamCreationRate*steamMulti, true);
     	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
@@ -561,7 +562,7 @@ public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFl
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
     {
-    	 if(resource.getFluid() == AdvancedUtilitiesBlocks.fluidSteam)
+    	 if(resource.getFluid() == AdvancedUtilitiesFluids.fluidSteam)
          	return tank.fill(resource, doFill);
          if(resource.getFluid() == FluidRegistry.WATER)
          	return waterTank.fill(resource, doFill);
@@ -575,7 +576,7 @@ public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFl
         {
             return null;
         }
-        if(resource.getFluid() == AdvancedUtilitiesBlocks.fluidSteam)
+        if(resource.getFluid() == AdvancedUtilitiesFluids.fluidSteam)
         	return tank.drain(resource.amount, doDrain);
 		return null;
     }
@@ -589,7 +590,7 @@ public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFl
     @Override
     public boolean canFill(ForgeDirection from, Fluid fluid)
     {
-        if(fluid == FluidRegistry.WATER || fluid == AdvancedUtilitiesBlocks.fluidSteam)
+        if(fluid == FluidRegistry.WATER || fluid == AdvancedUtilitiesFluids.fluidSteam)
         	return true;
         else
         	return false;
@@ -598,7 +599,7 @@ public class TileEntityBoiler extends TileEntity implements ISidedInventory, IFl
     @Override
     public boolean canDrain(ForgeDirection from, Fluid fluid)
     {
-        if(fluid == AdvancedUtilitiesBlocks.fluidSteam)
+        if(fluid == AdvancedUtilitiesFluids.fluidSteam)
         {
         	return true;
         }

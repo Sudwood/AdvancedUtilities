@@ -16,8 +16,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemBulletHead extends Item
 {
-	private String[] names = {"StoneHead", "LeadBullet"};
-	private IIcon[] icons = new IIcon[2];
+	private String[] names = {"StoneHead", "LeadBullet","TungstenBullet"};
+	private IIcon[] icons = new IIcon[3];
 	public ItemBulletHead()
 	{
 		this.setHasSubtypes(true);
@@ -31,7 +31,7 @@ public class ItemBulletHead extends Item
      */
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
-        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 1);
+        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 2);
         return super.getUnlocalizedName() + "." + names[i];
     }
     
@@ -41,7 +41,7 @@ public class ItemBulletHead extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List list)
     {
-        for (int i = 0; i < 2; ++i)
+        for (int i = 0; i < 3; ++i)
         {
             list.add(new ItemStack(item, 1, i));
             item.setCreativeTab(AdvancedUtilities.advancedBEToolsTab);
@@ -56,7 +56,9 @@ public class ItemBulletHead extends Item
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int par1)
     {
+    	if(par1<icons.length)
         return icons[par1];
+    	else return null;
     }
     
     @SideOnly(Side.CLIENT)
@@ -64,5 +66,6 @@ public class ItemBulletHead extends Item
     {
     	this.icons[0] = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":"+"stonehead");
     	this.icons[1] = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":"+"leadbullet");
+    	this.icons[2] = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":"+"tungstenbullet");
     }
 }

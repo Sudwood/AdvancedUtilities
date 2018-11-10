@@ -20,10 +20,11 @@ public class ContainerSteamFurnace extends Container
     private TileEntitySteamFurnace tileFurnace;
     private int lastTankAmount;
     private int lastProgressTime;
-
+    private int sizeInventory = 0;
     public ContainerSteamFurnace(InventoryPlayer par1InventoryPlayer, TileEntitySteamFurnace par2TileEntitySteamBoiler)
     {
         this.tileFurnace = par2TileEntitySteamBoiler;
+        sizeInventory = tileFurnace.getSizeInventory();
         this.addSlotToContainer(new Slot(par2TileEntitySteamBoiler, 0, 14, 17));
         this.addSlotToContainer(new Slot(par2TileEntitySteamBoiler, 1, 14, 43));
         this.addSlotToContainer(new SlotForged(par2TileEntitySteamBoiler, 2, 75, 17));
@@ -99,8 +100,39 @@ public class ContainerSteamFurnace extends Container
     /**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */
-    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
     {
-        return null;
+    	 ItemStack itemstack = null;
+         Slot slot = (Slot) inventorySlots.get(i);
+         if (slot != null && slot.getHasStack())
+         {
+             ItemStack itemstack1 = slot.getStack();
+             itemstack = itemstack1.copy();
+             if (i < sizeInventory)
+             {
+                 if (!mergeItemStack(itemstack1, sizeInventory, inventorySlots.size(), true))
+                 {
+                     return null;
+                 }
+             }
+             else if (!tileFurnace.isItemValidForSlot(i, slot.getStack()))
+             {
+            	 
+                 return null;
+             }
+             else if (!mergeItemStack(itemstack1, 0, sizeInventory, false))
+             {
+                 return null;
+             }
+             if (itemstack1.stackSize == 0)
+             {
+                 slot.putStack(null);
+             }
+             else
+             {
+                 slot.onSlotChanged();
+             }
+         }
+         return itemstack;
     }
 }

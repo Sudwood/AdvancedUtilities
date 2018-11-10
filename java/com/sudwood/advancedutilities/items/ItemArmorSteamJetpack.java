@@ -3,8 +3,10 @@ package com.sudwood.advancedutilities.items;
 import java.util.List;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
+import com.sudwood.advancedutilities.ExtendedPlayer;
 import com.sudwood.advancedutilities.client.ClientRegistering;
 import com.sudwood.advancedutilities.client.SoundHandler;
+import com.sudwood.advancedutilities.config.HudOptions;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -17,7 +19,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 
 public class ItemArmorSteamJetpack extends ItemArmor
@@ -139,16 +143,38 @@ public class ItemArmorSteamJetpack extends ItemArmor
  	    			itemStack.setTagCompound(new NBTTagCompound());
  	    		}
  	    		NBTTagCompound tag = itemStack.getTagCompound();
- 	    		if(itemStack.getItem() == AdvancedUtilitiesItems.steamJetpack && tag.getInteger("tankAmount") >= this.steamHover && player.isSneaking())
- 	    		{
- 	    			player.fallDistance = 0F;
- 	    		}
-	 	    	if(itemStack.getItem() == AdvancedUtilitiesItems.steamJetpack && tag.getInteger("tankAmount") >= this.steamHover && player.isSneaking() && !player.onGround)
+
+ 	    		ExtendedPlayer ep = new ExtendedPlayer(player);
+	 	    	if(itemStack.getItem() == AdvancedUtilitiesItems.steamJetpack && tag.getInteger("tankAmount") >= this.steamHover && player.isSneaking() && !player.onGround && ep.toggleJetpack)
 	 	    	{
 	 	    		player.jumpMovementFactor = (float) 0.06;
+	 	    		player.fallDistance = 0F;
 	 	    		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-	 	    			player.setVelocity(player.motionX,-0.14,player.motionZ);
+	 	    		{
+	 	    			player.motionY = -0.2;
+	 	    		}
+	 	    		if(HudOptions.playJetpackSounds)
 	 	    		SoundHandler.playAtEntity(player.worldObj, player, "steamStream", 0.1F, 0.6F);
+	 	    		if(HudOptions.displayJetpackParticles)
+	 	    		{
+	 	    			int facing = MathHelper.floor_double((double)(player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+	 	    			switch(facing)
+		 	    		{
+		 	    			case 0: // south
+		 	    				world.spawnParticle("cloud", player.posX-(0.6*ForgeDirection.SOUTH.offsetX), player.posY-1, player.posZ-(0.6*ForgeDirection.SOUTH.offsetZ), 0F, -0.5F, 0F);
+		 	    				break;
+		 	    			case 1: // west
+		 	    				world.spawnParticle("cloud", player.posX-(0.6*ForgeDirection.WEST.offsetX), player.posY-1, player.posZ-(0.6*ForgeDirection.WEST.offsetZ), 0F, -0.5F, 0F);
+		 	    				break;
+		 	    			case 2: // north
+		 	    				world.spawnParticle("cloud", player.posX-(0.6*ForgeDirection.NORTH.offsetX), player.posY-1, player.posZ-(0.6*ForgeDirection.NORTH.offsetZ), 0F, -0.5F, 0F);
+		 	    				break;
+		 	    			case 3: // east
+		 	    				world.spawnParticle("cloud", player.posX-(0.6*ForgeDirection.EAST.offsetX), player.posY-1, player.posZ-(0.6*ForgeDirection.EAST.offsetZ), 0F, -0.5F, 0F);
+		 	    				break;
+		 	    		}
+	 	    		}
+	 	    		
 	 	    		if(!player.capabilities.isCreativeMode)
 	 	    		tag.setInteger("tankAmount", tag.getInteger("tankAmount")-this.steamHover);
 	 	    	}

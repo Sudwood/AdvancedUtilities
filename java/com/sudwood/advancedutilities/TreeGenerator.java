@@ -1,6 +1,8 @@
 package com.sudwood.advancedutilities;
 import java.util.Random;
 
+import com.sudwood.advancedutilities.config.ServerOptions;
+
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import cpw.mods.fml.common.IWorldGenerator;
@@ -24,7 +26,10 @@ public class TreeGenerator implements IWorldGenerator {
 	}
 	 
 	private void generateSurface(World world, Random random, int x, int z) {
-	        for (int i = 0; i < 8; i++){
+		if(ServerOptions.spawnRubberTrees)
+		{
+	        for (int i = 0; i < 8; i++)
+	        {
 	                int Xcoord1 = x + random.nextInt(16); //where in chuck it generates
 	                int Ycoord1 = random.nextInt(100); //how high it generates
 	                int Zcoord1 = z + random.nextInt(16); //where in chunk it generates
@@ -32,6 +37,7 @@ public class TreeGenerator implements IWorldGenerator {
 	                new WorldGenAdvancedTree(false, 7, 0, 0, false).generate(world, random, Xcoord1, Ycoord1, Zcoord1);
 	               
 	        }
+		}
 	       
 	}
 	 

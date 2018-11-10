@@ -1,5 +1,13 @@
 package com.sudwood.advancedutilities.tileentity;
 
+import com.sudwood.advancedutilities.TransferHelper;
+import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.config.ServerOptions;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
+import com.sudwood.advancedutilities.recipes.CrushRecipes;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -16,14 +24,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-
-import com.sudwood.advancedutilities.CrushRecipes;
-import com.sudwood.advancedutilities.TransferHelper;
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.config.ServerOptions;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntitySteamCrusher extends TileEntity implements ISidedInventory, IFluidHandler, ISteamTank
 {
@@ -119,26 +119,28 @@ public class TileEntitySteamCrusher extends TileEntity implements ISidedInventor
 	    	if(canCrush())
 	    	{
 		    	ItemStack output = CrushRecipes.getCrushResult(inventory[0]);
+		    	int size = CrushRecipes.getIngredientSize(inventory[0]);
 		    	if(inventory[1] == null)
 		    	{
 		    		inventory[1] = output;
-		    		inventory[0].stackSize--;
+		    		inventory[0].stackSize-=size;
 		    		if(inventory[0].stackSize <= 0)
 		    			inventory[0] = null;
 		    		
-		    		pushItem();
+		    		//pushItem();
 		    		this.drain(ForgeDirection.UNKNOWN, 500, true);
 		    		return;
 		    		
 		    	}
-		    	else if(inventory[1].stackSize + output.stackSize < 64)
+		    	else if(inventory[1].stackSize + output.stackSize <= 64)
 		    	{
-		    		this.setInventorySlotContents(1, new ItemStack(output.getItem(), output.stackSize+inventory[1].stackSize, output.getItemDamage()));
-		    		inventory[0].stackSize--;
+		    		output.stackSize+=inventory[1].stackSize;
+		    		this.setInventorySlotContents(1, output);
+		    		inventory[0].stackSize-=size;
 		    		if(inventory[0].stackSize <= 0)
 		    			inventory[0] = null;
 		    		
-		    		pushItem();
+		    		//pushItem();
 		    		this.drain(ForgeDirection.UNKNOWN, 500, true);
 		    		return;
 		    	}
@@ -211,8 +213,9 @@ public class TileEntitySteamCrusher extends TileEntity implements ISidedInventor
 	    {
 	    	if(worldObj.getBlock(xCoord, yCoord-1, zCoord) == AdvancedUtilitiesBlocks.steamCompressor)
 	    	{
-	    		this.speedMult = 2;
-	    		this.costMod = this.crushCost;
+	    		TileEntitySteamCompressor tile = (TileEntitySteamCompressor) worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
+	    		this.speedMult = tile.multiplier;
+	    		this.costMod = this.crushCost*(tile.multiplier/2);
 	    	}
 	    	else
 	    	{
@@ -369,7 +372,7 @@ public class TileEntitySteamCrusher extends TileEntity implements ISidedInventor
 			// TODO Auto-generated method stub
 			if(var1 == 1)
 				return false;
-			else if(CrushRecipes.getCrushResult(var2)!= null && var1==0)
+			else if(CrushRecipes.getCrushResultForAutomation(var2)&& var1==0)
 				return true;
 			return false;
 		}
@@ -408,7 +411,7 @@ public class TileEntitySteamCrusher extends TileEntity implements ISidedInventor
 	    @Override
 	    public boolean canFill(ForgeDirection from, Fluid fluid)
 	    {
-	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesBlocks.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
+	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesFluids.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
 	    		return true;
 	    	else return false;
 	    }

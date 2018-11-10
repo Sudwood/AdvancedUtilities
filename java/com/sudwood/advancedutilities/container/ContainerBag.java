@@ -11,23 +11,12 @@ public class ContainerBag extends Container
 {
 	/** The Item Inventory for this Container */
 	public final InventoryBag inventory;
-	
-	/** Using these will make transferStackInSlot easier to understand and implement
-	* INV_START is the index of the first slot in the Player's Inventory, so our
-	* InventoryBag's number of slots (e.g. 5 slots is array indices 0-4, so start at 5)
-	* Notice how we don't have to remember how many slots we made? We can just use
-	* InventoryBag.INV_SIZE and if we ever change it, the Container updates automatically. */
-	private static final int INV_START = InventoryBag.INV_SIZE, INV_END = INV_START+26,
-	HOTBAR_START = INV_END+1, HOTBAR_END = HOTBAR_START+8;
-	
-	// If you're planning to add armor slots, put those first like this:
-	// ARMOR_START = InventoryBag.INV_SIZE, ARMOR_END = ARMOR_START+3,
-	// INV_START = ARMOR_END+1, and then carry on like above.
+	private int sizeInventory = 0;
 	
 	public ContainerBag(EntityPlayer par1Player, InventoryPlayer inventoryPlayer, InventoryBag inventoryItem)
 	{
 		this.inventory = inventoryItem;
-		
+		sizeInventory = inventory.getSizeInventory();
 		int i;
 		
 		// ITEM INVENTORY - you'll need to adjust the slot locations to match your texture file
@@ -91,76 +80,39 @@ public class ContainerBag extends Container
 	* Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
 	* Only real change we make to this is to set needsUpdate to true at the end
 	*/
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
 	{
-		ItemStack itemstack = null;
-		Slot slot = (Slot) this.inventorySlots.get(par2);
-		
-		if (slot != null && slot.getHasStack())
-		{
-			ItemStack itemstack1 = slot.getStack();
-			itemstack = itemstack1.copy();
-			
-			// If item is in our custom Inventory or armor slot
-			if (par2 < INV_START)
-			{
-				// try to place in player inventory / action bar
-				if (!this.mergeItemStack(itemstack1, INV_START, HOTBAR_END + 1, true))
-				{
-					return null;
-				}
-				
-				slot.onSlotChange(itemstack1, itemstack);
-			}
-			// Item is in inventory / hotbar, try to place in custom inventory or armor slots
-			else
-			{
-				// Check that the item is the right type
-					// Try to merge into your custom inventory slots
-					// We use 'InventoryBag.INV_SIZE' instead of INV_START just in case
-					// you also add armor or other custom slots
-					if (!this.mergeItemStack(itemstack1, 0, InventoryBag.INV_SIZE-1, false))
-					{
-						return null;
-					}
-				
-				// item is in player's inventory, but not in action bar
-				if (par2 >= INV_START && par2 < HOTBAR_START)
-				{
-					// place in action bar
-					if (!this.mergeItemStack(itemstack1, HOTBAR_START, HOTBAR_END + 1, false))
-					{
-						return null;
-					}
-				}
-				// item in action bar - place in player inventory
-				else if (par2 >= HOTBAR_START && par2 < HOTBAR_END + 1)
-				{
-					if (!this.mergeItemStack(itemstack1, INV_START, INV_END + 1, false))
-					{
-						return null;
-					}
-				}
-			}
-			
-			if (itemstack1.stackSize == 0)
-			{
-				slot.putStack((ItemStack) null);
-			}
-			else
-			{
-				slot.onSlotChanged();
-			}
-			
-			if (itemstack1.stackSize == itemstack.stackSize)
-			{
-				return null;
-			}
-			
-			slot.onPickupFromSlot(par1EntityPlayer, itemstack1);
-		}
-		
-		return itemstack;
+		 ItemStack itemstack = null;
+         Slot slot = (Slot) inventorySlots.get(i);
+         if (slot != null && slot.getHasStack())
+         {
+             ItemStack itemstack1 = slot.getStack();
+             itemstack = itemstack1.copy();
+             if (i < sizeInventory)
+             {
+                 if (!mergeItemStack(itemstack1, sizeInventory, inventorySlots.size(), true))
+                 {
+                     return null;
+                 }
+             }
+             else if (!inventory.isItemValidForSlot(i, slot.getStack()))
+             {
+                 return null;
+             }
+             else if (!mergeItemStack(itemstack1, 0, sizeInventory, false))
+             {
+                 return null;
+             }
+             if (itemstack1.stackSize == 0)
+             {
+                 slot.putStack(null);
+             }
+             else
+             {
+                 slot.onSlotChanged();
+             }
+         }
+ return itemstack;
 	}
 		
 		// NOTE: The following is necessary if you want to prevent the player from moving the item while the

@@ -19,13 +19,13 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	*/
 	public final static String EXT_PROP_NAME = "ExtendedPlayer";
 	
-	private final EntityPlayer player;
-	
 	// Declare other variables you want to add here
 	public boolean isJetpack;
 	public boolean isRunning;
 	public boolean toggleJetpack;
 	public byte[] skills;
+	public boolean toggleHover;
+	public boolean toggleBaubles;
 	
 	/*
 	The default constructor takes no arguments, but I put in the Entity so I can initialize the above variable 'player'
@@ -34,10 +34,11 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 	*/
 	public ExtendedPlayer(EntityPlayer player)
 	{
-		this.player = player;
 		isJetpack = false;
 		isRunning = false;
 		toggleJetpack = false;
+		toggleHover = false;
+		toggleBaubles = false;
 		skills = new byte[]{0, 0, 0};
 	}
 	
@@ -59,6 +60,19 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		return (ExtendedPlayer) player.getExtendedProperties(EXT_PROP_NAME);
 	}
 	
+	@Override
+	public String toString()
+	{
+		String result = "";
+		result+=" isJetpack: "+isJetpack;
+		result+=" isRunning: "+isRunning;
+		result+=" toggleJetpack: "+toggleJetpack;
+		result+=" toggleHover: "+toggleHover;
+		result+=" toggleBaubles: "+toggleBaubles;
+		
+		return result;
+	}
+	
 	
 	// Save any custom data that needs saving here
 	@Override
@@ -70,6 +84,8 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		properties.setBoolean("isJetpack", isJetpack);
 		properties.setBoolean("isRunning", isRunning);
 		properties.setBoolean("toggleJetpack", toggleJetpack);
+		properties.setBoolean("toggleHover", toggleHover);
+		properties.setBoolean("toggleBaubles", toggleBaubles);
 		properties.setByteArray("skills", skills);
 		
 		/*
@@ -87,6 +103,8 @@ public class ExtendedPlayer implements IExtendedEntityProperties
 		this.isJetpack = properties.getBoolean("isJetpack");
 		this.isRunning = properties.getBoolean("isRunning");
 		this.toggleJetpack = properties.getBoolean("toggleJetpack");
+		this.toggleHover = properties.getBoolean("toggleHover");
+		this.toggleBaubles = properties.getBoolean("toggleBaubles");
 		this.skills = properties.getByteArray("skills");
 	}
 	

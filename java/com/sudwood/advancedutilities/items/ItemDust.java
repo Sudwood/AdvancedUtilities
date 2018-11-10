@@ -15,6 +15,27 @@ import net.minecraft.util.MathHelper;
 
 public class ItemDust extends Item
 {
+	public static final int COPPER =0;
+	public static final int IRON =1;
+	public static final int TIN =2;
+	public static final int ZINC =3;
+	public static final int BRONZE =4;
+	public static final int BRASS =5;
+	public static final int GOLD =6;
+	public static final int DIAMOND =7;
+	public static final int COAL =8;
+	public static final int SILVER =9;
+	public static final int PLATINUM = 10;
+	public static final int ALUMINUM = 11;
+	public static final int LEAD = 12;
+	public static final int TUNGSTEN =13;
+	public static final int IRIDIUM =14;
+	public static final int PALIDIUM = 15;
+	public static final int STEEL = 16;
+	public static final int TINYDIAMOND = 17;
+	public static final int FLOUR = 18;
+	public static final int SAWDUST = 19;
+	public static final int NICKEL = 20;
 	//private IIcon[] icons = new IIcon[18];
 	private IIcon tinyDust;
 	private String[] names = {"CopperDust","IronDust", "TinDust", "ZincDust", "BronzeDust",

@@ -15,11 +15,14 @@ import net.minecraft.util.MathHelper;
 
 public class ItemToolPart extends Item
 {
-	private IIcon[] icons = new IIcon[13];
+	private IIcon[] icons = new IIcon[23];
 	
 	private String[] names = {"BronzeRod","IronRod", "IronPickaxeHead", "IronSwordBlade", 
 			"IronShovelHead","IronAxeHead", "BronzePickaxeHead", "BronzeSwordBlade", "BronzeShovelHead",
-			"BronzeAxeHead", "StoneHammerHead", "BronzeHammerHead", "IronHammerHead"};
+			"BronzeAxeHead", "StoneHammerHead", "BronzeHammerHead", "IronHammerHead", 
+			"StoneExcavatorHead", "BronzeExcavatorHead","IronExcavatorHead","SteelRod"
+			,"SteelPickaxeHead","SteelSwordBlade","SteelShovelHead","SteelAxeHead"
+			,"SteelHammerHead","SteelExcavatorHead"};
 	
 	public ItemToolPart()
 	{
@@ -33,7 +36,7 @@ public class ItemToolPart extends Item
      */
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
-        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 12);
+        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 22);
         return super.getUnlocalizedName() + "." + names[i];
     }
     
@@ -43,7 +46,7 @@ public class ItemToolPart extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List list)
     {
-        for (int i = 0; i < 13; ++i)
+        for (int i = 0; i < 23; ++i)
         {
             list.add(new ItemStack(item, 1, i));
             item.setCreativeTab(AdvancedUtilities.advancedBEToolsTab);
@@ -77,6 +80,17 @@ public class ItemToolPart extends Item
         this.icons[10] = par1IconRegister.registerIcon("advancedutilities:stonehammertop");
         this.icons[11] = par1IconRegister.registerIcon("advancedutilities:bronzehammertop");
         this.icons[12] = par1IconRegister.registerIcon("advancedutilities:ironhammertop");
+        this.icons[13] = par1IconRegister.registerIcon("advancedutilities:stoneexcavatortop");
+        this.icons[14] = par1IconRegister.registerIcon("advancedutilities:bronzeexcavatortop");
+        this.icons[15] = par1IconRegister.registerIcon("advancedutilities:ironexcavatortop");
+        
+        this.icons[16] = par1IconRegister.registerIcon("advancedutilities:steelrod");
+        this.icons[17] = par1IconRegister.registerIcon("advancedutilities:steelpicktop");
+        this.icons[18] = par1IconRegister.registerIcon("advancedutilities:steelswordtop");
+        this.icons[19] = par1IconRegister.registerIcon("advancedutilities:steelshoveltop");
+        this.icons[20] = par1IconRegister.registerIcon("advancedutilities:steelaxetop");
+        this.icons[21] = par1IconRegister.registerIcon("advancedutilities:steelhammertop");
+        this.icons[22] = par1IconRegister.registerIcon("advancedutilities:steelexcavatortop");
     }
 	
 }

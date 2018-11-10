@@ -1,5 +1,13 @@
 package com.sudwood.advancedutilities.tileentity;
 
+import com.sudwood.advancedutilities.HelperLibrary;
+import com.sudwood.advancedutilities.config.ServerOptions;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.recipes.SteelOvenRecipes;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -17,15 +25,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-
-import com.sudwood.advancedutilities.HelperLibrary;
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.config.ServerOptions;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-import com.sudwood.advancedutilities.items.ItemIngot;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntitySteelController extends TileEntity implements ISidedInventory, IFluidHandler
 {
@@ -204,6 +203,11 @@ public class TileEntitySteelController extends TileEntity implements ISidedInven
     }
     public boolean canSmelt()
     {
+    	//System.out.println(SteelOvenRecipes.getSteelOvenResult(inventory[0], inventory[1], inventory[2], inventory[3], inventory[4]));
+    	if(tank.getFluidAmount() < this.smeltCost)
+    	{
+    		return false;
+    	}
     	for(int i = 0; i < 5; i++)
     	{
     		if(inventory[i] == null)
@@ -211,59 +215,54 @@ public class TileEntitySteelController extends TileEntity implements ISidedInven
     	}
     	if(inventory[5] != null && inventory[5].stackSize >= 64)
     		return false;
-    	if(HelperLibrary.isOreDicItem(inventory[0], new ItemStack(AdvancedUtilitiesItems.dust, 1, 1)))
-		{
-    		if(HelperLibrary.isOreDicItem(inventory[2], new ItemStack(AdvancedUtilitiesItems.dust, 1, 20)))
-    		{
-    			if(inventory[4].isItemEqual(new ItemStack(Items.coal, 1)) && inventory[1].isItemEqual(new ItemStack(Blocks.sand, 1)) && inventory[3].isItemEqual(new ItemStack(Items.redstone, 1)))
-    			{
-    				return true;
-    			}
-    		}
-		}
+    	if(SteelOvenRecipes.getSteelOvenResult(inventory[0], inventory[1], inventory[2], inventory[3], inventory[4])!= null)
+    	{
+    		return true;
+    	}
     	return false;
     }
     public void smeltItem()
     {
     	if(this.canSmelt())
     	{
-    	ItemStack itemstack = new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.STEEL);
+    	ItemStack itemstack = SteelOvenRecipes.getSteelOvenResult(inventory[0], inventory[1], inventory[2], inventory[3], inventory[4]);
+    	int[] size = SteelOvenRecipes.getIngredientSize(inventory[0], inventory[1], inventory[2], inventory[3], inventory[4]);
 		 if(itemstack!=null)
 		 {
             if (this.inventory[5] == null)
             {
                 this.inventory[5] = itemstack.copy();
             }
-            else if (this.inventory[5].getItem() == itemstack.getItem())
+            else if (HelperLibrary.areItemStacksSameItemAndDamage(inventory[5], itemstack))
             {
                 this.inventory[5].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
             }
 
-            --this.inventory[0].stackSize;
+            inventory[0].stackSize-=size[0];
 
             if (this.inventory[0].stackSize <= 0)
             {
                 this.inventory[0] = null;
             }
-            --this.inventory[1].stackSize;
+            inventory[1].stackSize-=size[0];
 
             if (this.inventory[1].stackSize <= 0)
             {
                 this.inventory[1] = null;
             }
-            --this.inventory[2].stackSize;
+            inventory[2].stackSize-=size[0];
 
             if (this.inventory[2].stackSize <= 0)
             {
                 this.inventory[2] = null;
             }
-            --this.inventory[3].stackSize;
+            inventory[3].stackSize-=size[0];
 
             if (this.inventory[3].stackSize <= 0)
             {
                 this.inventory[3] = null;
             }
-            --this.inventory[4].stackSize;
+            inventory[4].stackSize-=size[0];
 
             if (this.inventory[4].stackSize <= 0)
             {
@@ -372,27 +371,18 @@ public class TileEntitySteelController extends TileEntity implements ISidedInven
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) 
 	{
-		if(slot == 5)
-			return false;
-		if(slot == 0 && HelperLibrary.isOreDicItem(stack, new ItemStack(AdvancedUtilitiesItems.dust, 1, 1)))
+		switch(slot)
 		{
-			return true;
-		}
-		if(slot == 1 && stack.isItemEqual(new ItemStack(Blocks.sand, 1)))
-		{
-			return true;
-		}
-		if(slot == 2 && HelperLibrary.isOreDicItem(stack, new ItemStack(AdvancedUtilitiesItems.dust, 1, 20)))
-		{
-			return true;
-		}
-		if(slot == 3 && stack.isItemEqual(new ItemStack(Items.redstone, 1)))
-		{
-			return true;
-		}
-		if(slot == 4 && stack.isItemEqual(new ItemStack(Items.coal, 1)))
-		{
-			return true;
+		case 0:
+			return SteelOvenRecipes.isIngr0(stack);
+		case 1:
+			return SteelOvenRecipes.isIngr1(stack);
+		case 2:
+			return SteelOvenRecipes.isIngr2(stack);
+		case 3:
+			return SteelOvenRecipes.isIngr3(stack);
+		case 4:
+			return SteelOvenRecipes.isIngr4(stack);
 		}
 		return false;
 	}
@@ -422,7 +412,7 @@ public class TileEntitySteelController extends TileEntity implements ISidedInven
 	    @Override
 	    public boolean canFill(ForgeDirection from, Fluid fluid)
 	    {
-	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesBlocks.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
+	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesFluids.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
 	    		return true;
 	    	else return false;
 	    }

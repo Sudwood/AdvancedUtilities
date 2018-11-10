@@ -5,12 +5,13 @@ import com.sudwood.advancedutilities.TransferHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.oredict.OreDictionary;
 
 
 public class TileEntityRestrictedItemTube extends TileEntity implements IInventory
@@ -138,7 +139,7 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
     	if(stack!=null)
     	{
     		slot = TransferHelper.checkSpace(xCoord, yCoord, zCoord, stack, worldObj, 0);
-    		if(slot!=null)
+    		if(slot!=null && this.isItemValidForSlot(slot[0],stack))
     		{
 	    		if(slot[1] == 0)
 				{
@@ -176,386 +177,52 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
      
     public void pullItem()
     {
+    	
     	switch(worldObj.getBlockMetadata(xCoord, yCoord, zCoord))
     	{
-    	case 1:
-    		int[] slot = TransferHelper.getFirstStackThatFits(xCoord, yCoord+ForgeDirection.UP.offsetY, zCoord, inventory, worldObj, numTransfered, this, 0);
-	    	if(slot!= null)
-	    	{
-	    		try
-	    		{
-	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord, yCoord+ForgeDirection.UP.offsetY, zCoord);
-	    			if(!isWrongTile(ForgeDirection.UP))
-	    			{
-		    			if(slot[1] == 0)
-		    			{
-		    				inventory[slot[2]] = new ItemStack(tile.getStackInSlot(slot[0]).getItem(), numTransfered, tile.getStackInSlot(slot[0]).getItemDamage());
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot[0], new ItemStack(tile.getStackInSlot(slot[0]).getItem(), tile.getStackInSlot(slot[0]).stackSize - numTransfered, tile.getStackInSlot(slot[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-		    			if(slot[1] == 1)
-		    			{
-		    				this.setInventorySlotContents(slot[2], new ItemStack(inventory[slot[2]].getItem(), inventory[slot[2]].stackSize + numTransfered, inventory[slot[2]].getItemDamage()));
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot[0], new ItemStack(tile.getStackInSlot(slot[0]).getItem(), tile.getStackInSlot(slot[0]).stackSize - numTransfered, tile.getStackInSlot(slot[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-	    			}
-	    		}
-	    		
-	    		catch(Exception e)
-	    		{
-	    			
-	    		}
-	    	}
+    	case 1: // up
+    		TransferHelper.pullItem(this, xCoord, yCoord, zCoord, ForgeDirection.UP, worldObj, numTransfered);
 	    	break;
-    	case 0:
-    		int[] slot1 = TransferHelper.getFirstStackThatFits(xCoord, yCoord+ForgeDirection.DOWN.offsetY, zCoord, inventory, worldObj, numTransfered, this, 1);
-	    	if(slot1!= null)
-	    	{
-	    		try
-	    		{
-	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord, yCoord+ForgeDirection.DOWN.offsetY, zCoord);
-	    			if(!isWrongTile(ForgeDirection.DOWN))
-	    			{
-		    			if(slot1[1] == 0)
-		    			{
-		    				inventory[slot1[2]] = new ItemStack(tile.getStackInSlot(slot1[0]).getItem(), numTransfered, tile.getStackInSlot(slot1[0]).getItemDamage());
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot1[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot1[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot1[0], new ItemStack(tile.getStackInSlot(slot1[0]).getItem(), tile.getStackInSlot(slot1[0]).stackSize - numTransfered, tile.getStackInSlot(slot1[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-		    			if(slot1[1] == 1)
-		    			{
-		    				this.setInventorySlotContents(slot1[2], new ItemStack(inventory[slot1[2]].getItem(), inventory[slot1[2]].stackSize + numTransfered, inventory[slot1[2]].getItemDamage()));
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot1[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot1[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot1[0], new ItemStack(tile.getStackInSlot(slot1[0]).getItem(), tile.getStackInSlot(slot1[0]).stackSize - numTransfered, tile.getStackInSlot(slot1[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-	    			}
-	    		}
-	    		
-	    		catch(Exception e)
-	    		{
-	    			
-	    		}
-	    	}
+    	case 0:// down
+    		TransferHelper.pullItem(this, xCoord, yCoord, zCoord, ForgeDirection.DOWN, worldObj, numTransfered);
 	    	break;
-    	case 3:
-    		int[] slot11 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ, inventory, worldObj, numTransfered, this, 2);
-	    	if(slot11!= null)
-	    	{
-	    		try
-	    		{
-	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ);
-	    			if(!isWrongTile(ForgeDirection.SOUTH))
-	    			{
-		    			if(slot11[1] == 0)
-		    			{
-		    				inventory[slot11[2]] = new ItemStack(tile.getStackInSlot(slot11[0]).getItem(), numTransfered, tile.getStackInSlot(slot11[0]).getItemDamage());
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot11[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot11[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot11[0], new ItemStack(tile.getStackInSlot(slot11[0]).getItem(), tile.getStackInSlot(slot11[0]).stackSize - numTransfered, tile.getStackInSlot(slot11[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-		    			if(slot11[1] == 1)
-		    			{
-		    				this.setInventorySlotContents(slot11[2], new ItemStack(inventory[slot11[2]].getItem(), inventory[slot11[2]].stackSize + numTransfered, inventory[slot11[2]].getItemDamage()));
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot11[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot11[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot11[0], new ItemStack(tile.getStackInSlot(slot11[0]).getItem(), tile.getStackInSlot(slot11[0]).stackSize - numTransfered, tile.getStackInSlot(slot11[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-	    			}
-	    		}
-	    		
-	    		catch(Exception e)
-	    		{
-	    			
-	    		}
-	    	}
+    	case 3:// south
+    		TransferHelper.pullItem(this, xCoord, yCoord, zCoord, ForgeDirection.SOUTH, worldObj, numTransfered);
 	    	break;
-    	case 2:
-    		int[] slot111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ, inventory, worldObj, numTransfered, this, 3);
-	    	if(slot111!= null)
-	    	{
-	    		try
-	    		{
-	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ);
-	    			if(!isWrongTile(ForgeDirection.NORTH))
-	    			{
-		    			if(slot111[1] == 0)
-		    			{
-		    				inventory[slot111[2]] = new ItemStack(tile.getStackInSlot(slot111[0]).getItem(), numTransfered, tile.getStackInSlot(slot111[0]).getItemDamage());
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot111[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot111[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot111[0], new ItemStack(tile.getStackInSlot(slot111[0]).getItem(), tile.getStackInSlot(slot111[0]).stackSize - numTransfered, tile.getStackInSlot(slot111[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-		    			if(slot111[1] == 1)
-		    			{
-		    				this.setInventorySlotContents(slot111[2], new ItemStack(inventory[slot111[2]].getItem(), inventory[slot111[2]].stackSize + numTransfered, inventory[slot111[2]].getItemDamage()));
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot111[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot111[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot111[0], new ItemStack(tile.getStackInSlot(slot111[0]).getItem(), tile.getStackInSlot(slot111[0]).stackSize - numTransfered, tile.getStackInSlot(slot111[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-	    			}
-	    		}
-	    		
-	    		catch(Exception e)
-	    		{
-	    			
-	    		}
-	    	}
+    	case 2:// north
+    		TransferHelper.pullItem(this, xCoord, yCoord, zCoord, ForgeDirection.NORTH, worldObj, numTransfered);
 	    	break;
-    	case 4:
-    		int[] slot1111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ, inventory, worldObj, numTransfered, this, 5);
-	    	if(slot1111!= null)
-	    	{
-	    		try
-	    		{
-	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ);
-	    			if(!isWrongTile(ForgeDirection.WEST))
-	    			{
-		    			if(slot1111[1] == 0)
-		    			{
-		    				inventory[slot1111[2]] = new ItemStack(tile.getStackInSlot(slot1111[0]).getItem(), numTransfered, tile.getStackInSlot(slot1111[0]).getItemDamage());
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot1111[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot1111[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot1111[0], new ItemStack(tile.getStackInSlot(slot1111[0]).getItem(), tile.getStackInSlot(slot1111[0]).stackSize - numTransfered, tile.getStackInSlot(slot1111[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-		    			if(slot1111[1] == 1)
-		    			{
-		    				this.setInventorySlotContents(slot1111[2], new ItemStack(inventory[slot1111[2]].getItem(), inventory[slot1111[2]].stackSize + numTransfered, inventory[slot1111[2]].getItemDamage()));
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot1111[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot1111[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot1111[0], new ItemStack(tile.getStackInSlot(slot1111[0]).getItem(), tile.getStackInSlot(slot1111[0]).stackSize - numTransfered, tile.getStackInSlot(slot1111[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-	    			}
-	    		}
-	    		
-	    		catch(Exception e)
-	    		{
-	    			
-	    		}
-	    	}
+    	case 4:// west
+    		TransferHelper.pullItem(this, xCoord, yCoord, zCoord, ForgeDirection.WEST, worldObj, numTransfered);
 	    	break;
-    	case 5:
-    		int[] slot11111 = TransferHelper.getFirstStackThatFits(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ, inventory, worldObj, numTransfered, this, 4);
-	    	if(slot11111!= null)
-	    	{
-	    		try
-	    		{
-	    			IInventory tile = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ);
-	    			if(!isWrongTile(ForgeDirection.EAST))
-	    			{
-		    			if(slot11111[1] == 0)
-		    			{
-		    				inventory[slot11111[2]] = new ItemStack(tile.getStackInSlot(slot11111[0]).getItem(), numTransfered, tile.getStackInSlot(slot11111[0]).getItemDamage());
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot11111[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot11111[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot11111[0], new ItemStack(tile.getStackInSlot(slot11111[0]).getItem(), tile.getStackInSlot(slot11111[0]).stackSize - numTransfered, tile.getStackInSlot(slot11111[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-		    			if(slot11111[1] == 1)
-		    			{
-		    				this.setInventorySlotContents(slot11111[2], new ItemStack(inventory[slot11111[2]].getItem(), inventory[slot11111[2]].stackSize + numTransfered, inventory[slot11111[2]].getItemDamage()));
-		    				this.markDirty();
-		    				if(tile.getStackInSlot(slot11111[0]).stackSize == 1)
-		    				{
-		    					tile.setInventorySlotContents(slot11111[0], null);
-		    				}
-		    				else
-		    					tile.setInventorySlotContents(slot11111[0], new ItemStack(tile.getStackInSlot(slot11111[0]).getItem(), tile.getStackInSlot(slot11111[0]).stackSize - numTransfered, tile.getStackInSlot(slot11111[0]).getItemDamage()));
-		    				tile.markDirty();
-		    			}
-	    			}
-	    		}
-	    		
-	    		catch(Exception e)
-	    		{
-	    			
-	    		}
-	    	}
+    	case 5:// east
+    		TransferHelper.pullItem(this, xCoord, yCoord, zCoord, ForgeDirection.EAST, worldObj, numTransfered);
 	    	break;
     	}
     }
     
-    
     public void pushItem()
     {
-    	int sideAttached = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) ^ 1;
-    	int[] slot = null;
-    	for(int i = 0; i < inventory.length; i++)
+    	switch(worldObj.getBlockMetadata(xCoord, yCoord, zCoord))
     	{
-	    	if(inventory[i]!=null)
-	    	{
-	    		
-	    		IInventory transfer = null;
-	    		switch(worldObj.getBlockMetadata(xCoord, yCoord, zCoord))
-	    		{
-	    		case 1: //down
-	    			slot = TransferHelper.checkSpace(xCoord+ForgeDirection.DOWN.offsetX, yCoord+ForgeDirection.DOWN.offsetY, zCoord+ForgeDirection.DOWN.offsetZ, new ItemStack(inventory[i].getItem(), 1, inventory[i].getItemDamage()), worldObj, sideAttached);
-	    			try
-	    			{
-	    				transfer = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.DOWN.offsetX, yCoord+ForgeDirection.DOWN.offsetY, zCoord+ForgeDirection.DOWN.offsetZ);
-	    			}
-	    			catch(Exception e)
-	    			{
-	    				
-	    			}
-	    			break;
-	    		case 0: //up
-	    			slot = TransferHelper.checkSpace(xCoord+ForgeDirection.UP.offsetX, yCoord+ForgeDirection.UP.offsetY, zCoord+ForgeDirection.UP.offsetZ, new ItemStack(inventory[i].getItem(), 1, inventory[i].getItemDamage()), worldObj, sideAttached);
-	    			try
-	    			{
-	    				transfer = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.UP.offsetX, yCoord+ForgeDirection.UP.offsetY, zCoord+ForgeDirection.UP.offsetZ);
-	    			}
-	    			catch(Exception e)
-	    			{
-	    				
-	    			}
-	    			break;
-	    		case 3: //North
-	    			slot = TransferHelper.checkSpace(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ, new ItemStack(inventory[i].getItem(), 1, inventory[i].getItemDamage()), worldObj, sideAttached);
-	    			
-	    			try
-	    			{
-	    				transfer = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ);
-	    			}
-	    			catch(Exception e)
-	    			{
-	    				
-	    			}break;
-	    		case 2: //south
-	    			slot = TransferHelper.checkSpace(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ, new ItemStack(inventory[i].getItem(), 1, inventory[i].getItemDamage()), worldObj, sideAttached);
-	    			try
-	    			{
-	    				transfer = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.SOUTH.offsetX, yCoord+ForgeDirection.SOUTH.offsetY, zCoord+ForgeDirection.SOUTH.offsetZ);
-	    			}
-	    			catch(Exception e)
-	    			{
-	    				
-	    			}
-	    			break;
-	    		case 5: //west
-	    			slot = TransferHelper.checkSpace(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ, new ItemStack(inventory[i].getItem(), 1, inventory[i].getItemDamage()), worldObj, sideAttached);
-	    			try
-	    			{
-	    				transfer = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.WEST.offsetX, yCoord+ForgeDirection.WEST.offsetY, zCoord+ForgeDirection.WEST.offsetZ);
-	    			}
-	    			catch(Exception e)
-	    			{
-	    				
-	    			}
-	    			break;
-	    		case 4: //east
-	    			slot = TransferHelper.checkSpace(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ, new ItemStack(inventory[i].getItem(), 1, inventory[i].getItemDamage()), worldObj, sideAttached);
-	    			try
-	    			{
-	    				transfer = (IInventory) worldObj.getTileEntity(xCoord+ForgeDirection.EAST.offsetX, yCoord+ForgeDirection.EAST.offsetY, zCoord+ForgeDirection.EAST.offsetZ);
-	    			}
-	    			catch(Exception e)
-	    			{
-	    				
-	    			}
-	    			break;
-	    		}
-	    		if(slot!=null && transfer!= null)
-	    		{	
-	    			if(slot[1] == 0)
-	    			{
-	    				ItemStack temp = inventory[i].copy();
-	    				temp.stackSize = this.numTransfered;
-	    				transfer.setInventorySlotContents(slot[0], temp);
-	    				transfer.markDirty();
-	    				if(inventory[i].stackSize == 1)
-	    				{
-	    					inventory[i] = null;
-	    					this.markDirty();
-	    					return;
-	    				}
-	    				inventory[i].stackSize-=numTransfered;
-	    				this.markDirty();
-	    				return;
-	    			}
-	    			if(slot[1] == 1 && transfer.getStackInSlot(slot[0]).stackSize < transfer.getInventoryStackLimit())
-	    			{
-	    				ItemStack stack = inventory[i].copy();
-	    				if(slot[2]!=0)
-	    					stack.stackSize = slot[2]+transfer.getStackInSlot(slot[0]).stackSize;
-	    				else
-	    					stack.stackSize = numTransfered+transfer.getStackInSlot(slot[0]).stackSize;
-	    				
-	    				transfer.setInventorySlotContents(slot[0], stack);
-	    				transfer.markDirty();
-	    				if(inventory[i].stackSize == 1)
-	    				{
-	    					inventory[i] = null;
-	    					this.markDirty();
-	    					return;
-	    				}
-	    				inventory[i].stackSize-=numTransfered;
-	    				this.markDirty();
-	    				return;
-	    				
-	    			}
-	    			
-	    		}
-	    		
-	    	}
+    	case 1: // up
+    		TransferHelper.pushItem(this, xCoord, yCoord, zCoord, ForgeDirection.UP, worldObj, numTransfered);
+	    	break;
+    	case 0:// down
+    		TransferHelper.pushItem(this, xCoord, yCoord, zCoord, ForgeDirection.DOWN, worldObj, numTransfered);
+	    	break;
+    	case 3:// south
+    		TransferHelper.pushItem(this, xCoord, yCoord, zCoord, ForgeDirection.SOUTH, worldObj, numTransfered);
+	    	break;
+    	case 2:// north
+    		TransferHelper.pushItem(this, xCoord, yCoord, zCoord, ForgeDirection.NORTH, worldObj, numTransfered);
+	    	break;
+    	case 4:// west
+    		TransferHelper.pushItem(this, xCoord, yCoord, zCoord, ForgeDirection.WEST, worldObj, numTransfered);
+	    	break;
+    	case 5:// east
+    		TransferHelper.pushItem(this, xCoord, yCoord, zCoord, ForgeDirection.EAST, worldObj, numTransfered);
+	    	break;
     	}
     }
     
@@ -686,42 +353,38 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		boolean result = false;
 		boolean[] temp = new boolean[9];
+		boolean isToolBow = false;
+		if(itemstack == null)
+			return false;
+		if(itemstack.getItem() instanceof ItemTool || itemstack.getItem() instanceof ItemBow)
+		{
+			isToolBow = true;
+		}
 		for(int iz = 0; iz < 9; iz++)
 		{
 			temp[iz] = true;
 		}
 		for (int ix = 0; ix < 9; ix++)
 		{
-			if(mode == WHITELIST && restriction[ix]!=null && ((restriction[ix].getItem() == itemstack.getItem() && restriction[ix].getItemDamage() == itemstack.getItemDamage()) || OreDictionary.itemMatches(restriction[ix], itemstack, true)))
+			if(isToolBow&&mode == WHITELIST && restriction[ix]!=null && (HelperLibrary.areItemStacksSameItem(restriction[ix],itemstack) ))
 			{
 				result = true;
 			}
-			if(mode == BLACKLIST && restriction[ix]!=null && HelperLibrary.isOreDicItem(restriction[ix], itemstack, true) == 0 )
+			if(isToolBow&&mode == BLACKLIST && restriction[ix]!=null && (HelperLibrary.areItemStacksSameItem(restriction[ix],itemstack)))
 			{
-				temp[ix] = true;
+				result = false;
 			}
-			if(mode == BLACKLIST && restriction[ix]!=null && HelperLibrary.isOreDicItem(restriction[ix], itemstack, true) == 1 )
+			if(mode == WHITELIST && restriction[ix]!=null && (HelperLibrary.areItemStacksSameItemAndDamageAndNBT(restriction[ix],itemstack) ))
 			{
-				temp[ix] = false;
+				result = true;
 			}
-			else if(mode == BLACKLIST && restriction[ix]!=null && ((restriction[ix].getItem() == itemstack.getItem()) && restriction[ix].getItemDamage() != itemstack.getItemDamage()))
+			if(mode == BLACKLIST && restriction[ix]!=null && (HelperLibrary.areItemStacksSameItemAndDamageAndNBT(restriction[ix],itemstack)))
 			{
-				temp[ix] = true;
-			}
-			else if(mode == BLACKLIST && restriction[ix]!=null && ((restriction[ix].getItem() == itemstack.getItem())))
-			{
-				temp[ix] = false;
+				result = false;
 			}
 			
 		}
-		if(mode == BLACKLIST)
-		{
-			if(temp[0]&&temp[1]&&temp[2]&&temp[3]&&temp[4]&&temp[5]&&temp[6]&&temp[7]&&temp[8])
-			{
-				result = true;
-			}
-				
-		}
+
 		return result;
 	}
 
@@ -747,6 +410,59 @@ public class TileEntityRestrictedItemTube extends TileEntity implements IInvento
 	public void closeInventory() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void doPullItem(int x, int y, int z, int side, ForgeDirection dir)
+	{
+		int[] slot = TransferHelper.getFirstStackThatFits(x,y,z, inventory, worldObj, numTransfered, this, 0);
+    	if(slot!= null)
+    	{
+    		try
+    		{
+    			IInventory tile = (IInventory) worldObj.getTileEntity(x,y,z);
+    			if(!isWrongTile(dir))
+    			{
+    				ItemStack temp = tile.getStackInSlot(slot[0]).copy();
+    				temp.stackSize = numTransfered;
+	    			if(slot[1] == 0)
+	    			{
+	    				inventory[slot[2]] = temp;
+	    				this.markDirty();
+	    				if(tile.getStackInSlot(slot[0]).stackSize <= numTransfered)
+	    				{
+	    					tile.setInventorySlotContents(slot[0], null);
+	    				}
+	    				else
+	    				{
+	    					temp.stackSize = tile.getStackInSlot(slot[0]).stackSize - numTransfered;
+	    					tile.setInventorySlotContents(slot[0], temp);
+	    				}
+	    				tile.markDirty();
+	    			}
+	    			if(slot[1] == 1)
+	    			{
+	    				temp.stackSize = inventory[slot[2]].stackSize + numTransfered;
+	    				this.setInventorySlotContents(slot[2],temp);
+	    				this.markDirty();
+	    				if(tile.getStackInSlot(slot[0]).stackSize <= numTransfered)
+	    				{
+	    					tile.setInventorySlotContents(slot[0], null);
+	    				}
+	    				else
+	    				{
+	    					temp.stackSize = tile.getStackInSlot(slot[0]).stackSize - numTransfered;
+	    					tile.setInventorySlotContents(slot[0], temp);
+	    				}
+	    				tile.markDirty();
+	    			}
+    			}
+    		}
+    		
+    		catch(Exception e)
+    		{
+    			
+    		}
+    	}
 	}
 
 }

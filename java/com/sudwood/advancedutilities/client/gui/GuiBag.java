@@ -27,6 +27,7 @@ public class GuiBag extends GuiContainer
 	    super(containerItem);
 	    this.inventory = containerItem.inventory;
 	    tag = gun.getTagCompound();
+	    this.xSize = this.xSize+20;
     }
 
 

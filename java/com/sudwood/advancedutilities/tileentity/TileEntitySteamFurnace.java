@@ -1,5 +1,14 @@
 package com.sudwood.advancedutilities.tileentity;
 
+import com.sudwood.advancedutilities.HelperLibrary;
+import com.sudwood.advancedutilities.TransferHelper;
+import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.config.ServerOptions;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
+import com.sudwood.advancedutilities.recipes.SteamFurnaceRecipes;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -17,17 +26,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-
-import com.sudwood.advancedutilities.CrushRecipes;
-import com.sudwood.advancedutilities.HelperLibrary;
-import com.sudwood.advancedutilities.TransferHelper;
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.config.ServerOptions;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-import com.sudwood.advancedutilities.items.ItemIngot;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntitySteamFurnace extends TileEntity implements ISidedInventory, IFluidHandler, ISteamTank
 {
@@ -179,19 +177,16 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    	else if(canSmelt() == 2)
 	    	{
 	    		ItemStack output;
-	    		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER))
-	    		{
-	    			if(HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_TIN))
-	    			{
-	    				output = new ItemStack(AdvancedUtilitiesItems.ingot, 3, ItemIngot.BRONZE);
-	    				
+
+	    				output = SteamFurnaceRecipes.getFurnaceResult(inventory[0], inventory[1]);
+	    				int[] ingrSize = SteamFurnaceRecipes.getIngredientSize(inventory[0], inventory[1]);
 	    		    	if(inventory[2] == null)
 	    			    {
 	    			    		inventory[2] = output;
-	    			    		inventory[0].stackSize-=3;
+	    			    		inventory[0].stackSize-=ingrSize[0];
 	    			    		if(inventory[0].stackSize <= 0)
 	    			    			inventory[0] = null;
-	    			    		inventory[1].stackSize--;
+	    			    		inventory[1].stackSize-=ingrSize[1];
 	    			    		if(inventory[1].stackSize <= 0)
 	    			    			inventory[1] = null;
 	    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
@@ -200,111 +195,15 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    		    	else if(inventory[2].stackSize + output.stackSize < 64)
 	    		    	{
 	    		    		inventory[2].stackSize+=output.stackSize;
-	    		    		inventory[0].stackSize-=3;
+	    		    		inventory[0].stackSize-=ingrSize[0];
 	    		    		if(inventory[0].stackSize <= 0)
 	    		    			inventory[0] = null;
-	    		    		inventory[1].stackSize--;
+	    		    		inventory[1].stackSize-=ingrSize[1];
 				    		if(inventory[1].stackSize <= 0)
 				    			inventory[1] = null;
 	    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
 	    		    	}
 	    				return;
-	    			}
-	    			if(HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_ZINC))
-	    			{
-	    				output = new ItemStack(AdvancedUtilitiesItems.ingot, 3, ItemIngot.BRASS);
-	    				if(inventory[2] == null)
-	    			    {
-	    			    		inventory[2] = output;
-	    			    		inventory[0].stackSize-=3;
-	    			    		if(inventory[0].stackSize <= 0)
-	    			    			inventory[0] = null;
-	    			    		inventory[1].stackSize-=1;
-	    			    		if(inventory[1].stackSize <= 0)
-	    			    			inventory[1] = null;
-	    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-	    			    		
-	    			    }
-	    		    	else if(inventory[2].stackSize + output.stackSize < 64)
-	    		    	{
-	    		    		inventory[2].stackSize+=output.stackSize;
-	    		    		inventory[0].stackSize-=3;
-	    		    		if(inventory[0].stackSize <= 0)
-	    		    			inventory[0] = null;
-	    		    		inventory[1].stackSize-=1;
-				    		if(inventory[1].stackSize <= 0)
-				    			inventory[1] = null;
-	    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-	    		    	}
-	    				return;
-	    			}
-	    		}
-	    		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_TIN))
-	    		{
-	    			if(HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER))
-	    			{
-		    			output = new ItemStack(AdvancedUtilitiesItems.ingot, 3, ItemIngot.BRONZE);
-		    			if(inventory[2] == null)
-	    			    {
-	    			    		inventory[2] = output;
-	    			    		inventory[0].stackSize-=1;
-	    			    		if(inventory[0].stackSize <= 0)
-	    			    			inventory[0] = null;
-	    			    		inventory[1].stackSize-=3;
-	    			    		if(inventory[1].stackSize <= 0)
-	    			    			inventory[1] = null;
-	    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-	    			    		
-	    			    }
-	    		    	else if(inventory[2].stackSize + output.stackSize < 64)
-	    		    	{
-	    		    		inventory[2].stackSize+=output.stackSize;
-	    		    		inventory[0].stackSize-=1;
-	    		    		if(inventory[0].stackSize <= 0)
-	    		    			inventory[0] = null;
-	    		    		inventory[1].stackSize-=3;
-				    		if(inventory[1].stackSize <= 0)
-				    			inventory[1] = null;
-	    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-	    		    	}
-	    				return;
-	    			}
-	    			return;
-	    		}
-	    		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_ZINC))
-	    		{
-	    			if(HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER))
-	    			{
-		    			output = new ItemStack(AdvancedUtilitiesItems.ingot, 3, ItemIngot.BRASS);
-		    			if(inventory[2] == null)
-	    			    {
-	    			    		inventory[2] = output;
-	    			    		inventory[0].stackSize-=1;
-	    			    		if(inventory[0].stackSize <= 0)
-	    			    			inventory[0] = null;
-	    			    		inventory[1].stackSize-=3;
-	    			    		if(inventory[1].stackSize <= 0)
-	    			    			inventory[1] = null;
-	    			    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-	    			    		
-	    			    }
-	    		    	else if(inventory[2].stackSize + output.stackSize < 64)
-	    		    	{
-	    		    		inventory[2].stackSize+=output.stackSize;
-	    		    		inventory[0].stackSize-=1;
-	    		    		if(inventory[0].stackSize <= 0)
-	    		    			inventory[0] = null;
-	    		    		inventory[1].stackSize-=3;
-				    		if(inventory[1].stackSize <= 0)
-				    			inventory[1] = null;
-	    		    		this.drain(ForgeDirection.UNKNOWN, this.smeltCost + this.costMod, true);
-	    		    	}
-	    				return;
-	    			}
-	    			return;
-	    		}
-	    		
-
 	    	}
 	    }
 	    
@@ -312,28 +211,15 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    {
 	    	if(this.tank.getFluidAmount() >= this.smeltCost + this.costMod && inventory.length > 0)
 	    	{
-	    		if(inventory[0]!=null && HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER) && inventory[0].stackSize >=3)
+
+	    		if(inventory[0]!=null && inventory[1]!=null)
 	    		{
-	    			
-	    			if(inventory[1]!=null && (HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_TIN) || HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_ZINC) ))
+	    			ItemStack temp = SteamFurnaceRecipes.getFurnaceResult(inventory[0], inventory[1]);
+	    			if(temp!=null)
 	    			{
 	    				return 2;
 	    			}
-	    		}
-	    		if(inventory[0]!=null && HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_TIN) && inventory[0].stackSize >=1)
-	    		{
-	    			if(inventory[1]!=null&& HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && inventory[1].stackSize >= 3)
-	    			{
-	    				return 2;
-	    			}
-	    		}
-	    		if(inventory[0]!=null && HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_ZINC) && inventory[0].stackSize >=1)
-	    		{
-	    			if(inventory[1]!=null&& HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER) && inventory[1].stackSize >= 3)
-	    			{
-	    				return 2;
-	    			}
-	    		}
+	    		}	
 	    		if(inventory[0]!=null && FurnaceRecipes.smelting().getSmeltingResult(inventory[0])!=null)
 	    		{
 	    			if(inventory[2]== null)
@@ -358,27 +244,7 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    			}
 	    			
 	    		}
-	    		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_COPPER))
-	    		{
-	    			if(HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_TIN) || HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_ZINC))
-	    			{
-	    				return 2;
-	    			}
-	    		}
-	    		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_TIN))
-	    		{
-	    			if(HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER))
-	    			{
-	    				return 2;
-	    			}
-	    		}
-	    		if(HelperLibrary.isOreDicItem(inventory[0], CrushRecipes.INGOT_ZINC))
-	    		{
-	    			if(HelperLibrary.isOreDicItem(inventory[1], CrushRecipes.INGOT_COPPER))
-	    			{
-	    				return 2;
-	    			}
-	    		}
+	    		
 	    	}
 	    	return 0;
 	    }
@@ -429,8 +295,9 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    {
 	    	if(worldObj.getBlock(xCoord, yCoord-1, zCoord) == AdvancedUtilitiesBlocks.steamCompressor)
 	    	{
-	    		this.speedMult = 2;
-	    		this.costMod = this.smeltCost;
+	    		TileEntitySteamCompressor tile = (TileEntitySteamCompressor) worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
+	    		this.speedMult = tile.multiplier;
+	    		this.costMod = this.smeltCost*(tile.multiplier/2);
 	    	}
 	    	else
 	    	{
@@ -621,7 +488,7 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 	    @Override
 	    public boolean canFill(ForgeDirection from, Fluid fluid)
 	    {
-	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesBlocks.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
+	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesFluids.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
 	    		return true;
 	    	else return false;
 	    }
@@ -733,24 +600,19 @@ public class TileEntitySteamFurnace extends TileEntity implements ISidedInventor
 		}
 
 		@Override
-		public boolean isItemValidForSlot(int var1, ItemStack var2) {
+		public boolean isItemValidForSlot(int slot, ItemStack stack) 
+		{
 			// TODO Auto-generated method stub
-			if(var1== 0 && inventory[0]!=null && inventory[1]==null)
+			boolean result = false;
+			if(slot == 0)
 			{
-				return false;
+				return SteamFurnaceRecipes.isIngredient1(stack);
 			}
-			if(var1== 0 && inventory[0]!=null && inventory[1]!=null)
+			if(slot == 1)
 			{
-				if(inventory[0].isItemEqual(inventory[1]) && inventory[0].stackSize > inventory[1].stackSize)
-				{
-					return false;
-				}
+				return SteamFurnaceRecipes.isIngredient2(stack);
 			}
-			if(var1 == 0 || var1 == 1)
-			{
-				if(FurnaceRecipes.smelting().getSmeltingResult(var2)!= null)
-					return true;
-			}
-			return false;
+			
+			return result;
 		}
 }

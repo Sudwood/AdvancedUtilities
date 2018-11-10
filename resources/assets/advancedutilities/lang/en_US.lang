@@ -4,6 +4,11 @@ itemGroup.AdvancedUtilitiesBEMachines=Advanced Utilities: BE Machines
 
 tile.ChunkLoader.name=Chunk Loader
 
+item.Totmato.name=Tomato
+item.ClimbingBelt.name=Climbing Belt
+item.MagnetAmulet.name=Magnet Amulet
+item.VoidRing.name=Void Ring
+
 CopperOre.name=Copper Ore
 TinOre.name=Tin Ore
 ZincOre.name=Zinc Ore
@@ -31,6 +36,20 @@ SteelBlock.name=Steel Block
 NickelBlock.name=Nickel Block
 IronBlock.name=Iron Block
 
+CompressedCharcoal.name=Compressed Charcoal
+DoubleCompressedCharcoal.name=Double Compressed Charcoal
+tile.Elevator.name=Elevator
+tile.PortaChestWood.name=Wood Porta Chest
+tile.PortaChestBronze.name=Bronze Porta Chest
+tile.PortaChestGold.name=Gold Porta Chest
+tile.PortaChestDiamond.name=Diamond Porta Chest
+tile.PortaChestPlatinum.name=Platinum Porta Chest
+
+BronzeMachine.name=Bronze Machine Block
+SteelMachine.name=Steel Machine Block
+
+
+
 tile.RubberLog.name=Rubber Wood Log
 tile.RubberPlanks.name=Rubber Wood Planks
 tile.RubberLeaves.name=Rubber Leaves
@@ -43,7 +62,7 @@ tile.ArmorForge.name=Armor Forge
 
 tile.StoneMill.name=Stone Mill
 tile.Compressor.name=Compressor
-tile.WoodenCrate.name=Wooden Crate (WIP)
+tile.WoodenCrate.name=Wooden Crate
 tile.BlockTank.name=Tank
 
 item.Ingot.CopperIngot.name=Copper Ingot
@@ -74,6 +93,18 @@ item.toolPart.BronzeSwordBlade.name=Bronze Sword Blade
 item.toolPart.BronzeShovelHead.name=Bronze Shovel Head
 item.toolPart.BronzeAxeHead.name=Bronze Axe Head
 item.toolPart.BronzeHammerHead.name=Bronze Hammer Head
+item.toolPart.StoneExcavatorHead.name=Stone Excavator Blank
+item.toolPart.BronzeExcavatorHead.name=Bronze Excavator Head
+item.toolPart.IronExcavatorHead.name=Iron Excavator Head
+
+item.toolPart.SteelRod.name=Steel Rod
+item.toolPart.SteelPickaxeHead.name=Steel Pickaxe Head
+item.toolPart.SteelSwordBlade.name=Steel Sword Blade
+item.toolPart.SteelShovelHead.name=Steel Shovel Head
+item.toolPart.SteelAxeHead.name=Steel Axe Head
+item.toolPart.SteelHammerHead.name=Steel Hammer Head
+item.toolPart.SteelHammerHead.name=Steel Hammer Head
+item.toolPart.SteelExcavatorHead.name=Steel Excavator Blank
 
 item.QuickPotion.HealingPotion.name=Quick Health Potion
 item.QuickPotion.WaterBottle.name=Bottle of water
@@ -87,8 +118,8 @@ item.Plate.StonePlate.name=Stone Plate
 item.Plate.SteelPlate.name=Steel Plate
 
 item.BronzeHelm.name=Bronze Helm
-item.BronzeChest.name=BronzeChest
-item.BronzeLegs.name=Bronze Legs
+item.BronzeChest.name=Bronze Chest
+item.BronzeLegs.name=Bronze Leggings
 item.BronzeBoots.name=Bronze Boots
 
 item.BrassRivets.name=Brass Rivets
@@ -110,21 +141,33 @@ IronSword.name=Iron Sword
 IronShovel.name=Iron Shovel
 IronAxe.name=Iron Axe
 IronHammer.name=Iron Hammer
+IronExcavator.name=Iron Excavator
 
 BronzePickaxe.name=Bronze Pickaxe
 BronzeSword.name=Bronze Sword
 BronzeShovel.name=Bronze Shovel
 BronzeAxe.name=Bronze Axe
 BronzeHammer.name=Bronze Hammer
+BronzeExcavator.name=Bronze Excavator
+
+SteelRod.name=Steel Rod
+SteelPickaxe.name=Steel Pickaxe
+SteelSword.name=Steel Sword
+SteelShovel.name=Steel Shovel
+SteelAxe.name=Steel Axe
+SteelHammer.name=Steel Hammer
+SteelExcavator.name=Steel Excavator
 
 item.PnumaticGun.name=Pnumatic Gun
-item.BronzeBullet.name=Bronze Bullet
+item.BronzeBullet.BronzeBullet.name=Bronze Bullet
 item.SteamJetpack.name=SteamJetpack
 item.Casing.StoneCasing.name=Stone Casing
 item.Casing.BronzeCasing.name=Bronze Bullet Casing
 item.Casing.SteamCanister.name=Steam Canister
 item.BulletHead.StoneHead.name=Stone Head
 item.BulletHead.LeadBullet.name=Lead Bullet Head
+item.BulletHead.TungstenBullet.name=Tungsten Bullet Head
+item.SteelBullet.SteelBullet.name=Steel Bullet
 item.JackHammer.name=Jack Hammer
 item.BulletMagazine.name=Bullet Magazine
 item.Rebreather.name=Rebreather
@@ -160,6 +203,7 @@ item.Cast.RivetCast.name=Rivets Cast
 item.Cast.HeadCast.name=Bullet Head Cast
 item.Cast.CasingCast.name=Bullet Casing Cast
 item.Cast.HammerCast.name=Hammer Head Cast
+item.Cast.ExcavatorCast.name=Excavator Head Cast
 item.RunningShoes.name=Running Shoes
 item.Upgrade.name=Upgrade
 
@@ -182,6 +226,13 @@ item.Bag.YellowBag.name=Yellow Bag
 
 fluid.steam=Steam
 fluid.Steam=Steam
+fluid.Oil=Oil
+fluid.oil=Oil
+tile.BlockFluidOil.name=Oil
+tile.BlockFluidSteam.name=Steam
+item.BucketOil.name=Oil Bucket
+
+
 tile.SteamBoiler.name=Steam Boiler
 tile.HPBoiler.name=High Pressure Boiler
 tile.SteamCrusher.name=Steam Crusher
@@ -194,14 +245,20 @@ tile.SteelMachine.name=Steel Machine Block
 tile.SteamCharger.name=Steam Charger
 tile.ItemTube.name=Item Tube
 tile.FluidTube.name=Fluid Tube
+tile.MagnetItemTube.name=Magnetic Item Tube
 tile.RestrictedItemTube.name=Restricted Item Tube
 tile.BlockBreaker.name=Block Breaker
 tile.SteelOvenController.name=Steel Oven Controller
 tile.SteelOvenBlock.name=Steel Oven Block
 tile.SplitterItemTube.name=Splitter Item Tube
 tile.SplitterFluidTube.name=Splitter Fluid Tube
+tile.RationedItemTube.name=Rationed Item Tube
 tile.SteamQuarry.name=Steam Quarry
 tile.QuarryFrame.name=Quarry Frame
+tile.TrashBlock.name=Trash Block
+tile.BlockPlacer.name=Block Placer
+tile.BlockGrower.name=Plant Grower
+
 
 item.Dust.CopperDust.name=Copper Dust
 item.Dust.IronDust.name=Iron Dust

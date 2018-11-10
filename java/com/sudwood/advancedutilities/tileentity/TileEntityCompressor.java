@@ -2,11 +2,11 @@ package com.sudwood.advancedutilities.tileentity;
 
 import java.util.Random;
 
-import com.sudwood.advancedutilities.CompressRecipes;
-import com.sudwood.advancedutilities.CrushRecipes;
 import com.sudwood.advancedutilities.HelperLibrary;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.items.ItemIngot;
+import com.sudwood.advancedutilities.recipes.CompressRecipes;
+import com.sudwood.advancedutilities.recipes.CrushRecipes;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -211,7 +211,6 @@ public class TileEntityCompressor extends TileEntity implements ISidedInventory
         boolean flag1 = false;
         if (!this.worldObj.isRemote)
         {
-
             if (this.canCrush())
             {
                     this.crushItem();
@@ -229,7 +228,7 @@ public class TileEntityCompressor extends TileEntity implements ISidedInventory
      */
     public boolean canCrush()
     {
-    		if(inventory[0]!=null && CompressRecipes.getCompressResult(inventory[0])!=null && inventory[0].stackSize >= 9)
+    		if(inventory[0]!=null && CompressRecipes.getCompressResult(inventory[0])!=null)
     		{
     			if(inventory[1]== null)
     				return true;
@@ -252,10 +251,11 @@ public class TileEntityCompressor extends TileEntity implements ISidedInventory
     	if(canCrush())
     	{
 	    	ItemStack output = CompressRecipes.getCompressResult(inventory[0]);
+	    	int size = CompressRecipes.getIngredientSize(inventory[0]);
 	    	if(inventory[1] == null)
 	    	{
 	    		inventory[1] = output;
-	    		inventory[0].stackSize-=9;
+	    		inventory[0].stackSize-=size;
 	    		if(inventory[0].stackSize <= 0)
 	    			inventory[0] = null;
 	    		
@@ -265,7 +265,7 @@ public class TileEntityCompressor extends TileEntity implements ISidedInventory
 	    	else if(inventory[1].stackSize + output.stackSize < 64)
 	    	{
 	    		inventory[1].stackSize+=output.stackSize;
-	    		inventory[0].stackSize-=9;
+	    		inventory[0].stackSize-=size;
 	    		if(inventory[0].stackSize <= 0)
 	    			inventory[0] = null;
 	    		
@@ -291,7 +291,7 @@ public class TileEntityCompressor extends TileEntity implements ISidedInventory
      */
     public boolean isItemValidForSlot(int par1, ItemStack item)
     {
-        if(CompressRecipes.getCompressResult(item)!= null)
+        if(CompressRecipes.getCompressResultForAutomation(item))
         {
         	return true;
         }

@@ -16,8 +16,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCasing extends Item
 {
-	private String[] names = {"StoneCasing", "BronzeCasing", "SteamCanister"};
-	private IIcon[] icons = new IIcon[3];
+	private String[] names = {"StoneCasing", "BronzeCasing", "SteamCanister","SteelCasing"};
+	private IIcon[] icons = new IIcon[4];
 	public ItemCasing()
 	{
 		this.setHasSubtypes(true);
@@ -31,7 +31,7 @@ public class ItemCasing extends Item
      */
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
-        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 2);
+        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 3 );
         return super.getUnlocalizedName() + "." + names[i];
     }
     
@@ -41,7 +41,7 @@ public class ItemCasing extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List list)
     {
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < 4; ++i)
         {
             list.add(new ItemStack(item, 1, i));
             item.setCreativeTab(AdvancedUtilities.advancedBEToolsTab);
@@ -65,5 +65,6 @@ public class ItemCasing extends Item
     	this.icons[0] = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":"+"stonecasing");
     	this.icons[1] = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":"+"bronzebulletcase");
     	this.icons[2] = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":"+"steamcanister");
+    	this.icons[3] = par1IconRegister.registerIcon(AdvancedUtilities.MODID+":"+"steelbulletcase");
     }
 }

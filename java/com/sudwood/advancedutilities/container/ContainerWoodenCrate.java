@@ -5,25 +5,26 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.tileentity.TileEntityFurnace;
 
-import com.sudwood.advancedutilities.slot.SlotWoodenCrate;
+import com.sudwood.advancedutilities.tileentity.TileEntityPortaChest;
 import com.sudwood.advancedutilities.tileentity.TileEntityWoodenCrate;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import invtweaks.api.container.ChestContainer;
 
+@ChestContainer(isLargeChest = true)
 public class ContainerWoodenCrate extends Container
 {
     private TileEntityWoodenCrate furnace;
     private int lastStackSize = 0;
+    private int sizeInventory = 0;
 
     public ContainerWoodenCrate(InventoryPlayer par1InventoryPlayer, TileEntityWoodenCrate par2TileEntityFurnace)
     {
         this.furnace = par2TileEntityFurnace;
+        this.sizeInventory = furnace.getSizeInventory();
         for(int i = 0; i < 14; i++)
         {
         this.addSlotToContainer(new Slot(par2TileEntityFurnace, i, 3+i*18, 5));
@@ -40,6 +41,14 @@ public class ContainerWoodenCrate extends Container
         {
         	this.addSlotToContainer(new Slot(par2TileEntityFurnace, i+42, 3+i*18, 59));
         }
+        this.addSlotToContainer(new Slot(par2TileEntityFurnace, 56, 219, 77));
+        this.addSlotToContainer(new Slot(par2TileEntityFurnace, 57, 237, 77));
+        this.addSlotToContainer(new Slot(par2TileEntityFurnace, 58, 219, 95));
+        this.addSlotToContainer(new Slot(par2TileEntityFurnace, 59, 237, 95));
+        this.addSlotToContainer(new Slot(par2TileEntityFurnace, 60, 219, 113));
+        this.addSlotToContainer(new Slot(par2TileEntityFurnace, 61, 237, 113));
+        this.addSlotToContainer(new Slot(par2TileEntityFurnace, 62, 219, 131));
+        this.addSlotToContainer(new Slot(par2TileEntityFurnace, 63, 237, 131));
         int var3;
 
         for (var3 = 0; var3 < 3; ++var3)
@@ -52,7 +61,7 @@ public class ContainerWoodenCrate extends Container
 
         for (var3 = 0; var3 < 9; ++var3)
         {
-            this.addSlotToContainer(new Slot(par1InventoryPlayer, var3, 8 + var3 * 18, 142));
+            this.addSlotToContainer(new Slot(par1InventoryPlayer, var3, 48 + var3 * 18, 141));
         }
     }
 
@@ -100,68 +109,44 @@ public class ContainerWoodenCrate extends Container
     /**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */
-    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int i)
     {
-    	return null;
-    	/*
-        ItemStack var3 = null;
-        Slot var4 = (Slot)this.inventorySlots.get(par2);
-
-        if (var4 != null && var4.getHasStack())
-        {
-            ItemStack var5 = var4.getStack();
-            if(var5.stackSize > 64)
-        	{
-        		var5.stackSize = 64;
-        	}
-            var3 = var5.copy();
-
-            if (par2 == 2)
-            {
-                if (!this.mergeItemStack(var5, 3, 39, true))
-                {
-                    return null;
-                }
-
-                var4.onSlotChange(var5, var3);
-            }
-            else if (par2 != 1 && par2 != 0)
-            {
-                if (par2 >= 3 && par2 < 30)
-                {
-                    if (!this.mergeItemStack(var5, 30, 39, false))
-                    {
-                        return null;
-                    }
-                }
-                else if (par2 >= 30 && par2 < 39 && !this.mergeItemStack(var5, 3, 30, false))
-                {
-                    return null;
-                }
-            }
-            /*else if (!this.mergeItemStack(var5, 3, 39, false))
-            {
-                return null;
-            }
-
-            if (var5.stackSize == 0)
-            {
-                var4.putStack((ItemStack)null);
-            }
-            else
-            {
-                var4.onSlotChanged();
-            }
-
-            if (var5.stackSize == var3.stackSize)
-            {
-                return null;
-            }
-
-            var4.onPickupFromSlot(par1EntityPlayer, var5);
-        }
-
-        return var3;
-        */
+    	 ItemStack itemstack = null;
+         Slot slot = (Slot) inventorySlots.get(i);
+         if (slot != null && slot.getHasStack())
+         {
+             ItemStack itemstack1 = slot.getStack();
+             itemstack = itemstack1.copy();
+             if (i < sizeInventory)
+             {
+                 if (!mergeItemStack(itemstack1, sizeInventory, inventorySlots.size(), true))
+                 {
+                     return null;
+                 }
+             }
+             else if (!furnace.isItemValidForSlot(i, slot.getStack()))
+             {
+                 return null;
+             }
+             else if (!mergeItemStack(itemstack1, 0, sizeInventory, false))
+             {
+                 return null;
+             }
+             if (itemstack1.stackSize == 0)
+             {
+                 slot.putStack(null);
+             }
+             else
+             {
+                 slot.onSlotChanged();
+             }
+         }
+ return itemstack;
+        
     }
+    @ChestContainer.RowSizeCallback
+    public int getNumColumns() 
+    {
+        return 14;
+  	}
 }

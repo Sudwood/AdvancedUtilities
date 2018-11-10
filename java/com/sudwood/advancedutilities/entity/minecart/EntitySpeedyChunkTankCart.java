@@ -1,6 +1,7 @@
 package com.sudwood.advancedutilities.entity.minecart;
 
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.tileentity.TileEntityTank;
 
@@ -147,7 +148,7 @@ public class EntitySpeedyChunkTankCart extends EntityChunkLoadingCart
 				  
 				  if(FluidContainerRegistry.isEmptyContainer(player.getCurrentEquippedItem()))
 				  {
-						  if(this.tank.getFluidAmount() > 0 && this.tank.getFluid().getFluid()!= AdvancedUtilitiesBlocks.fluidSteam)
+						  if(this.tank.getFluidAmount() > 0 && this.tank.getFluid().getFluid()!= AdvancedUtilitiesFluids.fluidSteam)
 						  {
 							  player.inventory.addItemStackToInventory(FluidContainerRegistry.fillFluidContainer(this.tank.drain(FluidContainerRegistry.BUCKET_VOLUME, true), player.getCurrentEquippedItem()));
 							  if(!player.capabilities.isCreativeMode)

@@ -1,0 +1,16 @@
+[
+{
+  "modid": "advancedutilities",
+  "name": "Advanced Utilities",
+  "description": "A tech mod with some vanilla changes.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "www.sudwood.com",
+  "updateUrl": "",
+  "authorList": ["Sudwood"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

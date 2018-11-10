@@ -1,6 +1,7 @@
 package com.sudwood.advancedutilities.items;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -27,10 +28,14 @@ public class ItemJackHammer extends ItemPickaxe
 {
 	public static final int maxStorage = 64*FluidContainerRegistry.BUCKET_VOLUME;
 	public static final int steamUse = 40;
+	private static final float BASEDIGSPEED = 40F;
+	private float DIGSPEED = 40F;
+	private static final float BADSPEED = 10F;
+	private static final int MAXEXP = 500;
 	public ItemJackHammer()
 	{
 		super(ToolMaterial.IRON);
-		this.setHarvestLevel("pickaxe", 2);
+		this.setHarvestLevel("pickaxe", 3);
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 	}
@@ -48,7 +53,9 @@ public class ItemJackHammer extends ItemPickaxe
 		}
 		par3List.add("Steam: "+tag.getInteger("tankAmount")+" / "+tag.getInteger("maxTankAmount")+" mB");
 		par3List.add("Blocks Remaining: "+ (tag.getInteger("tankAmount") / (this.steamUse)));
-		par3List.add("Attack: "+(8+2*EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack))/2+" Hearts");
+		par3List.add("Attack: "+(8+(tag.getInteger("ItemLevel")/5)+2*EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack))/2+" Hearts");
+		par3List.add("Level: "+tag.getInteger("ItemLevel"));
+    	par3List.add("EXP: "+tag.getInteger("CurrentXP")+" / "+MAXEXP);
 	}
 	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister icon)
@@ -133,6 +140,40 @@ public class ItemJackHammer extends ItemPickaxe
     	
     }
     
+    private void doLevelUp(ItemStack stack, NBTTagCompound tag, EntityPlayer player)
+    {
+    	if(tag.getInteger("CurrentXP")>= this.MAXEXP)
+    	{
+    		tag.setInteger("ItemLevel", tag.getInteger("ItemLevel")+1);
+    		player.playSound("minecraft:random.levelup", 1F, 1F);
+    		if(tag.getInteger("ItemLevel")/50 > 0 )
+      		{
+      			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.looting.effectId, stack)<=0)
+      			{
+      				stack.addEnchantment(Enchantment.looting, tag.getInteger("ItemLevel")/50);
+      			}
+      			else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.looting.effectId, stack) < tag.getInteger("ItemLevel")/50)
+      			{
+      				Map map = EnchantmentHelper.getEnchantments(stack);
+					map.put(Enchantment.looting.effectId, tag.getInteger("ItemLevel")/50);
+					EnchantmentHelper.setEnchantments(map, stack);
+      			}
+      			if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack)<=0)
+      			{
+      				stack.addEnchantment(Enchantment.fortune, tag.getInteger("ItemLevel")/50);
+      			}
+      			else if(EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack) < tag.getInteger("ItemLevel")/50)
+      			{
+      				Map map = EnchantmentHelper.getEnchantments(stack);
+					map.put(Enchantment.fortune.effectId, tag.getInteger("ItemLevel")/50);
+					EnchantmentHelper.setEnchantments(map, stack);
+      			}
+      		}
+    		tag.setInteger("CurrentXP", 0);
+    		stack.setTagCompound(tag);
+    	}
+    }
+    
     /**
      * Metadata-sensitive version of getStrVsBlock
      * @param itemstack The Item Stack
@@ -143,10 +184,12 @@ public class ItemJackHammer extends ItemPickaxe
     public float getDigSpeed(ItemStack itemstack, Block block, int metadata)
     {
     	if(block == Blocks.obsidian)
-    		return 500F;
-    	if(block.isToolEffective("pickaxe", 2))
-			return 40F;
-    	else return 10F;
+    		return 500F+(500F*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));;
+    	if((block.isToolEffective("pickaxe", 3)&&block.getHarvestTool(3)=="pickaxe")||block == Blocks.obsidian | block == Blocks.redstone_ore || block == Blocks.lit_redstone_ore)
+    	{
+    		return DIGSPEED+(DIGSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
+    	}
+    	else return BADSPEED+(BADSPEED*(itemstack.getTagCompound().getInteger("ItemLevel")*0.01F));
     }
     
     /**
@@ -160,11 +203,17 @@ public class ItemJackHammer extends ItemPickaxe
     	 if(tag.getInteger("tankAmount") >= 2*this.steamUse)
       	 {
 	      	 tag.setInteger("tankAmount", tag.getInteger("tankAmount")-2*this.steamUse);
+	      	tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+1);
+	      	this.doLevelUp(par1ItemStack, tag,  (EntityPlayer)player);
 	      	int damage = 8;
 		     if(EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack) > 0)
 		     {
 		    	 damage+=EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, par1ItemStack)*2;
 		     }
+		     if(tag.getInteger("ItemLevel")>= 5)
+	      	 {
+	      		 damage+= tag.getInteger("ItemLevel")/5;
+	      	 }
 	      	par2EntityLivingBase.attackEntityFrom(DamageSource.generic, damage);
 	      	if(tag.getInteger("tankAmount") <= 0)
 	      	{
@@ -174,15 +223,17 @@ public class ItemJackHammer extends ItemPickaxe
       	 }
         return false;
     }
-    public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int p_150894_4_, int p_150894_5_, int p_150894_6_, EntityLivingBase player)
+    public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int p_150894_4_, int p_150894_5_, int p_150894_6_, EntityLivingBase  player)
     {
     	NBTTagCompound tag = stack.getTagCompound();
-    		if(block.isToolEffective("pickaxe", 2) && tag.getInteger("tankAmount") >= this.steamUse)
+    		if(block.isToolEffective("pickaxe", 3)&& block.getHarvestTool(3)=="pickaxe" && tag.getInteger("tankAmount") >= this.steamUse)
 	      	 {
     			int unbreaking = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
     			if(unbreaking <=0)
     			{
 			      	tag.setInteger("tankAmount", tag.getInteger("tankAmount")-this.steamUse);
+			      	tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+1);
+			      	this.doLevelUp(stack, tag, (EntityPlayer)player);
 			      	if(tag.getInteger("tankAmount") <= 0)
 			      	{
 			      		SoundHandler.playAtEntity(player.worldObj, player, "steam",1F, 1F);
@@ -199,15 +250,19 @@ public class ItemJackHammer extends ItemPickaxe
 				      		SoundHandler.playAtEntity(player.worldObj, player, "steam",1F, 1F);
 				      	}
     				}
+    				tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+1);
+			      	this.doLevelUp(stack, tag,(EntityPlayer)player);
     			}
 		      	 return true;
 	      	 }
-    		if(!block.isToolEffective("pickaxe", 2) && tag.getInteger("tankAmount") >= 2*this.steamUse)
+    		if(!block.isToolEffective("pickaxe", 3) && tag.getInteger("tankAmount") >= 2*this.steamUse)
 	      	 {
     			int unbreaking = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
     			if(unbreaking <=0)
     			{
 			      	tag.setInteger("tankAmount", tag.getInteger("tankAmount")-2*this.steamUse);
+			      	tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+1);
+			      	this.doLevelUp(stack, tag,(EntityPlayer)player);
 			      	if(tag.getInteger("tankAmount") <= 0)
 			      	{
 			      		SoundHandler.playAtEntity(player.worldObj, player, "steam",1F, 1F);
@@ -224,6 +279,8 @@ public class ItemJackHammer extends ItemPickaxe
 				      		SoundHandler.playAtEntity(player.worldObj, player, "steam",1F, 1F);
 				      	}
     				}
+    				tag.setInteger("CurrentXP", tag.getInteger("CurrentXP")+1);
+			      	this.doLevelUp(stack, tag,(EntityPlayer)player);
     			}
 		      	 return true;
 	      	 }
@@ -251,11 +308,11 @@ public class ItemJackHammer extends ItemPickaxe
 		  }
 	  	NBTTagCompound tag = itemstack.getTagCompound();
 	  	
-	  	if(player.worldObj.getBlock(X, Y, Z).isToolEffective("pickaxe", 2) && tag.getInteger("tankAmount") >= this.steamUse)
+	  	if(player.worldObj.getBlock(X, Y, Z).isToolEffective("pickaxe", 3) && tag.getInteger("tankAmount") >= this.steamUse)
     	 {
 	      	 return false;
     	 }
-     	 if(!player.worldObj.getBlock(X, Y, Z).isToolEffective("pickaxe", 2) && tag.getInteger("tankAmount") >= 2*this.steamUse)
+     	 if(!player.worldObj.getBlock(X, Y, Z).isToolEffective("pickaxe", 3) && tag.getInteger("tankAmount") >= 2*this.steamUse)
      	 {
 	      	 return false;
      	 }

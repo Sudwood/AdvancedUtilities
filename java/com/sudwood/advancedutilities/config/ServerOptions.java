@@ -11,6 +11,7 @@ public class ServerOptions
 	public static int tungstenSpawnRate;
 	public static int platinumSpawnRate;
 	public static int nickelSpawnRate;
-	
+	public static boolean spawnOil;
 	public static int steamCreationRate;
+	public static boolean spawnRubberTrees;
 }

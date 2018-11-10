@@ -1,10 +1,6 @@
 package com.sudwood.advancedutilities.client;
 
-import net.minecraft.client.renderer.entity.RenderMinecart;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.MinecraftForgeClient;
-
+import com.sudwood.advancedutilities.AdvancedUtilities;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.client.models.ModelBellows;
 import com.sudwood.advancedutilities.client.models.ModelBoiler;
@@ -36,13 +32,18 @@ import com.sudwood.advancedutilities.client.renders.RenderArmorForge;
 import com.sudwood.advancedutilities.client.renders.RenderBellows;
 import com.sudwood.advancedutilities.client.renders.RenderBoiler;
 import com.sudwood.advancedutilities.client.renders.RenderBullet;
+import com.sudwood.advancedutilities.client.renders.RenderElevator;
 import com.sudwood.advancedutilities.client.renders.RenderFluidTube;
 import com.sudwood.advancedutilities.client.renders.RenderItem;
 import com.sudwood.advancedutilities.client.renders.RenderItemTube;
 import com.sudwood.advancedutilities.client.renders.RenderJackHammer;
 import com.sudwood.advancedutilities.client.renders.RenderJetpackItem;
 import com.sudwood.advancedutilities.client.renders.RenderKiln;
+import com.sudwood.advancedutilities.client.renders.RenderMagnetTube;
+import com.sudwood.advancedutilities.client.renders.RenderPortaChest;
+import com.sudwood.advancedutilities.client.renders.RenderPortaChestItem;
 import com.sudwood.advancedutilities.client.renders.RenderQuarryFrame;
+import com.sudwood.advancedutilities.client.renders.RenderRationedItemTube;
 import com.sudwood.advancedutilities.client.renders.RenderRebreather;
 import com.sudwood.advancedutilities.client.renders.RenderRestrictedItemTube;
 import com.sudwood.advancedutilities.client.renders.RenderRunningShoesItem;
@@ -56,10 +57,12 @@ import com.sudwood.advancedutilities.client.renders.RenderSteamFurnace;
 import com.sudwood.advancedutilities.client.renders.RenderSteamQuarry;
 import com.sudwood.advancedutilities.client.renders.RenderSteamSmeltry;
 import com.sudwood.advancedutilities.client.renders.RenderTank;
+import com.sudwood.advancedutilities.client.renders.RenderTankItem;
 import com.sudwood.advancedutilities.client.renders.RenderTileEntityBase;
 import com.sudwood.advancedutilities.client.renders.RenderTomato;
 import com.sudwood.advancedutilities.client.renders.RenderTomatoPlant;
 import com.sudwood.advancedutilities.client.renders.RenderToolForge;
+import com.sudwood.advancedutilities.client.renders.RenderWire;
 import com.sudwood.advancedutilities.entity.EntityBullet;
 import com.sudwood.advancedutilities.entity.minecart.EntityChunkChestCart;
 import com.sudwood.advancedutilities.entity.minecart.EntityChunkLoadingCart;
@@ -75,11 +78,15 @@ import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.tileentity.TileEntityArmorForge;
 import com.sudwood.advancedutilities.tileentity.TileEntityBellows;
 import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
+import com.sudwood.advancedutilities.tileentity.TileEntityElevator;
 import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityHPBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityKiln;
+import com.sudwood.advancedutilities.tileentity.TileEntityMagnetTube;
+import com.sudwood.advancedutilities.tileentity.TileEntityPortaChest;
 import com.sudwood.advancedutilities.tileentity.TileEntityQuarryFrame;
+import com.sudwood.advancedutilities.tileentity.TileEntityRationedItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySplitterFluidTube;
@@ -93,9 +100,15 @@ import com.sudwood.advancedutilities.tileentity.TileEntitySteamSmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntityTank;
 import com.sudwood.advancedutilities.tileentity.TileEntityTomatoPlant;
 import com.sudwood.advancedutilities.tileentity.TileEntityToolForge;
+import com.sudwood.advancedutilities.tileentity.TileEntityWire;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import net.minecraft.client.renderer.entity.RenderMinecart;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 public class ClientRegistering 
 {
@@ -116,6 +129,9 @@ public class ClientRegistering
 	public static int splitterTubeId;
 	public static int steamQuarryId;
 	public static int quarryFrameId;
+	public static int wireId;
+	public static int portaChestId;
+	public static int elevatorId;
 	
 	public static final ModelJetpackArmor jetpackArmor = new ModelJetpackArmor(1.0F);
 	public static final ModelRebreatherArmor rebreatherArmor = new ModelRebreatherArmor(1.0F);
@@ -140,6 +156,9 @@ public class ClientRegistering
 		splitterTubeId = RenderingRegistry.getNextAvailableRenderId();
 		steamQuarryId = RenderingRegistry.getNextAvailableRenderId();
 		quarryFrameId = RenderingRegistry.getNextAvailableRenderId();
+		wireId = RenderingRegistry.getNextAvailableRenderId();
+		portaChestId = RenderingRegistry.getNextAvailableRenderId();
+		elevatorId = RenderingRegistry.getNextAvailableRenderId();
 		keyhandle = new KeyHandler();
 		
 		RenderingRegistry.registerEntityRenderingHandler(EntityBullet.class, new RenderBullet());
@@ -190,6 +209,11 @@ public class ClientRegistering
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.itemTube), new RenderTileEntityBase(new ModelTube(), new ResourceLocation("advancedutilities","textures/blocks/itemtube.png")));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRestrictedItemTube.class, new RenderRestrictedItemTube());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.restrictedItemTube), new RenderTileEntityBase(new ModelTube(), new ResourceLocation("advancedutilities","textures/blocks/restricteditemtube.png")));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMagnetTube.class, new RenderMagnetTube());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.magnetItemTube), new RenderTileEntityBase(new ModelTube(), new ResourceLocation("advancedutilities","textures/blocks/magnetitemtube.png")));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRationedItemTube.class, new RenderRationedItemTube());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.rationedItemTube), new RenderTileEntityBase(new ModelTube(), new ResourceLocation("advancedutilities","textures/blocks/rationeditemtube.png")));
+		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySplitterItemTube.class, new RenderSplitterTube());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.splitterItemTube), new RenderTileEntityBase(new ModelSplitterTube(), new ResourceLocation("advancedutilities","textures/blocks/itemtube.png")));
 		
@@ -212,6 +236,24 @@ public class ClientRegistering
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityQuarryFrame.class, new RenderQuarryFrame());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.quarryFrame), new RenderTileEntityBase(new ModelQuarryFrame(), new ResourceLocation("advancedutilities","textures/blocks/quarryframe.png")));
+		
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPortaChest.class, new RenderPortaChest());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.portaChestWood), new RenderPortaChestItem());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.portaChestBronze), new RenderPortaChestItem());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.portaChestGold), new RenderPortaChestItem());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.portaChestDiamond), new RenderPortaChestItem());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.portaChestPlatinum), new RenderPortaChestItem());
+		
+		TileEntitySpecialRenderer eRender = new RenderElevator();
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElevator.class, eRender);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.elevator), new RenderTileEntityBase(new ResourceLocation(AdvancedUtilities.MODID, "models/elevator/elevator.obj"), new ResourceLocation("advancedutilities","models/elevator/elevator.png")));
+		
+		
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWire.class, new RenderWire());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.ironWire), new RenderTileEntityBase(new ModelQuarryFrame(), new ResourceLocation("advancedutilities","textures/blocks/ironwire.png")));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.copperWire), new RenderTileEntityBase(new ModelQuarryFrame(), new ResourceLocation("advancedutilities","textures/blocks/copperwire.png")));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.goldWire), new RenderTileEntityBase(new ModelQuarryFrame(), new ResourceLocation("advancedutilities","textures/blocks/goldwire.png")));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(AdvancedUtilitiesBlocks.blockTank), new RenderTankItem(new ModelTank(), new ResourceLocation("advancedutilities","textures/blocks/tank.png")));
 		
 		MinecraftForgeClient.registerItemRenderer(AdvancedUtilitiesItems.pnumaticGun, new RenderItem(new ModelGun(), new ResourceLocation("advancedutilities","textures/items/gun.png")));
 		MinecraftForgeClient.registerItemRenderer(AdvancedUtilitiesItems.jackHammer, new RenderJackHammer(new ModelJackHammer(), new ResourceLocation("advancedutilities","textures/items/jackhammer.png")));

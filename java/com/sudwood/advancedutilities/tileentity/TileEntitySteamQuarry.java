@@ -2,11 +2,19 @@ package com.sudwood.advancedutilities.tileentity;
 
 import java.util.ArrayList;
 
+import com.sudwood.advancedutilities.AdvancedUtilities;
+import com.sudwood.advancedutilities.AdvancedUtilitiesChunkLoadCallback;
+import com.sudwood.advancedutilities.TransferHelper;
+import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.config.ServerOptions;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -23,16 +31,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-
-import com.sudwood.advancedutilities.AdvancedUtilities;
-import com.sudwood.advancedutilities.AdvancedUtilitiesChunkLoadCallback;
-import com.sudwood.advancedutilities.CrushRecipes;
-import com.sudwood.advancedutilities.TransferHelper;
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.config.ServerOptions;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFluidHandler, ISteamTank
 {
@@ -41,7 +40,7 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	 private static int digCost = 50*(ServerOptions.steamCreationRate/5);
 	 private int currentOutput = 0;
 	 private int costMod = 0;
-	 private int speedMult = 1;
+	 public int speedMult = 1;
 	 public int progressTime;
 	 private int[] digCoords = {0,0,0};
 	 private int[] digChunk = {0,0};
@@ -50,6 +49,8 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	 public int zSize = 0;
 	 public int xSign = 0;
 	 public int zSign = 0;
+	 public boolean isFortune3 = false;
+	 public boolean isEff = false;
 	 public boolean hasDetermined = false;
 	 private boolean isLoadingMining = false;
 	 public boolean shouldBeDigging = false;
@@ -63,6 +64,7 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	    {
 	        super.readFromNBT(tag);
 	        tank.readFromNBT(tag);
+	        this.isEff = tag.getBoolean("iseff");
 	        this.progressTime = tag.getInteger("progressTime");
 	        this.currentOutput = tag.getInteger("CurrentOutput");
 	        this.costMod = tag.getInteger("costMod");
@@ -76,6 +78,7 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	        isLoadingMining = tag.getBoolean("isLoadingMining");
 	        xSign = tag.getInteger("xSign");
 	        zSign = tag.getInteger("zSign");
+	        isFortune3 = tag.getBoolean("isFortune3");
 	        shouldBeDigging = tag.getBoolean("shouldBeDigging");
 	        NBTTagList nbttaglist = tag.getTagList("Items", 10);
 	        this.inventory = new ItemStack[this.getSizeInventory()];
@@ -109,6 +112,11 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	    	return 10/this.speedMult;
 	    }
 	    
+	    public int[] getDigCoords()
+	    {
+	    	return this.digCoords.clone();
+	    }
+	    
 	    @Override
 	    public void writeToNBT(NBTTagCompound tag)
 	    {
@@ -127,7 +135,9 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	        tag.setBoolean("isLoadingMining", isLoadingMining);
 	        tag.setInteger("xSign", xSign);
 	        tag.setInteger("zSign", zSign);
+	        tag.setBoolean("isFortune3", isFortune3);
 	        tag.setBoolean("shouldBeDigging", shouldBeDigging);
+	        tag.setBoolean("iseff", isEff);
 	        NBTTagList nbttaglist = new NBTTagList();
 
 	        for (int i = 0; i < this.inventory.length; ++i)
@@ -165,7 +175,7 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	    		{
 	    			this.progressTime++;
 	    			
-		    			if(this.progressTime >= 10 / this.speedMult)
+		    			if(this.progressTime >= 2 / this.speedMult)
 		    			{
 		    					this.dig();
 		    				
@@ -223,12 +233,15 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 			 {
 				 miningTicket = ForgeChunkManager.requestTicket(AdvancedUtilities.instance, worldObj, Type.NORMAL);
 			 }
-			 miningTicket.getModData().setInteger("type", AdvancedUtilitiesChunkLoadCallback.ChunkLoaderQuarryDigID);
-			 miningTicket.getModData().setInteger("blockX", xCoord);
-			 miningTicket.getModData().setInteger("blocky", yCoord);
-			 miningTicket.getModData().setInteger("blockz", zCoord);
+			 if(miningTicket !=null)
+			 {
+				 miningTicket.getModData().setInteger("type", AdvancedUtilitiesChunkLoadCallback.ChunkLoaderQuarryDigID);
+				 miningTicket.getModData().setInteger("blockX", xCoord);
+				 miningTicket.getModData().setInteger("blocky", yCoord);
+				 miningTicket.getModData().setInteger("blockz", zCoord);
 			 isLoadingMining = true;
 			 ForgeChunkManager.forceChunk(miningTicket, new ChunkCoordIntPair(digChunk[0], digChunk[1]));
+			 }
 		 }
 		 public void loadMining(Ticket ticket)
 		 {
@@ -276,32 +289,89 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	    {
 	    	if(!isWrongBlock())
 	    	{
-	    		if(worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]) == Blocks.water || worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]) == Blocks.lava)
+	    		if(worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]) == Blocks.water || worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]) == Blocks.lava || worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]) == Blocks.flowing_lava ||  worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]) == Blocks.flowing_water)
 	    		{
-	    			worldObj.setBlockToAir(digCoords[0], digCoords[1], digCoords[2]);
+	    			worldObj.setBlock(digCoords[0], digCoords[1], digCoords[2], Blocks.dirt);
 		    		this.tank.drain(this.digCost, true);
 		    		worldObj.playSoundEffect((double)digCoords[0] + 0.5D, (double)digCoords[1] + 0.5D, (double)digCoords[2] + 0.5D, "dig.stone", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		    		return;
 	    		}
-		    	ArrayList list = worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]).getDrops(worldObj, digCoords[0], digCoords[1], digCoords[2], worldObj.getBlockMetadata(digCoords[0], digCoords[1], digCoords[2]), 0);
-		    	if(list!= null && list.size() > 0)
-		    	{
-		    		for(int i = 0; i < list.size(); i++)
+	    		ArrayList list = null;
+	    		if(!isEff)
+	    		{
+		    		if(isFortune3)
 		    		{
-		    			this.putItemInThisInventory((ItemStack)list.get(i));
+		    			list = worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]).getDrops(worldObj, digCoords[0], digCoords[1], digCoords[2], worldObj.getBlockMetadata(digCoords[0], digCoords[1], digCoords[2]), 3);
 		    		}
-		    		if(!worldObj.isRemote)
+		    		else if(!isFortune3)
 		    		{
-		    		worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]).breakBlock(worldObj, digCoords[0], digCoords[1], digCoords[2], worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]), worldObj.getBlockMetadata(digCoords[0], digCoords[1], digCoords[2]));
-		    		worldObj.setBlockToAir(digCoords[0], digCoords[1], digCoords[2]);
-		    		this.tank.drain(this.digCost+this.costMod, true);
-		    		worldObj.playSoundEffect((double)digCoords[0] + 0.5D, (double)digCoords[1] + 0.5D, (double)digCoords[2] + 0.5D, "dig.stone", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		    			list = worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]).getDrops(worldObj, digCoords[0], digCoords[1], digCoords[2], worldObj.getBlockMetadata(digCoords[0], digCoords[1], digCoords[2]), 0);
 		    		}
-		    		if(worldObj.isRemote)
-		    		{
-		    			worldObj.spawnParticle("explode", digCoords[0], digCoords[1], digCoords[2], 1F, 1F, 1F);
-		    		}
-		    	}
+			    	if(list!= null && list.size() > 0)
+			    	{
+			    		for(int i = 0; i < list.size(); i++)
+			    		{
+			    			this.putItemInThisInventory((ItemStack)list.get(i));
+			    		}
+			    		if(!worldObj.isRemote)
+			    		{
+			    		worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]).breakBlock(worldObj, digCoords[0], digCoords[1], digCoords[2], worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]), worldObj.getBlockMetadata(digCoords[0], digCoords[1], digCoords[2]));
+			    		worldObj.setBlockToAir(digCoords[0], digCoords[1], digCoords[2]);
+			    		this.tank.drain(this.digCost+this.costMod, true);
+			    		worldObj.playSoundEffect((double)digCoords[0] + 0.5D, (double)digCoords[1] + 0.5D, (double)digCoords[2] + 0.5D, "dig.stone", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			    		}
+			    		if(worldObj.isRemote)
+			    		{
+			    			worldObj.spawnParticle("explode", digCoords[0], digCoords[1], digCoords[2], 1F, 1F, 1F);
+			    		}
+			    	}
+	    		}
+	    		if(isEff)
+	    		{
+	    			ItemStack temp = new ItemStack(worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]),1,worldObj.getBlockMetadata(digCoords[0], digCoords[1], digCoords[2]));
+	    			int[] ids = OreDictionary.getOreIDs(temp);
+	    			boolean shouldDig = false;
+	    			if(ids!=null)
+	    			{
+		    			for(int i =0;i<ids.length;i++)
+		    			{
+		    				String name = OreDictionary.getOreName(ids[i]);
+		    				if(name.substring(0, 3).equals("ore"))
+		    				{
+		    					shouldDig = true;
+		    				}
+		    			}
+		    			if(shouldDig)
+		    			{
+		    				if(isFortune3)
+				    		{
+				    			list = worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]).getDrops(worldObj, digCoords[0], digCoords[1], digCoords[2], worldObj.getBlockMetadata(digCoords[0], digCoords[1], digCoords[2]), 3);
+				    		}
+				    		else if(!isFortune3)
+				    		{
+				    			list = worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]).getDrops(worldObj, digCoords[0], digCoords[1], digCoords[2], worldObj.getBlockMetadata(digCoords[0], digCoords[1], digCoords[2]), 0);
+				    		}
+					    	if(list!= null && list.size() > 0)
+					    	{
+					    		for(int i = 0; i < list.size(); i++)
+					    		{
+					    			this.putItemInThisInventory((ItemStack)list.get(i));
+					    		}
+					    		if(!worldObj.isRemote)
+					    		{
+					    		worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]).breakBlock(worldObj, digCoords[0], digCoords[1], digCoords[2], worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]), worldObj.getBlockMetadata(digCoords[0], digCoords[1], digCoords[2]));
+					    		worldObj.setBlockToAir(digCoords[0], digCoords[1], digCoords[2]);
+					    		this.tank.drain(this.digCost+this.costMod, true);
+					    		worldObj.playSoundEffect((double)digCoords[0] + 0.5D, (double)digCoords[1] + 0.5D, (double)digCoords[2] + 0.5D, "dig.stone", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+					    		}
+					    		if(worldObj.isRemote)
+					    		{
+					    			worldObj.spawnParticle("explode", digCoords[0], digCoords[1], digCoords[2], 1F, 1F, 1F);
+					    		}
+					    	}
+		    			}
+	    			}
+	    		}
 	    	}
 	    }
 	    
@@ -327,7 +397,10 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 									    	{
 												if(!(worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]) instanceof IFluidHandler))
     									    	{
-													return false;
+													if(worldObj.getBlock(digCoords[0], digCoords[1], digCoords[2]) != AdvancedUtilitiesBlocks.quarryFrame)
+											    	{
+														return false;
+											    	}
     									    	}
 									    	}
 								    	}
@@ -512,8 +585,6 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	    				isChecking = false;
 	    			}
 	    		}
-	    		System.out.println("x1: "+Math.abs((tempx))+" x2: "+xSize);
-	    		System.out.println("z1: "+Math.abs((tempz))+" z2: "+zSize);
 	    		if((Math.abs((tempx)) == xSize) && (Math.abs(tempz) == zSize))
 	    		{
 	    			hasDetermined = true;
@@ -586,7 +657,7 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	    public void findInventory()
 	    {
 	    	this.checkCompressor();
-	    	switch(worldObj.getBlockMetadata(xCoord, yCoord, zCoord))
+	    	/*switch(worldObj.getBlockMetadata(xCoord, yCoord, zCoord))
 	    	{
 	    	case 2: // north
 	    		if(worldObj.getBlock(xCoord+ForgeDirection.NORTH.offsetX, yCoord+ForgeDirection.NORTH.offsetY, zCoord+ForgeDirection.NORTH.offsetZ) == Blocks.chest)
@@ -616,7 +687,7 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 		    		return;
 	    		}
 	    		break;
-	    	}  	
+	    	}  	*/
 	     	return;
 	    }
 	    
@@ -624,8 +695,12 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	    {
 	    	if(worldObj.getBlock(xCoord, yCoord-1, zCoord) == AdvancedUtilitiesBlocks.steamCompressor)
 	    	{
-	    		this.speedMult = 2;
-	    		this.costMod = this.digCost;
+	    		TileEntitySteamCompressor tile = (TileEntitySteamCompressor) worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
+	    		int tempm = tile.multiplier;
+	    		if(tempm > 10)
+	    			tempm=10;
+	    		this.speedMult = tempm;
+	    		this.costMod = this.digCost*(tempm/2);
 	    	}
 	    	else
 	    	{
@@ -807,7 +882,7 @@ public class TileEntitySteamQuarry extends TileEntity implements IInventory, IFl
 	    @Override
 	    public boolean canFill(ForgeDirection from, Fluid fluid)
 	    {
-	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesBlocks.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
+	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesFluids.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
 	    		return true;
 	    	else return false;
 	    }

@@ -1,14 +1,18 @@
 package com.sudwood.advancedutilities;
 
+import com.sudwood.advancedutilities.blocks.ItemBlockPortaChest;
 import com.sudwood.advancedutilities.client.gui.GuiArmorForge;
 import com.sudwood.advancedutilities.client.gui.GuiBag;
+import com.sudwood.advancedutilities.client.gui.GuiBlockPlacer;
 import com.sudwood.advancedutilities.client.gui.GuiBoiler;
 import com.sudwood.advancedutilities.client.gui.GuiCompressor;
 import com.sudwood.advancedutilities.client.gui.GuiFluidTube;
+import com.sudwood.advancedutilities.client.gui.GuiGrowerBlock;
 import com.sudwood.advancedutilities.client.gui.GuiItemTube;
 import com.sudwood.advancedutilities.client.gui.GuiKiln;
 import com.sudwood.advancedutilities.client.gui.GuiMagazine;
 import com.sudwood.advancedutilities.client.gui.GuiPnumaticGun;
+import com.sudwood.advancedutilities.client.gui.GuiPortaChest;
 import com.sudwood.advancedutilities.client.gui.GuiRebreather;
 import com.sudwood.advancedutilities.client.gui.GuiRestrictedItemTube;
 import com.sudwood.advancedutilities.client.gui.GuiSkills;
@@ -20,15 +24,20 @@ import com.sudwood.advancedutilities.client.gui.GuiSteamSmeltry;
 import com.sudwood.advancedutilities.client.gui.GuiSteelOven;
 import com.sudwood.advancedutilities.client.gui.GuiStoneMill;
 import com.sudwood.advancedutilities.client.gui.GuiToolForge;
+import com.sudwood.advancedutilities.client.gui.GuiTrash;
+import com.sudwood.advancedutilities.client.gui.GuiVoidRing;
 import com.sudwood.advancedutilities.client.gui.GuiWoodenCrate;
 import com.sudwood.advancedutilities.container.ContainerArmorForge;
 import com.sudwood.advancedutilities.container.ContainerBag;
+import com.sudwood.advancedutilities.container.ContainerBlockPlacer;
 import com.sudwood.advancedutilities.container.ContainerCompressor;
 import com.sudwood.advancedutilities.container.ContainerFluidTube;
+import com.sudwood.advancedutilities.container.ContainerGrowerBlock;
 import com.sudwood.advancedutilities.container.ContainerItemTube;
 import com.sudwood.advancedutilities.container.ContainerKiln;
 import com.sudwood.advancedutilities.container.ContainerMagazine;
 import com.sudwood.advancedutilities.container.ContainerPnumaticGun;
+import com.sudwood.advancedutilities.container.ContainerPortaChest;
 import com.sudwood.advancedutilities.container.ContainerRebreather;
 import com.sudwood.advancedutilities.container.ContainerRestrictedItemTube;
 import com.sudwood.advancedutilities.container.ContainerSmeltry;
@@ -40,20 +49,25 @@ import com.sudwood.advancedutilities.container.ContainerSteamSmeltry;
 import com.sudwood.advancedutilities.container.ContainerSteelOven;
 import com.sudwood.advancedutilities.container.ContainerStoneMill;
 import com.sudwood.advancedutilities.container.ContainerToolForge;
+import com.sudwood.advancedutilities.container.ContainerTrash;
+import com.sudwood.advancedutilities.container.ContainerVoidRing;
 import com.sudwood.advancedutilities.container.ContainerWoodenCrate;
 import com.sudwood.advancedutilities.container.InventoryBag;
 import com.sudwood.advancedutilities.container.InventoryItem;
+import com.sudwood.advancedutilities.container.InventoryPortaChest;
+import com.sudwood.advancedutilities.container.InventoryVoidRing;
 import com.sudwood.advancedutilities.container.RebreatherInv;
-import com.sudwood.advancedutilities.items.ItemArmorRebreather;
-import com.sudwood.advancedutilities.items.ItemBag;
-import com.sudwood.advancedutilities.items.ItemMagazine;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.items.ItemPnumaticGun;
 import com.sudwood.advancedutilities.tileentity.TileEntityArmorForge;
+import com.sudwood.advancedutilities.tileentity.TileEntityBlockPlacer;
 import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityCompressor;
 import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
+import com.sudwood.advancedutilities.tileentity.TileEntityGrowerBlock;
 import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityKiln;
+import com.sudwood.advancedutilities.tileentity.TileEntityPortaChest;
 import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
@@ -63,6 +77,7 @@ import com.sudwood.advancedutilities.tileentity.TileEntitySteamSmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteelController;
 import com.sudwood.advancedutilities.tileentity.TileEntityStoneMill;
 import com.sudwood.advancedutilities.tileentity.TileEntityToolForge;
+import com.sudwood.advancedutilities.tileentity.TileEntityTrash;
 import com.sudwood.advancedutilities.tileentity.TileEntityWoodenCrate;
 
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -153,12 +168,12 @@ public class GuiHandler implements IGuiHandler
 					return new ContainerRestrictedItemTube(player.inventory, (TileEntityRestrictedItemTube)tile21111);
 				}
 			case AdvancedUtilities.bulletMagazineGui:
-				if(player.getCurrentEquippedItem().getItem() instanceof ItemMagazine)
+				if(player.getCurrentEquippedItem().getItem() ==AdvancedUtilitiesItems.bulletMagazine)
 				{
 					return new ContainerMagazine(player, player.inventory, new InventoryItem(player.getCurrentEquippedItem()));
 				}
 			case AdvancedUtilities.bagGui:
-				if(player.getCurrentEquippedItem().getItem() instanceof ItemBag)
+				if(player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.bag)
 				{
 					return new ContainerBag(player, player.inventory, new InventoryBag(player.getCurrentEquippedItem()));
 				}
@@ -166,7 +181,7 @@ public class GuiHandler implements IGuiHandler
 				return null;
 				
 			case AdvancedUtilities.rebreatherGui:
-				if(player.getCurrentEquippedItem().getItem() instanceof ItemArmorRebreather)
+				if(player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.rebreather)
 				{
 					return new ContainerRebreather(player, player.inventory, new RebreatherInv(player.getCurrentEquippedItem()));
 				}
@@ -199,6 +214,40 @@ public class GuiHandler implements IGuiHandler
 				if(tile222221 instanceof TileEntityWoodenCrate)
 				{
 					return new ContainerWoodenCrate(player.inventory, (TileEntityWoodenCrate)tile222221);
+				}
+			case AdvancedUtilities.trashGui:
+				TileEntity tile222222 = world.getTileEntity(x, y, z);
+				if(tile222222 instanceof TileEntityTrash)
+				{
+					return new ContainerTrash(player.inventory, (TileEntityTrash)tile222222);
+				}
+			case AdvancedUtilities.blockPlacerGui:
+				TileEntity tile3 = world.getTileEntity(x, y, z);
+				if(tile3 instanceof TileEntityBlockPlacer)
+				{
+					return new ContainerBlockPlacer(player.inventory, (TileEntityBlockPlacer)tile3);
+				}
+			case AdvancedUtilities.blockGrowerGui:
+				TileEntity tile31 = world.getTileEntity(x, y, z);
+				if(tile31 instanceof TileEntityGrowerBlock)
+				{
+					return new ContainerGrowerBlock(player.inventory, (TileEntityGrowerBlock)tile31);
+				}
+			case AdvancedUtilities.portaChestBlockGui:
+				TileEntity tile311 = world.getTileEntity(x, y, z);
+				if(tile311 instanceof TileEntityPortaChest)
+				{
+					return new ContainerPortaChest(player, player.inventory, (TileEntityPortaChest)tile311, true);
+				}
+			case AdvancedUtilities.portaChestItemGui:
+				if(player.getCurrentEquippedItem().getItem() instanceof ItemBlockPortaChest)
+				{
+					return new ContainerPortaChest(player, player.inventory, new InventoryPortaChest(player.getCurrentEquippedItem()), false);
+				}
+			case AdvancedUtilities.voidRingGui:
+				if(player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.voidRing)
+				{
+					return new ContainerVoidRing(player.inventory, new InventoryVoidRing(player.getCurrentEquippedItem()));
 				}
 				
 			default: return null;
@@ -283,19 +332,19 @@ public class GuiHandler implements IGuiHandler
 					return new GuiRestrictedItemTube(player.inventory, (TileEntityRestrictedItemTube)tile21111);
 				}
 			case AdvancedUtilities.bulletMagazineGui:
-				if(player.getCurrentEquippedItem().getItem() instanceof ItemMagazine)
+				if(player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.bulletMagazine)
 				{
 					return new GuiMagazine(new ContainerMagazine(player, player.inventory, new InventoryItem(player.getCurrentEquippedItem())), player.getCurrentEquippedItem());
 				}
 			case AdvancedUtilities.bagGui:
-				if(player.getCurrentEquippedItem().getItem() instanceof ItemBag)
+				if(player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.bag)
 				{
 					return new GuiBag(new ContainerBag(player, player.inventory, new InventoryBag(player.getCurrentEquippedItem())), player.getCurrentEquippedItem());
 				}
 			case AdvancedUtilities.skillsGui:
 				return new GuiSkills(Minecraft.getMinecraft());
 			case AdvancedUtilities.rebreatherGui:
-				if(player.getCurrentEquippedItem().getItem() instanceof ItemArmorRebreather)
+				if(player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.rebreather)
 				{
 					return new GuiRebreather(new ContainerRebreather(player, player.inventory, new RebreatherInv(player.getCurrentEquippedItem())), player.getCurrentEquippedItem());
 				}
@@ -328,6 +377,40 @@ public class GuiHandler implements IGuiHandler
 				if(tile222221 instanceof TileEntityWoodenCrate)
 				{
 					return new GuiWoodenCrate(player.inventory, (TileEntityWoodenCrate)tile222221);
+				}
+			case AdvancedUtilities.trashGui:
+				TileEntity tile222222 = world.getTileEntity(x, y, z);
+				if(tile222222 instanceof TileEntityTrash)
+				{
+					return new GuiTrash(player.inventory, (TileEntityTrash)tile222222);
+				}
+			case AdvancedUtilities.blockPlacerGui:
+				TileEntity tile3 = world.getTileEntity(x, y, z);
+				if(tile3 instanceof TileEntityBlockPlacer)
+				{
+					return new GuiBlockPlacer(player.inventory, (TileEntityBlockPlacer)tile3);
+				}
+			case AdvancedUtilities.blockGrowerGui:
+				TileEntity tile31 = world.getTileEntity(x, y, z);
+				if(tile31 instanceof TileEntityGrowerBlock)
+				{
+					return new GuiGrowerBlock(player.inventory, (TileEntityGrowerBlock)tile31);
+				}
+			case AdvancedUtilities.portaChestBlockGui:
+				TileEntity tile311 = world.getTileEntity(x, y, z);
+				if(tile311 instanceof TileEntityPortaChest)
+				{
+					return new GuiPortaChest(new ContainerPortaChest(player, player.inventory, (TileEntityPortaChest)tile311, true));
+				}
+			case AdvancedUtilities.portaChestItemGui:
+				if(player.getCurrentEquippedItem().getItem() instanceof ItemBlockPortaChest)
+				{
+					return new GuiPortaChest(new ContainerPortaChest(player, player.inventory, new InventoryPortaChest(player.getCurrentEquippedItem()), false));
+				}
+			case AdvancedUtilities.voidRingGui:
+				if(player.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.voidRing)
+				{
+					return new GuiVoidRing(new ContainerVoidRing(player.inventory, new InventoryVoidRing(player.getCurrentEquippedItem())));
 				}
 			default: return null;
 		}

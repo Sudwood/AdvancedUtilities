@@ -137,7 +137,7 @@ public class TileEntityQuarryFrame extends TileEntity
 	   }
 	   public void readSyncableDataFromNBT(NBTTagCompound tag)
 	   {
-		   tag.setIntArray("render", render);
+		  this.render =  tag.getIntArray("render");
 	   }
 	   @Override
 	   public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)

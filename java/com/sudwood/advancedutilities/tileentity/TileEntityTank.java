@@ -149,11 +149,19 @@ public class TileEntityTank extends TileEntity implements IFluidHandler, ISteamT
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
 	{
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		if((tank.getFluid() == null || resource.getFluid() == tank.getFluid().getFluid()) && tank.getFluidAmount() < tank.getCapacity())
+		if(resource== null)
+		{
+			return 0;
+		}
+		if(tank.getFluid() == null)
 		{
 			return tank.fill(resource, doFill);
 		}
-		else if(tank.getFluidAmount() >= tank.getCapacity())
+		if((resource.getFluid() == tank.getFluid().getFluid()) && tank.getFluidAmount() +resource.amount <= tank.getCapacity())
+		{
+			return tank.fill(resource, doFill);
+		}
+		else if(tank.getFluidAmount()+resource.amount >= tank.getCapacity())
 		{
 			if(worldObj.getBlock(xCoord, yCoord+1, zCoord)!= null && worldObj.getTileEntity(xCoord, yCoord+1, zCoord) != null)
 			{

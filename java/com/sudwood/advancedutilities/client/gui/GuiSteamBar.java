@@ -35,6 +35,7 @@ import com.sudwood.advancedutilities.container.RebreatherInv;
 import com.sudwood.advancedutilities.entity.minecart.EntityTankCart;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.items.ItemArmorSteamJetpack;
+import com.sudwood.advancedutilities.items.ItemBETool;
 import com.sudwood.advancedutilities.items.ItemJackHammer;
 import com.sudwood.advancedutilities.tileentity.ISteamTank;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteelOven;
@@ -180,7 +181,7 @@ public class GuiSteamBar extends Gui
     	int maxBullets = 0;
     	int food = 0;
     	int numrender = 0;
-    	if(HudOptions.displaySteamHud && ((mc.thePlayer.getCurrentEquippedItem() != null&& mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.pnumaticGun) || (mc.thePlayer.getCurrentEquippedItem() != null&& mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.jackHammer) || (mc.thePlayer.getCurrentArmor(2)!=null && mc.thePlayer.getCurrentArmor(2).getItem() == AdvancedUtilitiesItems.steamJetpack) || (mc.thePlayer.getCurrentArmor(3)!=null && mc.thePlayer.getCurrentArmor(3).getItem() == AdvancedUtilitiesItems.rebreather)|| (mc.thePlayer.getCurrentArmor(1)!=null && mc.thePlayer.getCurrentArmor(1).getItem() == AdvancedUtilitiesItems.steamLegs)))
+    	if(HudOptions.displaySteamHud)
     	{
     		
 	    	if(mc.thePlayer.getCurrentEquippedItem()!=null && mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.pnumaticGun)
@@ -193,10 +194,11 @@ public class GuiSteamBar extends Gui
 		    		isPnGun = true;
 	    		}
 	    		InventoryItem inv = new InventoryItem(mc.thePlayer.getCurrentEquippedItem());
-	    		if(inv.hasItemWithInvItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine))
+	    		if(inv.hasItemWithInvItem(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine) || inv.hasItemWithInvItem(AdvancedUtilitiesItems.steelBullet, AdvancedUtilitiesItems.bulletMagazine))
 	    		{
 	    			hasBullets = true;
 	    			numBullets = inv.getTotalItemsWithInventoryItems(AdvancedUtilitiesItems.bronzeBullet, AdvancedUtilitiesItems.bulletMagazine);
+	    			numBullets+= inv.getTotalItemsWithInventoryItems(AdvancedUtilitiesItems.steelBullet, AdvancedUtilitiesItems.bulletMagazine);
 	    			maxBullets = inv.getMaxSizeInventory(AdvancedUtilitiesItems.bulletMagazine)*64;
 	    		}
 	    	}
@@ -282,9 +284,43 @@ public class GuiSteamBar extends Gui
 	    		this.drawString(mc.fontRenderer, "Food Remaining: "+food, width-(width-HudOptions.steamToolX), height-(height-HudOptions.steamToolY-10*numrender), 0xFFFFFF);
 	    	}
 	    	// 16763955
-	    	if(ExtendedPlayer.get(mc.thePlayer).toggleJetpack)
+	    	if(HudOptions.displayToggleText)
 	    	{
-	    		this.drawString(mc.fontRenderer, "Jetpack Enabled", width-(width-HudOptions.steamJetPackEnabledX), height-(height-HudOptions.steamJetPackEnabledY), 0xFFCC33);
+		    	if(ExtendedPlayer.get(mc.thePlayer).toggleJetpack)
+		    	{
+		    		this.drawString(mc.fontRenderer, "Jetpack Enabled", width-(width-HudOptions.steamJetPackEnabledX), height-(height-HudOptions.steamJetPackEnabledY), 0xFFCC33);
+		    	}
+		    	if(ExtendedPlayer.get(mc.thePlayer).toggleHover)
+		    	{
+		    		if(!HudOptions.dynamicToggleText)
+		    		{
+		    			this.drawString(mc.fontRenderer, "Hover Enabled", width-(width-HudOptions.steamJetpackHoverEnabledX), height-(height-HudOptions.steamJetpackHoverEnabledY), 0xFFCC33);
+		    		}
+		    		if(HudOptions.dynamicToggleText)
+		    		{
+			    		if(ExtendedPlayer.get(mc.thePlayer).toggleJetpack)
+			    			this.drawString(mc.fontRenderer, "Hover Enabled", width-(width-HudOptions.steamJetpackHoverEnabledX), height-(height-HudOptions.steamJetpackHoverEnabledY), 0xFFCC33);
+			    		if(!ExtendedPlayer.get(mc.thePlayer).toggleJetpack)
+			    			this.drawString(mc.fontRenderer, "Hover Enabled", width-(width-HudOptions.steamJetpackHoverEnabledX), height-(height-HudOptions.steamJetpackHoverEnabledY+10), 0xFFCC33);
+		    		}
+		    	}
+		    	if(ExtendedPlayer.get(mc.thePlayer).toggleBaubles)
+		    	{
+		    		if(!HudOptions.dynamicToggleText)
+		    			this.drawString(mc.fontRenderer, "Baubles Enabled", width-(width-HudOptions.baubleEnabledX), height-(height-HudOptions.baubleEnabledY), 0xFFCC33);
+		    		if(HudOptions.dynamicToggleText)
+		    		{
+		    			if(!ExtendedPlayer.get(mc.thePlayer).toggleJetpack && !ExtendedPlayer.get(mc.thePlayer).toggleHover)
+			    			this.drawString(mc.fontRenderer, "Baubles Enabled", width-(width-HudOptions.baubleEnabledX), height-(height-HudOptions.baubleEnabledY+20), 0xFFCC33);
+		    			if(!ExtendedPlayer.get(mc.thePlayer).toggleJetpack && ExtendedPlayer.get(mc.thePlayer).toggleHover)
+			    			this.drawString(mc.fontRenderer, "Baubles Enabled", width-(width-HudOptions.baubleEnabledX), height-(height-HudOptions.baubleEnabledY+10), 0xFFCC33);
+		    			if(ExtendedPlayer.get(mc.thePlayer).toggleJetpack && !ExtendedPlayer.get(mc.thePlayer).toggleHover)
+			    			this.drawString(mc.fontRenderer, "Baubles Enabled", width-(width-HudOptions.baubleEnabledX), height-(height-HudOptions.baubleEnabledY+10), 0xFFCC33);
+		    			if(ExtendedPlayer.get(mc.thePlayer).toggleJetpack && ExtendedPlayer.get(mc.thePlayer).toggleHover)
+			    			this.drawString(mc.fontRenderer, "Baubles Enabled", width-(width-HudOptions.baubleEnabledX), height-(height-HudOptions.baubleEnabledY), 0xFFCC33);
+		    		}
+		    		
+	    	}
 	    	}
     	}
     	int armorOffset = 15;
@@ -397,16 +433,35 @@ public class GuiSteamBar extends Gui
     		int slot = mc.thePlayer.inventory.currentItem;
     		int dmg = mc.thePlayer.getCurrentEquippedItem().getItemDamageForDisplay();
     		int maxDamage = mc.thePlayer.getCurrentEquippedItem().getMaxDamage();
+    		int xp = 0;
+    		int maxXP = 0;
+    		int level = 0;
     		if(mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.toolBE)
     		{
     			NBTTagCompound tag = mc.thePlayer.getCurrentEquippedItem().getTagCompound();
     			dmg = tag.getInteger("MaxDamage")-tag.getInteger("CurrentDamage");
     			maxDamage = tag.getInteger("MaxDamage");
+    			xp = tag.getInteger("CurrentXP");
+    			maxXP = ItemBETool.getMaxXPForType(tag.getInteger("Type"));
+    			level = tag.getInteger("ItemLevel");
     		}
             int color = (int) Math.round(255.0D - dmg * 255.0D
                     / maxDamage);
             int shiftedColor = 255 - color << 16 | color << 8;
-            renderSlots(mc.thePlayer.getCurrentEquippedItem(), mc.fontRenderer, 0, dmg, width-HudOptions.ToolHudX+(slot*20),height-HudOptions.ToolHudY, shiftedColor, maxDamage); // 278
+            int xpcolor = (int) Math.round(255.0D - xp * 255.0D
+                    / maxXP);
+            int xpshiftedColor = -255 - xpcolor << 16 | xpcolor << 8;
+            
+            
+            if(mc.thePlayer.getCurrentEquippedItem().getItem() == AdvancedUtilitiesItems.toolBE)
+    		{
+            	
+            	renderSlotsBE(mc.thePlayer.getCurrentEquippedItem(), mc.fontRenderer, 0, dmg, width-HudOptions.ToolHudX+(slot*20),height-HudOptions.ToolHudY, shiftedColor, maxDamage, xp, xpshiftedColor, level);
+    		}
+            else
+            {
+            	renderSlots(mc.thePlayer.getCurrentEquippedItem(), mc.fontRenderer, 0, dmg, width-HudOptions.ToolHudX+(slot*20),height-HudOptions.ToolHudY, shiftedColor, maxDamage); // 278
+            }
     	}
     }
     
@@ -425,7 +480,7 @@ public class GuiSteamBar extends Gui
   private static void renderNormalSlots(ItemStack stack, FontRenderer font,
           int offset, int dmg, int x, int y, int shiftedColor, int maxDamage) {
 	  	String dmgStr = "";
-	  	  if(stack.isItemStackDamageable() || stack.getItem() == AdvancedUtilitiesItems.toolBE)
+	  	  if(stack.isItemStackDamageable())
 	  	  {
           	dmgStr = (maxDamage - dmg)+"";
 	  	  }
@@ -436,6 +491,33 @@ public class GuiSteamBar extends Gui
                   (x + 16 - font.getStringWidth(dmgStr) / 2) * 2,
                   (y + 11) * 2, shiftedColor);
 
+          GL11.glScalef(1F, 1F, 1F);
+          GL11.glPopMatrix();
+	  	  
+      
+  }
+  
+  public static void renderSlotsBE(ItemStack stack, FontRenderer font, int offset, int dmg, int x, int y, int shiftedColor, int maxDamage, int xp, int xpColor, int level) 
+  {
+      boolean flag = Minecraft.getMinecraft().fontRenderer.getUnicodeFlag();
+      Minecraft.getMinecraft().fontRenderer.setUnicodeFlag(false);
+      renderNormalSlotsBE(stack, font, offset, dmg, x, y, shiftedColor, maxDamage, xp, xpColor, level);
+      Minecraft.getMinecraft().fontRenderer.setUnicodeFlag(flag);
+  }
+  
+  private static void renderNormalSlotsBE(ItemStack stack, FontRenderer font, int offset, int dmg, int x, int y, int shiftedColor, int maxDamage, int xp, int xpColor, int level) 
+  {
+	  	String dmgStr = "";
+	  	String xpStr = "";
+	  	String levelStr ="";
+          	dmgStr = (maxDamage - dmg)+"";
+          	xpStr = xp+"";
+          	levelStr=level+"";
+          GL11.glPushMatrix();
+          GL11.glScalef(0.5F, 0.5F, 0.5F);
+          font.drawStringWithShadow(dmgStr, (x + 16 - font.getStringWidth(dmgStr) / 2) * 2,(y + 11) * 2, shiftedColor);
+          font.drawStringWithShadow(xpStr, (x + 18 - font.getStringWidth(xpStr) / 2) * 2,(y + 25) * 2, xpColor);
+          font.drawStringWithShadow(levelStr, (x + 7 - font.getStringWidth(levelStr) / 2) * 2,(y + 17) * 2, 0xFFFFFF);
           GL11.glScalef(1F, 1F, 1F);
           GL11.glPopMatrix();
 	  	  

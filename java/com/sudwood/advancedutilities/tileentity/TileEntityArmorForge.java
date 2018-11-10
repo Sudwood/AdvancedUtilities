@@ -1,5 +1,6 @@
 package com.sudwood.advancedutilities.tileentity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.enchantment.Enchantment;
@@ -14,7 +15,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 
+import com.sudwood.advancedutilities.HelperLibrary;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.items.ItemIngot;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -209,7 +212,7 @@ public class TileEntityArmorForge extends TileEntity implements IInventory
     	  this.furnaceCookTime++;
     	  if(!worldObj.isRemote)
     	  {
-    		  if(this.furnaceCookTime == 12)
+    		  if(this.furnaceCookTime == 1200)
     		  {
     			  this.smeltItem();
     			  this.isCrafting = false;
@@ -360,11 +363,24 @@ public class TileEntityArmorForge extends TileEntity implements IInventory
     		}
     		return result;
     	}
+    	if(top.getItem() == AdvancedUtilitiesItems.bronzeBoots|| top.getItem() == AdvancedUtilitiesItems.bronzeLegs || top.getItem() == AdvancedUtilitiesItems.bronzeChest || top.getItem() == AdvancedUtilitiesItems.bronzeHelm)
+    	{
+    		ItemStack result = top.copy();
+    		if(HelperLibrary.isOreDicItem(rod, new ItemStack(AdvancedUtilitiesItems.ingot, 1, ItemIngot.BRONZE)))
+    		{
+    			result.setItemDamage(0);
+    			return result;
+    		}
+    	}
     	if(rod.getItem() == Items.enchanted_book)
     	{
     		ItemStack result = top.copy();
-    		Map map = EnchantmentHelper.getEnchantments(rod);
-    		EnchantmentHelper.setEnchantments(map, result);
+    		Map map = EnchantmentHelper.getEnchantments(top);
+    		Map map2 = EnchantmentHelper.getEnchantments(rod);
+    		Map map3 = new HashMap();
+    		map3.putAll(map);
+    		map3.putAll(map2);
+    		EnchantmentHelper.setEnchantments(map3, result);
     		return result;
     	}
     	
@@ -436,7 +452,49 @@ public class TileEntityArmorForge extends TileEntity implements IInventory
         }
     }
 
-
+    public boolean isTopIngredient(ItemStack stack)
+    {
+    	boolean result = false;
+    	if(stack.isItemEqual(new ItemStack(AdvancedUtilitiesItems.plate, 1, 1)))
+    	{
+    		result = true;
+    	}
+    	if(stack.isItemEqual(new ItemStack(AdvancedUtilitiesItems.steamJetpack, 1)))
+    	{
+    		result = true;
+    	}
+    	if(stack.isItemEqual(new ItemStack(AdvancedUtilitiesItems.steamLegs, 1)))
+    	{
+    		result = true;
+    	}
+    	if(stack.getItem() == AdvancedUtilitiesItems.bronzeBoots|| stack.getItem() == AdvancedUtilitiesItems.bronzeLegs || stack.getItem() == AdvancedUtilitiesItems.bronzeChest || stack.getItem() == AdvancedUtilitiesItems.bronzeHelm)
+    	{
+    		result = true;
+    	}
+    	if(stack.getItem() instanceof ItemArmor)
+    	{
+    		result = true;
+    	}
+    	return result;
+    }
+    
+    public boolean isBottomIngredient(ItemStack stack)
+    {
+    	boolean result = false;
+    	if( stack.getItem() == AdvancedUtilitiesItems.brassRivets)
+    	{
+    		result = true;
+    	}
+    	if(stack.getItem() == Items.enchanted_book)
+    	{
+    		result = true;
+    	}
+    	if(stack.getItem() == AdvancedUtilitiesItems.upgrade && stack.getItemDamage() != 1 && stack.getItemDamage() != 2 && stack.getItemDamage() != 3 && stack.getItemDamage() != 7 && stack.getItemDamage() != 8 && stack.getItemDamage() != 9 && stack.getItemDamage() != 13 && stack.getItemDamage() != 14 && stack.getItemDamage() != 15)
+		{
+    		result = true;
+		}
+    	return result;
+    }
 
 
 
@@ -455,8 +513,16 @@ public class TileEntityArmorForge extends TileEntity implements IInventory
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
      */
-    public boolean isItemValidForSlot(int par1, ItemStack par2ItemStack)
+    public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
+    	if(slot == 0)
+    	{
+    		return isTopIngredient(stack);
+    	}
+    	if(slot == 1)
+    	{
+    		return isBottomIngredient(stack);
+    	}
         return false;
     }
 

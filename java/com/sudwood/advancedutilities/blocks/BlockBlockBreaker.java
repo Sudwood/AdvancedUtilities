@@ -3,12 +3,12 @@ package com.sudwood.advancedutilities.blocks;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -18,12 +18,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.sudwood.advancedutilities.AdvancedUtilities;
-import com.sudwood.advancedutilities.TransferHelper;
+import com.sudwood.advancedutilities.HelperLibrary;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.tileentity.TileEntityBlockBreaker;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockBlockBreaker extends Block{
+public class BlockBlockBreaker extends BlockContainer{
 
 	private IIcon[] icons = new IIcon[6];
 	protected BlockBlockBreaker(Material mat) 
@@ -46,7 +48,6 @@ public class BlockBlockBreaker extends Block{
     {
         int l = determineOrientation(world, x, y, z, p_149689_5_);
         world.setBlockMetadataWithNotify(x, y, z, l, 2);
-        System.out.println(world.getBlockMetadata(x, y, z));
     }
 	 
 	 @Override
@@ -80,6 +81,42 @@ public class BlockBlockBreaker extends Block{
 			this.sneakWrench(world, x, y, z, player);
 			return true;
 		}
+		if(player.getHeldItem()!=null&&HelperLibrary.areItemStacksSameItemAndDamage(player.getHeldItem(), new ItemStack(AdvancedUtilitiesItems.upgrade, 1,13)))
+		{
+			TileEntityBlockBreaker tile = (TileEntityBlockBreaker) world.getTileEntity(x, y, z);
+			if(!tile.getTreeFarm()){
+				if(player.getHeldItem().stackSize==1)
+				{
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+					tile.setTreeFarm(true);
+				}
+				else
+				{
+					ItemStack temp = player.getHeldItem();
+					temp.stackSize--;
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, temp);
+					tile.setTreeFarm(true);
+				}
+			}
+		}
+		if(player.getHeldItem()!=null&&HelperLibrary.areItemStacksSameItemAndDamage(player.getHeldItem(), new ItemStack(AdvancedUtilitiesItems.upgrade, 1,3)))
+		{
+			TileEntityBlockBreaker tile = (TileEntityBlockBreaker) world.getTileEntity(x, y, z);
+			if(!tile.isEfficient()){
+				if(player.getHeldItem().stackSize==1)
+				{
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+					tile.setEfficient(true);
+				}
+				else
+				{
+					ItemStack temp = player.getHeldItem();
+					temp.stackSize--;
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, temp);
+					tile.setEfficient(true);
+				}
+			}
+		}
 		return false;
     }
 	public boolean isOpaqueCube()
@@ -99,6 +136,18 @@ public class BlockBlockBreaker extends Block{
 	public boolean isBlockSolid(IBlockAccess p_149747_1_, int p_149747_2_, int p_149747_3_, int p_149747_4_, int p_149747_5_)
     {
         return false;
+    }
+	
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+    {
+		TileEntityBlockBreaker tile = (TileEntityBlockBreaker) world.getTileEntity(x, y, z);
+		if(tile.getTreeFarm())
+		{
+			ItemStack temp = new ItemStack(AdvancedUtilitiesItems.upgrade,1 ,13);
+			EntityItem temp2 = new EntityItem(world, x+0.5, y+0.5, z+0.5, temp);
+			world.spawnEntityInWorld(temp2);
+		}
+		super.breakBlock(world, x, y, z, block, meta);
     }
 	
 
@@ -152,7 +201,8 @@ public class BlockBlockBreaker extends Block{
     //world , thisx, thisy, thisz, neighboor
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) 
     {
-    	if(world.getBlockPowerInput(x, y, z) > 0)
+    	super.onNeighborBlockChange(world, x, y, z, block);
+    	/*if(world.getBlockPowerInput(x, y, z) > 0)
     	{
     		switch(world.getBlockMetadata(x, y, z))
     		{
@@ -160,6 +210,7 @@ public class BlockBlockBreaker extends Block{
     			if(!world.isAirBlock(x, y+1, z) && world.getBlock(x, y+1, z).getDrops(world, x, y+1, z, world.getBlockMetadata(x, y+1, z), 0)!=null && !world.getBlock(x, y+1, z).getDrops(world, x, y+1, z, world.getBlockMetadata(x, y+1, z), 0).isEmpty())
     			{
     				ItemStack drops = world.getBlock(x, y+1, z).getDrops(world, x, y+1, z, world.getBlockMetadata(x, y+1, z), 0).get(0);
+    				
     				if(world.getBlock(x, y-1, z).hasTileEntity(world.getBlockMetadata(x, y-1, z)))
     				{
     					TileEntity tile = world.getTileEntity(x, y-1, z);
@@ -186,6 +237,7 @@ public class BlockBlockBreaker extends Block{
     			    				inv.setInventorySlotContents(slot[0], stack);
     			    				inv.markDirty();
     			    			}
+    			    			if(!this.checkGenerator(world, x, y+1, z))
     			    			world.setBlockToAir(x, y+1, z);
     			    		}
     					}
@@ -193,6 +245,7 @@ public class BlockBlockBreaker extends Block{
     				else
     				{
     					world.spawnEntityInWorld(new EntityItem(world, x, y-1, z, drops));
+    					if(!this.checkGenerator(world, x, y+1, z))
     					world.setBlockToAir(x, y+1, z);
     				}
     			}
@@ -227,6 +280,7 @@ public class BlockBlockBreaker extends Block{
     			    				inv.setInventorySlotContents(slot[0], stack);
     			    				inv.markDirty();
     			    			}
+    			    			if(!this.checkGenerator(world, x, y-1, z))
     			    			world.setBlockToAir(x, y-1, z);
     			    		}
     					}
@@ -234,6 +288,7 @@ public class BlockBlockBreaker extends Block{
     				else
     				{
     					world.spawnEntityInWorld(new EntityItem(world, x, y+1, z, drops));
+    					if(!this.checkGenerator(world, x, y-1, z))
     					world.setBlockToAir(x, y-1, z);
     				}
     			}
@@ -268,6 +323,7 @@ public class BlockBlockBreaker extends Block{
     			    				inv.setInventorySlotContents(slot[0], stack);
     			    				inv.markDirty();
     			    			}
+    			    			if(!this.checkGenerator(world, x, y, z+1))
     			    			world.setBlockToAir(x, y, z+1);
     			    		}
     					}
@@ -275,6 +331,7 @@ public class BlockBlockBreaker extends Block{
     				else
     				{
     					world.spawnEntityInWorld(new EntityItem(world, x, y+0.5, z-1, drops));
+    					if(!this.checkGenerator(world, x, y, z+1))
     					world.setBlockToAir(x, y, z+1);
     				}
     			}
@@ -309,6 +366,7 @@ public class BlockBlockBreaker extends Block{
     			    				inv.setInventorySlotContents(slot[0], stack);
     			    				inv.markDirty();
     			    			}
+    			    			if(!this.checkGenerator(world, x, y, z-1))
     			    			world.setBlockToAir(x, y, z-1);
     			    		}
     					}
@@ -316,6 +374,7 @@ public class BlockBlockBreaker extends Block{
     				else
     				{
     					world.spawnEntityInWorld(new EntityItem(world, x, y+0.5, z+1, drops));
+    					if(!this.checkGenerator(world, x, y, z-1))
     					world.setBlockToAir(x, y, z-1);
     				}
     			}
@@ -350,6 +409,7 @@ public class BlockBlockBreaker extends Block{
     			    				inv.setInventorySlotContents(slot[0], stack);
     			    				inv.markDirty();
     			    			}
+    			    			if(!this.checkGenerator(world, x+1, y, z))
     			    			world.setBlockToAir(x+1, y, z);
     			    		}
     					}
@@ -357,6 +417,7 @@ public class BlockBlockBreaker extends Block{
     				else
     				{
     					world.spawnEntityInWorld(new EntityItem(world, x-1.2, y+0.5, z+0.5, drops));
+    					if(!this.checkGenerator(world, x+1, y, z))
     					world.setBlockToAir(x+1, y, z);
     				}
     			}
@@ -392,6 +453,7 @@ public class BlockBlockBreaker extends Block{
     			    				inv.setInventorySlotContents(slot[0], stack);
     			    				inv.markDirty();
     			    			}
+    			    			if(!this.checkGenerator(world, x-1, y, z))
     			    			world.setBlockToAir(x-1, y, z);
     			    		}
     					}
@@ -399,12 +461,13 @@ public class BlockBlockBreaker extends Block{
     				else
     				{
     					world.spawnEntityInWorld(new EntityItem(world, x+1.2, y+0.5, z+0.5, drops));
+    					if(!this.checkGenerator(world, x-1, y, z))
     					world.setBlockToAir(x-1, y, z);
     				}
     			}
     			break;
     		}
-    	}
+    	}*/
     }
     
     
@@ -472,7 +535,7 @@ public class BlockBlockBreaker extends Block{
     		case 4: // west
     			return icons[4];
     		case 5: //east
-    			return icons[4];
+    			return icons[5];
     		}
 			break;
 		case 3: //south
@@ -489,7 +552,7 @@ public class BlockBlockBreaker extends Block{
     		case 4: // west
     			return icons[5];
     		case 5: //east
-    			return icons[5];
+    			return icons[4];
     		}
 			break;
 		case 4: //east
@@ -500,7 +563,7 @@ public class BlockBlockBreaker extends Block{
     		case 1: // top
     			return icons[4];
     		case 2: // north
-    			return icons[4];
+    			return icons[5];
     		case 3: // south
     			return icons[4];
     		case 4: // west
@@ -517,7 +580,7 @@ public class BlockBlockBreaker extends Block{
     		case 1: // top
     			return icons[5];
     		case 2: // north
-    			return icons[5];
+    			return icons[4];
     		case 3: // south
     			return icons[5];
     		case 4: // west
@@ -534,5 +597,26 @@ public class BlockBlockBreaker extends Block{
     {
         return true;
     }
+	@Override
+	public TileEntity createNewTileEntity(World world, int var1) {
+		// TODO Auto-generated method stub
+		return new TileEntityBlockBreaker();
+	}
+    
+    /*private boolean checkGenerator(World world,int x, int y, int z)
+    {
+    	if(world.getBlock(x+1, y, z) == Blocks.water || world.getBlock(x+1, y, z) == Blocks.flowing_water || world.getBlock(x-1, y, z) == Blocks.water 
+    			|| world.getBlock(x-1, y, z) == Blocks.flowing_water || world.getBlock(x, y, z+1) == Blocks.water || world.getBlock(x, y, z+1) == Blocks.flowing_water 
+    			|| world.getBlock(x, y, z-1) == Blocks.water || world.getBlock(x, y, z-1) == Blocks.flowing_water)
+    	{
+    		if(world.getBlock(x+1, y, z) == Blocks.lava || world.getBlock(x+1, y, z) == Blocks.flowing_lava || world.getBlock(x-1, y, z) == Blocks.lava 
+    			|| world.getBlock(x-1, y, z) == Blocks.flowing_lava || world.getBlock(x, y, z+1) == Blocks.lava || world.getBlock(x, y, z+1) == Blocks.flowing_lava 
+    			|| world.getBlock(x, y, z-1) == Blocks.lava || world.getBlock(x, y, z-1) == Blocks.flowing_lava)
+    		{
+    			return true;
+    		}
+    	}
+    	return false;
+    }*/
 
 }

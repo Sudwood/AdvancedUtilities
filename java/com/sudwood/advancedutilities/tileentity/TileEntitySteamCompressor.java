@@ -2,6 +2,7 @@ package com.sudwood.advancedutilities.tileentity;
 
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
 import com.sudwood.advancedutilities.config.ServerOptions;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -19,11 +20,13 @@ public class TileEntitySteamCompressor extends TileEntity implements IFluidHandl
 	 public FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME*10);
 	 public static final int pushAmount = 200*ServerOptions.steamCreationRate;
 	 public static final int useAmount = 20*ServerOptions.steamCreationRate;
+	 public int multiplier = 0;
 	    @Override
 	    public void readFromNBT(NBTTagCompound tag)
 	    {
 	        super.readFromNBT(tag);
 	        tank.readFromNBT(tag);
+	        multiplier = tag.getInteger("multi");
 
 	    }
 
@@ -32,8 +35,7 @@ public class TileEntitySteamCompressor extends TileEntity implements IFluidHandl
 	    {
 	        super.writeToNBT(tag);
 	        tank.writeToNBT(tag);
-
-
+	        tag.setInteger("multi", multiplier);
 
 	    }
 	    public void updateEntity()
@@ -45,6 +47,18 @@ public class TileEntitySteamCompressor extends TileEntity implements IFluidHandl
 	    	
 	    }
 	    
+	    public void placedCheckMulti()
+	    {
+	    	int tempy = this.yCoord;
+	    	int tempMult = 2;
+	    	while(worldObj.getBlock(xCoord, tempy-1, zCoord) == AdvancedUtilitiesBlocks.steamCompressor)
+	    	{
+	    		tempMult*=2;
+	    		tempy--;
+	    	}
+	    	this.multiplier=tempMult;
+	    }
+	    
 	    public void pushSteam()
 	    {
 	    	if(worldObj.getBlock(xCoord, yCoord+1, zCoord)!=null)
@@ -54,8 +68,8 @@ public class TileEntitySteamCompressor extends TileEntity implements IFluidHandl
 		    		TileEntity tile = worldObj.getTileEntity(xCoord, yCoord+1, zCoord);
 		    		if(tile instanceof ISteamTank && this.tank.getFluidAmount() >= this.pushAmount + this.useAmount)
 		    		{
-		    			((IFluidHandler)tile).fill(ForgeDirection.DOWN, new FluidStack(AdvancedUtilitiesBlocks.fluidSteam, this.pushAmount), true);
-		    			this.drain(ForgeDirection.UNKNOWN, new FluidStack(AdvancedUtilitiesBlocks.fluidSteam, this.useAmount+this.useAmount), true);
+		    			((IFluidHandler)tile).fill(ForgeDirection.DOWN, new FluidStack(AdvancedUtilitiesFluids.fluidSteam, this.pushAmount), true);
+		    			this.drain(ForgeDirection.UNKNOWN, new FluidStack(AdvancedUtilitiesFluids.fluidSteam, this.useAmount+this.useAmount), true);
 		    		}
 		    	}
 		    	catch(Exception e)
@@ -117,7 +131,7 @@ public class TileEntitySteamCompressor extends TileEntity implements IFluidHandl
 	    @Override
 	    public boolean canFill(ForgeDirection from, Fluid fluid)
 	    {
-	    	if((fluid == FluidRegistry.getFluid("steam") || fluid == AdvancedUtilitiesBlocks.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
+	    	if((fluid == FluidRegistry.getFluid("steam") || fluid == AdvancedUtilitiesFluids.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
 	    		return true;
 	    	else return false;
 	    }

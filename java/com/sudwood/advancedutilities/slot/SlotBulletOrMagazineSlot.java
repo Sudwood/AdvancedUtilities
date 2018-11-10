@@ -16,7 +16,7 @@ public class SlotBulletOrMagazineSlot extends Slot
 	}
 	public boolean isItemValid(ItemStack stack)
     {
-		if(stack.getItem() == AdvancedUtilitiesItems.bronzeBullet || stack.getItem() == AdvancedUtilitiesItems.bulletMagazine)
+		if(stack.getItem() == AdvancedUtilitiesItems.bronzeBullet || stack.getItem() == AdvancedUtilitiesItems.bulletMagazine || stack.getItem() == AdvancedUtilitiesItems.steelBullet)
 			return true;
         return false;
     }

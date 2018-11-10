@@ -1,0 +1,12 @@
+﻿# Made in Blockbench 1.11.6
+newmtl 1
+map_Kd chestbasewood.png
+newmtl 2
+map_Kd chesthorizontal.png
+newmtl 3
+map_Kd chestverticle.png
+newmtl 4
+map_Kd chestlatchbottom.png
+newmtl 5
+map_Kd chestlatchtop.png
+newmtl none

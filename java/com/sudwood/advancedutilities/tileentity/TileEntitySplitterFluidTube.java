@@ -3,6 +3,7 @@ package com.sudwood.advancedutilities.tileentity;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -10,6 +11,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+
+import com.sudwood.advancedutilities.TransferHelper;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -18,11 +22,13 @@ public class TileEntitySplitterFluidTube extends TileEntityFluidTube implements 
 	 public FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME*16);
 	 private int transferAmount = 1000;
 	 private int[] lastDir = { 1, 1, 1, 1, 1, 1};
+	 private int lastPush = 0;
 	    @Override
 	    public void readFromNBT(NBTTagCompound tag)
 	    {
 	        super.readFromNBT(tag);
 	        tank.readFromNBT(tag);
+	        lastPush = tag.getInteger("lastpush");
 	    }
 
 	    @Override
@@ -30,6 +36,7 @@ public class TileEntitySplitterFluidTube extends TileEntityFluidTube implements 
 	    {
 	        super.writeToNBT(tag);
 	        tank.writeToNBT(tag);
+	        tag.setInteger("lastpush", lastPush);
 	    }
 	    
 	    @Override
@@ -228,57 +235,179 @@ public class TileEntitySplitterFluidTube extends TileEntityFluidTube implements 
 	    public void pushFluid()
 	    {
 	    	int sideAttached = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) ^ 1;
-		    if(this.tank.getFluidAmount()>= 1000)
-		    	{
-		    		lastDir[worldObj.getBlockMetadata(xCoord, yCoord, zCoord)] = 0;
-		    		for(int ix = 0; ix < 6; ix++)
-		    		{
-		    			if(lastDir[0] == 0 && lastDir[1] == 0 &&  lastDir[2] == 0 && lastDir[3] == 0 && lastDir[4] == 0 && lastDir[5] == 0)
-		    			{
-		    				
-		    				lastDir[0] = 1;
-		    				lastDir[1] = 1;
-		    				lastDir[2] = 1;
-		    				lastDir[3] = 1;
-		    				lastDir[4] = 1;
-		    				lastDir[5] = 1;
-		    				lastDir[worldObj.getBlockMetadata(xCoord, yCoord, zCoord)] = 0;
-		    			}
-		    			ForgeDirection dir = ForgeDirection.getOrientation(ix);
-		    			if(lastDir[ix] == 0 || worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) == null || !(worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) instanceof IFluidHandler))
-			    			{
-			    				lastDir[ix] = 0;
-			    				continue;
-			    			}
-		    			else if(worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) != null && worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) instanceof IFluidHandler)
-		    			{
-		    				try
-			    			{
-			    				IFluidHandler tile = (IFluidHandler) (worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, dir.offsetZ+zCoord));
-			    				if(tile.canFill(dir, this.tank.getFluid().getFluid())   && this.canDrain(dir.getOpposite(), tank.getFluid().getFluid()))
-			    				{
-			    					if(!(tile instanceof TileEntityTank) && tile.getTankInfo(dir)[0]!=null && tile.getTankInfo(dir)[0].fluid != null)
-			    					{
-			    						if(tile.getTankInfo(dir)[0].fluid.amount+this.transferAmount <= tile.getTankInfo(dir)[0].capacity)
-			    						{
-			    							tile.fill(dir, this.drain(dir.getOpposite(), new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
-			    							lastDir[ix] = 0;
-			    						}
-			    					}
-			    					else
-			    					{
-			    						lastDir[ix] = 0;
-			    						tile.fill(dir, this.drain(dir.getOpposite(), new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
-			    					}
-			    				}
-			    			}
-			    			catch(Exception e)
-			    			{
-			    				
-			    			}
-		    			}
-		    		}
+	    	switch(worldObj.getBlockMetadata(xCoord, yCoord, zCoord))
+	    	{
+	    	case 1: // up  
+	    		switch(lastPush)
+	    		{
+	    		case 0:
+	    			lastPush++;
+	    			break;
+	    		case 1:
+	    			doFluidPush(ForgeDirection.DOWN);
+	    			lastPush++;
+	    			break;
+	    		case 2:
+	    			doFluidPush(ForgeDirection.NORTH);
+	    			lastPush++;
+	    			break;
+	    		case 3:
+	    			doFluidPush(ForgeDirection.SOUTH);
+	    			lastPush++;
+	    			break;
+	    		case 4:
+	    			doFluidPush(ForgeDirection.WEST);
+	    			lastPush++;
+	    			break;
+	    		case 5:
+	    			doFluidPush(ForgeDirection.EAST);
+	    			lastPush = 0;
+	    			break;
+	    		}
+	    		
+		    	break;
+	    	case 0:// down
+	    		switch(lastPush)
+	    		{
+	    		case 0:
+	    			doFluidPush(ForgeDirection.UP);
+	    			lastPush++;
+	    			break;
+	    		case 1:
+	    			lastPush++;
+	    			break;
+	    		case 2:
+	    			doFluidPush(ForgeDirection.NORTH);
+	    			lastPush++;
+	    			break;
+	    		case 3:
+	    			doFluidPush(ForgeDirection.SOUTH);
+	    			lastPush++;
+	    			break;
+	    		case 4:
+	    			doFluidPush(ForgeDirection.WEST);
+	    			lastPush++;
+	    			break;
+	    		case 5:
+	    			doFluidPush(ForgeDirection.EAST);
+	    			lastPush = 0;
+	    			break;
+	    		}
+		    	break;
+	    	case 3:// south
+	    		switch(lastPush)
+	    		{
+	    		case 0:
+	    			doFluidPush(ForgeDirection.DOWN);
+	    			lastPush++;
+	    			break;
+	    		case 1:
+	    			doFluidPush(ForgeDirection.UP);
+	    			lastPush++;
+	    			break;
+	    		case 2:
+	    			lastPush++;
+	    			break;
+	    		case 3:
+	    			doFluidPush(ForgeDirection.NORTH);
+	    			lastPush++;
+	    			break;
+	    		case 4:
+	    			doFluidPush(ForgeDirection.WEST);
+	    			lastPush++;
+	    			break;
+	    		case 5:
+	    			doFluidPush(ForgeDirection.EAST);
+	    			lastPush = 0;
+	    			break;
+	    		}
+		    	break;
+	    	case 2:// north
+	    		switch(lastPush)
+	    		{
+	    		case 0:
+	    			doFluidPush(ForgeDirection.DOWN);
+	    			lastPush++;
+	    			break;
+	    		case 1:
+	    			doFluidPush(ForgeDirection.UP);
+	    			lastPush++;
+	    			break;
+	    		case 2:
+	    			doFluidPush(ForgeDirection.SOUTH);
+	    			lastPush++;
+	    			break;
+	    		case 3:
+	    			lastPush++;
+	    			break;
+	    		case 4:
+	    			doFluidPush(ForgeDirection.WEST);
+	    			lastPush++;
+	    			break;
+	    		case 5:
+	    			doFluidPush(ForgeDirection.EAST);
+	    			lastPush = 0;
+	    			break;
+	    		}
+		    	break;
+	    	case 4:// west
+	    		switch(lastPush)
+	    		{
+	    		case 0:
+	    			doFluidPush(ForgeDirection.DOWN);
+	    			lastPush++;
+	    			break;
+	    		case 1:
+	    			doFluidPush(ForgeDirection.UP);
+	    			lastPush++;
+	    			break;
+	    		case 2:
+	    			doFluidPush(ForgeDirection.NORTH);
+	    			lastPush++;
+	    			break;
+	    		case 3:
+	    			doFluidPush(ForgeDirection.SOUTH);
+	    			lastPush++;
+	    			break;
+	    		case 4:
+	    			doFluidPush(ForgeDirection.EAST);
+	    			lastPush++;
+	    			break;
+	    		case 5:
+	    			lastPush = 0;
+	    			break;
+	    		}
+		    	break;
+	    	case 5:// east
+	    		switch(lastPush)
+	    		{
+	    		case 0:
+	    			doFluidPush(ForgeDirection.DOWN);
+	    			lastPush++;
+	    			break;
+	    		case 1:
+	    			doFluidPush(ForgeDirection.UP);
+	    			lastPush++;
+	    			break;
+	    		case 2:
+	    			doFluidPush(ForgeDirection.NORTH);
+	    			lastPush++;
+	    			break;
+	    		case 3:
+	    			doFluidPush(ForgeDirection.SOUTH);
+	    			lastPush++;
+	    			break;
+	    		case 4:
+	    			lastPush++;
+	    			break;
+	    		case 5:
+	    			doFluidPush(ForgeDirection.WEST);
+	    			lastPush = 0;
+	    			break;
+	    		}
+		    	break;
 	    	}
+		    		
 	    }
 	    
 	    
@@ -286,6 +415,46 @@ public class TileEntitySplitterFluidTube extends TileEntityFluidTube implements 
 	    public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer)
 	    {
 	        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : par1EntityPlayer.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
+	    }
+	    
+	    protected void doFluidPush(ForgeDirection dir)
+	    {
+	    	TileEntity tile = worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ);
+	    	if(tile!=null)
+	    	{
+	    		if(tile instanceof IFluidHandler)
+	    		{
+	    			IFluidHandler itank = (IFluidHandler) tile;
+	    			if(itank.canFill(dir.getOpposite(), this.tank.getFluid().getFluid())   && this.canDrain(dir, tank.getFluid().getFluid()))
+					{
+						if(tank.getFluidAmount()<transferAmount)
+						{
+							if(!(tile instanceof TileEntityTank) && itank.getTankInfo(dir.getOpposite())[0]!=null && itank.getTankInfo(dir.getOpposite())[0].fluid != null)
+	    					{
+	    						if(itank.getTankInfo(dir.getOpposite())[0].fluid.amount+this.transferAmount <= itank.getTankInfo(dir.getOpposite())[0].capacity)
+	    						{
+	    							itank.fill(dir.getOpposite(), this.drain(dir, new FluidStack(tank.getFluid().getFluid(), tank.getFluidAmount()), true), true);
+	    						}
+	    					}
+	    					else
+	    						itank.fill(dir.getOpposite(), this.drain(dir, new FluidStack(tank.getFluid().getFluid(), tank.getFluidAmount()), true), true);
+						}
+						else
+						{
+	    					if(!(tile instanceof TileEntityTank) &&itank.getTankInfo(dir.getOpposite()).length > 0  && itank.getTankInfo(dir.getOpposite())[0]!=null && itank.getTankInfo(dir.getOpposite())[0].fluid != null)
+	    					{
+	    						if(itank.getTankInfo(dir.getOpposite())[0].fluid.amount+this.transferAmount <= itank.getTankInfo(dir.getOpposite())[0].capacity)
+	    						{
+	    							itank.fill(dir.getOpposite(), this.drain(dir, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+	    						}
+	    					}
+	    					else
+	    						itank.fill(dir.getOpposite(), this.drain(dir, new FluidStack(tank.getFluid().getFluid(), this.transferAmount), true), true);
+						}
+					}
+	    		}
+	    	}
+	    	
 	    }
 	    
 }

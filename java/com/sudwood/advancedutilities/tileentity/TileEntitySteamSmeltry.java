@@ -1,5 +1,14 @@
 package com.sudwood.advancedutilities.tileentity;
 
+import com.sudwood.advancedutilities.HelperLibrary;
+import com.sudwood.advancedutilities.TransferHelper;
+import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.config.ServerOptions;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
+import com.sudwood.advancedutilities.recipes.SmeltryRecipes;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -16,15 +25,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-
-import com.sudwood.advancedutilities.SmeltryRecipes;
-import com.sudwood.advancedutilities.TransferHelper;
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.config.ServerOptions;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntitySteamSmeltry extends TileEntity implements ISidedInventory, IFluidHandler, ISteamTank
 {
@@ -60,6 +60,15 @@ public class TileEntitySteamSmeltry extends TileEntity implements ISidedInventor
 	                this.inventory[b0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
 	            }
 	        }
+	    }
+	    
+	    public int getSpeed()
+	    {
+	    	return speedMult;
+	    }
+	    public void setSpeed(int sp)
+	    {
+	    	this.speedMult = sp;
 	    }
 
 	    @Override
@@ -132,7 +141,7 @@ public class TileEntitySteamSmeltry extends TileEntity implements ISidedInventor
 	        }
 	        else
 	        {
-	            ItemStack itemstack = SmeltryRecipes.getSmeltryResult(inventory[0], inventory[1], 1);
+	            ItemStack itemstack = SmeltryRecipes.getSmeltryResult(inventory[0], inventory[1], 1, true);
 	            if (itemstack == null) return false;
 	            if (this.inventory[2] == null) return true;
 	            if (!this.inventory[2].isItemEqual(itemstack)) return false;
@@ -151,40 +160,33 @@ public class TileEntitySteamSmeltry extends TileEntity implements ISidedInventor
 	    {
 	        if (this.canSmelt())
 	        {
-	            ItemStack itemstack = SmeltryRecipes.getSmeltryResult(inventory[0], inventory[1], 1);
-
+	            ItemStack itemstack = SmeltryRecipes.getSmeltryResult(inventory[0], inventory[1], 1, true);
+	            int[] size = SmeltryRecipes.getIngredientSize(inventory[0], inventory[1]);
 	            if (this.inventory[2] == null)
 	            {
 	                this.inventory[2] = itemstack.copy();
 	            }
-	            else if (this.inventory[2].getItem() == itemstack.getItem())
+	            else if (HelperLibrary.areItemStacksSameItemAndDamage(inventory[2], itemstack) && inventory[2].stackSize+itemstack.stackSize <= 64)
 	            {
 	                this.inventory[2].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
 	            }
-	            if(itemstack.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 11)) || itemstack.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 12)))
-	            {
-	            	this.inventory[0].stackSize-=8;
-	            }
-	            else
-	            {
-	            --this.inventory[0].stackSize;
-	            }
+	            this.inventory[0].stackSize-=size[0];
+	            
 
 	            if (this.inventory[0].stackSize <= 0)
 	            {
 	                this.inventory[0] = null;
 	            }
-	            if(this.inventory[1].getItem() != AdvancedUtilitiesItems.cast)
-	            {
-	            	--this.inventory[1].stackSize;
 
-	                if (this.inventory[1].stackSize <= 0)
-	                {
-	                    this.inventory[1] = null;
-	                }
-	            }
-	            this.drain(ForgeDirection.UNKNOWN, this.smeltCost+this.costMod, true);
+            	this.inventory[1].stackSize-=size[1];
+
+                if (this.inventory[1].stackSize <= 0)
+                {
+                    this.inventory[1] = null;
+                }
 	        }
+	            this.drain(ForgeDirection.UNKNOWN, this.smeltCost+this.costMod, true);
+
 	    }
 	    
 	    public int getProgressScaled(int num)
@@ -233,14 +235,16 @@ public class TileEntitySteamSmeltry extends TileEntity implements ISidedInventor
 	    {
 	    	if(worldObj.getBlock(xCoord, yCoord-1, zCoord) == AdvancedUtilitiesBlocks.steamCompressor)
 	    	{
-	    		this.speedMult = 2;
-	    		this.costMod = this.smeltCost;
+	    		TileEntitySteamCompressor tile = (TileEntitySteamCompressor) worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
+	    		this.speedMult = tile.multiplier;
+	    		this.costMod = this.smeltCost*(tile.multiplier/2);
 	    	}
 	    	else
 	    	{
 	    		this.speedMult = 1;
 	    		this.costMod = 0;
 	    	}
+	    	this.markDirty();
 	    }
 	    
 	    public void pushItem()
@@ -373,7 +377,7 @@ public class TileEntitySteamSmeltry extends TileEntity implements ISidedInventor
 	     */
 	    public int[] getAccessibleSlotsFromSide(int par1)
 	    {
-	        return par1 == 0 ? slotsBottom : (par1 == 1 ? slotsTop : slotsSides);
+	        return new int[] {0,1,2};
 	    }
 
 	    /**
@@ -419,7 +423,7 @@ public class TileEntitySteamSmeltry extends TileEntity implements ISidedInventor
 	    @Override
 	    public boolean canFill(ForgeDirection from, Fluid fluid)
 	    {
-	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesBlocks.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
+	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesFluids.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
 	    		return true;
 	    	else return false;
 	    }
@@ -531,8 +535,16 @@ public class TileEntitySteamSmeltry extends TileEntity implements ISidedInventor
 		}
 
 		@Override
-		public boolean isItemValidForSlot(int var1, ItemStack var2) {
-			// TODO Auto-generated method stub
-			return var1 == 0;
+		public boolean isItemValidForSlot(int slot, ItemStack stack) 
+		{
+			  if(slot == 0)
+		        {
+		        	return SmeltryRecipes.isMelt(stack);
+		        }
+		        if(slot == 1)
+		        {
+		        	return SmeltryRecipes.isMould(stack);
+		        }
+		        return false;
 		}
 }

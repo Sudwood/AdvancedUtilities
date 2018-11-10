@@ -1,7 +1,7 @@
 package com.sudwood.advancedutilities.tileentity;
 
-import com.sudwood.advancedutilities.SmeltryRecipes;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.recipes.SmeltryRecipes;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -24,9 +24,9 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileEntitySmeltry extends TileEntity implements ISidedInventory
 {
-    private static final int[] slotsTop = new int[] {0};
-    private static final int[] slotsBottom = new int[] {2, 1};
-    private static final int[] slotsSides = new int[] {1};
+    private static final int[] slotsTop = new int[] {0,1};
+    private static final int[] slotsBottom = new int[] {3};
+    private static final int[] slotsSides = new int[] {2};
     /**
      * The ItemStacks that hold the items currently being used in the furnace
      */
@@ -165,7 +165,7 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
             }
         }
 
-        this.furnaceBurnTime = p_145839_1_.getShort("BurnTime");
+        this.furnaceBurnTime = p_145839_1_.getInteger("BurnTime");
         this.furnaceCookTime = p_145839_1_.getShort("CookTime");
         this.currentItemBurnTime = getItemBurnTime(this.inventory[1]);
 
@@ -178,7 +178,7 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
     public void writeToNBT(NBTTagCompound p_145841_1_)
     {
         super.writeToNBT(p_145841_1_);
-        p_145841_1_.setShort("BurnTime", (short)this.furnaceBurnTime);
+        p_145841_1_.setInteger("BurnTime", this.furnaceBurnTime);
         p_145841_1_.setShort("CookTime", (short)this.furnaceCookTime);
         NBTTagList nbttaglist = new NBTTagList();
 
@@ -247,6 +247,10 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
         boolean flag = this.furnaceBurnTime > 0;
         boolean flag1 = false;
        /**/
+        if(this.furnaceBurnTime <0)
+        {
+        	this.furnaceBurnTime = 0;
+        }
         if (this.furnaceBurnTime > 0 && this.canSmelt())
         {
             --this.furnaceBurnTime;
@@ -325,7 +329,7 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
         }
         else
         {
-            ItemStack itemstack = SmeltryRecipes.getSmeltryResult(inventory[0], inventory[1], 0);
+            ItemStack itemstack = SmeltryRecipes.getSmeltryResult(inventory[0], inventory[1], 0, false);
             if (itemstack == null) return false;
             if (this.inventory[3] == null) return true;
             if (!this.inventory[3].isItemEqual(itemstack)) return false;
@@ -341,8 +345,8 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
     {
         if (this.canSmelt())
         {
-            ItemStack itemstack = SmeltryRecipes.getSmeltryResult(inventory[0], inventory[1], 0);
-
+            ItemStack itemstack = SmeltryRecipes.getSmeltryResult(inventory[0], inventory[1], 0, false);
+            int[] size = SmeltryRecipes.getIngredientSize(inventory[0], inventory[1]);
             if (this.inventory[3] == null)
             {
                 this.inventory[3] = itemstack.copy();
@@ -351,25 +355,17 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
             {
                 this.inventory[3].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
             }
-            if(itemstack.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 11)) || itemstack.isItemEqual(new ItemStack(AdvancedUtilitiesItems.toolPart, 1, 12)))
-            {
-            	this.inventory[0].stackSize-=8;
-            }
-            else
-            	--this.inventory[0].stackSize;
+            this.inventory[0].stackSize-=size[0];
 
             if (this.inventory[0].stackSize <= 0)
             {
                 this.inventory[0] = null;
             }
-            if(this.inventory[1].getItem() != AdvancedUtilitiesItems.cast)
-            {
-            	--this.inventory[1].stackSize;
+        	this.inventory[1].stackSize-=size[1];
 
-                if (this.inventory[1].stackSize <= 0)
-                {
-                    this.inventory[1] = null;
-                }
+            if (this.inventory[1].stackSize <= 0)
+            {
+                this.inventory[1] = null;
             }
         }
     }
@@ -444,9 +440,24 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
      */
-    public boolean isItemValidForSlot(int par1, ItemStack par2ItemStack)
+    public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        return par1 == 2 ? false : (par1 == 1 ? isItemFuel(par2ItemStack) : true);
+        if(slot == 0)
+        {
+        	return SmeltryRecipes.isMelt(stack);
+        }
+        if(slot == 1)
+        {
+        	return SmeltryRecipes.isMould(stack);
+        }
+        if(slot == 2)
+        {
+        	if(isItemFuel(stack))
+        	{
+        		return true;
+        	}
+        }
+        return false;
     }
 
     /**
@@ -455,7 +466,9 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
      */
     public int[] getAccessibleSlotsFromSide(int par1)
     {
-        return par1 == 0 ? slotsBottom : (par1 == 1 ? slotsTop : slotsSides);
+        return new int[] {
+        		0,1,2,3
+        };
     }
 
     /**
@@ -471,8 +484,12 @@ public class TileEntitySmeltry extends TileEntity implements ISidedInventory
      * Returns true if automation can extract the given item in the given slot from the given side. Args: Slot, item,
      * side
      */
-    public boolean canExtractItem(int par1, ItemStack par2ItemStack, int par3)
+    public boolean canExtractItem(int slot, ItemStack par2ItemStack, int par3)
     {
-        return par3 != 0 || par1 != 1 || par2ItemStack.getItem() == Items.bucket;
+       if(slot == 3)
+       {
+    	   return true;
+       }
+       return false;
     }
 }

@@ -1,7 +1,7 @@
 package com.sudwood.advancedutilities.container;
 
-import com.sudwood.advancedutilities.CrushRecipes;
 import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.recipes.CrushRecipes;
 import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,6 +10,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -59,7 +60,8 @@ public class ContainerFluidTube extends Container
             
             if(this.lastTankAmount != this.tileFurnace.tank.getFluidAmount())
             {
-            	icrafting.sendProgressBarUpdate(this, 3, this.tileFurnace.tank.getFluidAmount());
+            	if(tileFurnace!=null && tileFurnace.tank!=null && tileFurnace.tank.getFluid()!=null)
+            	icrafting.sendProgressBarUpdate(this, this.tileFurnace.tank.getFluid().getFluidID(), this.tileFurnace.tank.getFluidAmount());
             }
         }
 
@@ -69,10 +71,7 @@ public class ContainerFluidTube extends Container
     @SideOnly(Side.CLIENT)
     public void updateProgressBar(int par1, int par2)
     {
-    	if( par1 == 3)
-        {
-        	this.tileFurnace.tank.setFluid(new FluidStack(AdvancedUtilitiesBlocks.fluidSteam, par2));
-        }
+    			this.tileFurnace.tank.setFluid(new FluidStack(FluidRegistry.getFluid(par1), par2));
     }
 
     public boolean canInteractWith(EntityPlayer par1EntityPlayer)

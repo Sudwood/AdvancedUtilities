@@ -1,5 +1,12 @@
 package com.sudwood.advancedutilities.tileentity;
 
+import com.sudwood.advancedutilities.client.SoundHandler;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
+import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
+import com.sudwood.advancedutilities.items.ItemArmorSteamJetpack;
+import com.sudwood.advancedutilities.items.ItemJackHammer;
+import com.sudwood.advancedutilities.items.ItemPnumaticGun;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -16,13 +23,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.client.SoundHandler;
-import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
-import com.sudwood.advancedutilities.items.ItemArmorSteamJetpack;
-import com.sudwood.advancedutilities.items.ItemJackHammer;
-import com.sudwood.advancedutilities.items.ItemPnumaticGun;
 
 public class TileEntitySteamCharger extends TileEntity implements IInventory, IFluidHandler, ISteamTank
 {
@@ -285,7 +285,7 @@ public class TileEntitySteamCharger extends TileEntity implements IInventory, IF
 	    @Override
 	    public boolean canFill(ForgeDirection from, Fluid fluid)
 	    {
-	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesBlocks.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
+	    	if((fluid == FluidRegistry.getFluid("Steam") || fluid == AdvancedUtilitiesFluids.fluidSteam) && tank.getFluidAmount() < tank.getCapacity())
 	    		return true;
 	    	else return false;
 	    }

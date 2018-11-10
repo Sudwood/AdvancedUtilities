@@ -14,6 +14,7 @@ import com.sudwood.advancedutilities.entity.minecart.EntitySpeedyChunkTankCart;
 import com.sudwood.advancedutilities.entity.minecart.EntitySpeedyMinecart;
 import com.sudwood.advancedutilities.entity.minecart.EntitySpeedyTankCart;
 import com.sudwood.advancedutilities.entity.minecart.EntityTankCart;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
 import com.sudwood.advancedutilities.items.AdvancedUtilitiesItems;
 import com.sudwood.advancedutilities.packets.PacketDrinkQuickPotion;
 import com.sudwood.advancedutilities.packets.PacketForge;
@@ -21,16 +22,33 @@ import com.sudwood.advancedutilities.packets.PacketJetpack;
 import com.sudwood.advancedutilities.packets.PacketRunningShoes;
 import com.sudwood.advancedutilities.packets.PacketSkillMenu;
 import com.sudwood.advancedutilities.packets.SyncPlayerPropsPacket;
+import com.sudwood.advancedutilities.recipes.CompressRecipes;
+import com.sudwood.advancedutilities.recipes.CrushRecipes;
+import com.sudwood.advancedutilities.recipes.KilnRecipes;
+import com.sudwood.advancedutilities.recipes.SmeltryRecipes;
+import com.sudwood.advancedutilities.recipes.SteamFurnaceRecipes;
+import com.sudwood.advancedutilities.recipes.SteelOvenRecipes;
+import com.sudwood.advancedutilities.tileentity.IPowerProvider;
+import com.sudwood.advancedutilities.tileentity.IPowerReciever;
+import com.sudwood.advancedutilities.tileentity.IWire;
 import com.sudwood.advancedutilities.tileentity.TileEntityArmorForge;
+import com.sudwood.advancedutilities.tileentity.TileEntityBattery;
 import com.sudwood.advancedutilities.tileentity.TileEntityBellows;
+import com.sudwood.advancedutilities.tileentity.TileEntityBlockBreaker;
+import com.sudwood.advancedutilities.tileentity.TileEntityBlockPlacer;
 import com.sudwood.advancedutilities.tileentity.TileEntityBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityChunkLoader;
 import com.sudwood.advancedutilities.tileentity.TileEntityCompressor;
+import com.sudwood.advancedutilities.tileentity.TileEntityElevator;
 import com.sudwood.advancedutilities.tileentity.TileEntityFluidTube;
+import com.sudwood.advancedutilities.tileentity.TileEntityGrowerBlock;
 import com.sudwood.advancedutilities.tileentity.TileEntityHPBoiler;
 import com.sudwood.advancedutilities.tileentity.TileEntityItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityKiln;
+import com.sudwood.advancedutilities.tileentity.TileEntityMagnetTube;
+import com.sudwood.advancedutilities.tileentity.TileEntityPortaChest;
 import com.sudwood.advancedutilities.tileentity.TileEntityQuarryFrame;
+import com.sudwood.advancedutilities.tileentity.TileEntityRationedItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntityRestrictedItemTube;
 import com.sudwood.advancedutilities.tileentity.TileEntitySmeltry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySplitterFluidTube;
@@ -41,14 +59,18 @@ import com.sudwood.advancedutilities.tileentity.TileEntitySteamCrusher;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamFurnace;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamQuarry;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteamSmeltry;
+import com.sudwood.advancedutilities.tileentity.TileEntitySteamTurbine;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteelController;
 import com.sudwood.advancedutilities.tileentity.TileEntitySteelOven;
 import com.sudwood.advancedutilities.tileentity.TileEntityStoneMill;
 import com.sudwood.advancedutilities.tileentity.TileEntityTank;
 import com.sudwood.advancedutilities.tileentity.TileEntityToolForge;
+import com.sudwood.advancedutilities.tileentity.TileEntityTrash;
+import com.sudwood.advancedutilities.tileentity.TileEntityWire;
 import com.sudwood.advancedutilities.tileentity.TileEntityWoodenCrate;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -67,13 +89,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 
-@Mod(modid = AdvancedUtilities.MODID, version = AdvancedUtilities.VERSION)
+@Mod(modid = AdvancedUtilities.MODID, version = AdvancedUtilities.VERSION, name=AdvancedUtilities.NAME, guiFactory = AdvancedUtilities.GUIFACTORY)
 public class AdvancedUtilities
 {
     public static final String MODID = "advancedutilities";
-    public static final String VERSION = "A-0.511";
+    public static final String VERSION = "A-0.554";
+    public static final String NAME = "Advanced Utilities";
     public static final String textureSize = "";
+    public static Configuration config;
+    public static final String GUIFACTORY = "com.sudwood."+MODID+".client.gui.GuiFactoryAdvanced";
     public static SimpleNetworkWrapper network;
     OreGenerator oregen = new OreGenerator();
     TreeGenerator treegen = new TreeGenerator();
@@ -98,7 +124,13 @@ public class AdvancedUtilities
     public static final int stoneMillGui = 18;
     public static final int compressorGui = 19;
     public static final int woodenCrateGui = 20;
-    
+    public static final int trashGui = 21;
+    public static final int blockPlacerGui = 22;
+    public static final int blockGrowerGui = 23;
+    public static final int portaChestBlockGui=24;
+    public static final int portaChestItemGui=25;
+    public static final int voidRingGui =26;
+    public static boolean isBaubles = false;
     public static String steamName = "Steam";
     
 	@Instance(MODID)
@@ -160,14 +192,16 @@ public class AdvancedUtilities
     	AdvancedUtilitiesItems.init();
     	AdvancedUtilitiesBlocks.addRecipies();
     	AdvancedUtilitiesItems.addRecipies();
-    	CrushRecipes.loadRecipes();
+    	AdvancedUtilitiesFluids.initFluids();
     	this.registerEntities();
     	this.registerTiles();
-    	ConfigHandler.init(event.getSuggestedConfigurationFile());
-
+    	config = new Configuration(event.getSuggestedConfigurationFile());
+    	ConfigHandler.init(config);
+    	event.getModConfigurationDirectory();
    		FMLCommonHandler.instance().bus().register(new AUFMLEventHandler());
 
     	MinecraftForge.EVENT_BUS.register(new AUEventHandler());
+    	MinecraftForge.EVENT_BUS.register(BucketHandler.instance);
     	
     }
     
@@ -194,7 +228,16 @@ public class AdvancedUtilities
 		{
     		MinecraftForge.EVENT_BUS.register(new GuiSteamBar(Minecraft.getMinecraft()));
 		}
-    	
+    	SmeltryRecipes.registerSmeltryRecipesString();
+    	SteamFurnaceRecipes.registerFurnaceRecipesString();
+    	CompressRecipes.registerCompressRecipesString();
+    	KilnRecipes.registerKilnRecipesString();
+    	CrushRecipes.registerCrushRecipesString();
+    	SteelOvenRecipes.registerFurnaceRecipesString();
+    	if(Loader.isModLoaded("Baubles"))
+    	{
+    		isBaubles = true;
+    	}
     }
     
     public void registerPackets()
@@ -237,9 +280,25 @@ public class AdvancedUtilities
     	GameRegistry.registerTileEntity(TileEntityStoneMill.class, "AdvancedUtilities:TileEntityStoneMill");
     	GameRegistry.registerTileEntity(TileEntityCompressor.class, "AdvancedUtilities:TileEntityCompressor");
     	GameRegistry.registerTileEntity(TileEntityWoodenCrate.class, "AdvancedUtilities:TileEntityWoodenCrate");
+    	GameRegistry.registerTileEntity(TileEntityWire.class, "AdvancedUtilities:TileEntityWire");
+    	GameRegistry.registerTileEntity(TileEntitySteamTurbine.class, "AdvancedUtilities:TileEntitySteamTurbine");
+    	GameRegistry.registerTileEntity(TileEntityBattery.class, "AdvancedUtilities:TileEntityBattery");
+    	GameRegistry.registerTileEntity(TileEntityTrash.class, "AdvancedUtilities:TileEntityTrash");
+    	GameRegistry.registerTileEntity(TileEntityBlockBreaker.class, "AdvancedUtilities:TileEntityBlockBreaker");
+    	GameRegistry.registerTileEntity(TileEntityBlockPlacer.class, "AdvancedUtilities:TileEntityBlockPlacer");
+    	GameRegistry.registerTileEntity(TileEntityGrowerBlock.class, "AdvancedUtilities:TileEntityGrowerBlock");
+    	GameRegistry.registerTileEntity(TileEntityElevator.class, "AdvancedUtilities:TileEntityElevator");
+    	GameRegistry.registerTileEntity(TileEntityPortaChest.class, "AdvancedUtilities:TileEntityPortaChest");
+    	GameRegistry.registerTileEntity(TileEntityMagnetTube.class, "AdvancedUtilities:TileEntityMagnetTube");
+    	GameRegistry.registerTileEntity(TileEntityRationedItemTube.class, "AdvancedUtilities:TileEntityRationedItemTube");
+    	TileEntityWire.registerRenderPowerTile(IWire.class);
+    	TileEntityWire.registerRenderPowerTile(IPowerReciever.class);
+    	TileEntityWire.registerRenderPowerTile(IPowerProvider.class);
+    	
     }
     
-    public void registerEntities()
+    @SuppressWarnings("static-access")
+	public void registerEntities()
     {
     	//EntityRegistry.registerModEntity(EntityBullet.class, "EntityBullet", 0, this.instance, 20, 1, true);
     	//EntityRegistry.registerGlobalEntityID(EntitySpeedyMinecart.class, "EntitySpeedyMinecart", EntityRegistry.findGlobalUniqueEntityId());

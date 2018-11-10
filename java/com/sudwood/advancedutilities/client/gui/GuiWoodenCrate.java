@@ -35,9 +35,9 @@ public class GuiWoodenCrate extends GuiContainer
      */
     protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
     {
-        this.fontRendererObj.drawString("Wooden Crate", this.xSize / 2 - this.fontRendererObj.getStringWidth("Wooden Crate") / 2, 6, 4210752);
-        this.fontRendererObj.drawString("Amount: "+tile.stackSize, this.xSize / 2 - this.fontRendererObj.getStringWidth("Wooden Crate") / 2, 15, 4210752);
-        this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
+        this.fontRendererObj.drawString("Wooden Crate", this.xSize / 2 - this.fontRendererObj.getStringWidth("Wooden Crate") / 2, -26, 16777215);
+        this.fontRendererObj.drawString("Amount: "+tile.stackSize, this.xSize / 2 - this.fontRendererObj.getStringWidth("Wooden Crate") / 2, -15, 16777215);
+        this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), -1, this.ySize - 86 + 2, 4210752);
     }
 
     @Override
@@ -57,18 +57,7 @@ public class GuiWoodenCrate extends GuiContainer
     	super.drawScreen(par1, par2, par3);
     	int var5 = (this.width - this.xSize) / 2;
         int var6 = (this.height - this.ySize) / 2;
-        if(par1 >= 41+var5 && par2 >= 31+var6 && par1 <= 64+var5 && par2 <= 54+var6)
-		{
-			String[] text = {"Input"};
-			List temp = Arrays.asList(text);
-			drawHoveringText(temp, par1+40, par2, fontRendererObj);
-		}
-        if(par1 >= 116+var5 && par2 >= 31+var6 && par1 <= 139+var5 && par2 <= 54+var6)
-		{
-			String[] text = {"Output"};
-			List temp = Arrays.asList(text);
-			drawHoveringText(temp, par1+40, par2, fontRendererObj);
-		}
+       
         
     }
 }

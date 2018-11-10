@@ -7,6 +7,12 @@ public class HudOptions
 	public static boolean displayToolHud = true;
 	public static boolean displayFluidHud = true;
 	public static boolean displayBlockHud = true;
+	public static boolean displayJetpackParticles = true;
+	public static boolean playJetpackSounds = true;
+	public static boolean playBeltSounds = true;
+	public static boolean dynamicToggleText = true;
+	public static boolean displayToggleText = true;
+	public static boolean magnetAmuletParticles = true;
 	public static int fluidX = 0;
 	public static int fluidY = 0;
 	public static int steamBarX = 0;
@@ -23,4 +29,8 @@ public class HudOptions
 	public static int ToolHudY = 0;
 	public static int ArmorHudX = 0;
 	public static int ArmorHudY = 0;
+	public static int steamJetpackHoverEnabledX = 0;
+	public static int steamJetpackHoverEnabledY = 0;
+	public static int baubleEnabledX = 0;
+	public static int baubleEnabledY = 0;
 }

@@ -54,6 +54,20 @@ public class BlockSteamQuarry extends BlockContainer
 
             if (tileentityfurnace != null)
             {
+            	if(tileentityfurnace.isFortune3)
+            	{
+            		ItemStack stack = new ItemStack(AdvancedUtilitiesItems.upgrade, 1, 9);
+            		EntityItem upgrade = new EntityItem(p_149749_1_, p_149749_2_, p_149749_3_,p_149749_4_ , stack  );
+            		p_149749_1_.spawnEntityInWorld(upgrade);
+            		
+            	}
+            	if(tileentityfurnace.isEff)
+            	{
+            		ItemStack stack = new ItemStack(AdvancedUtilitiesItems.upgrade, 1, 3);
+            		EntityItem upgrade = new EntityItem(p_149749_1_, p_149749_2_, p_149749_3_,p_149749_4_ , stack  );
+            		p_149749_1_.spawnEntityInWorld(upgrade);
+            		
+            	}
                 for (int i1 = 0; i1 < tileentityfurnace.getSizeInventory(); ++i1)
                 {
                     ItemStack itemstack = tileentityfurnace.getStackInSlot(i1);
@@ -99,10 +113,14 @@ public class BlockSteamQuarry extends BlockContainer
      * Called whenever the block is added into the world. Args: world, x, y, z
      */
 	@Override
-    public void onBlockAdded(World p_149726_1_, int p_149726_2_, int p_149726_3_, int p_149726_4_)
+    public void onBlockAdded(World world, int x, int y, int z)
     {
-        super.onBlockAdded(p_149726_1_, p_149726_2_, p_149726_3_, p_149726_4_);
-        this.func_149930_e(p_149726_1_, p_149726_2_, p_149726_3_, p_149726_4_);
+        super.onBlockAdded(world, x, y, z);
+        this.func_149930_e(world, x, y, z);
+        if(!world.isRemote)
+		{
+			((TileEntitySteamQuarry) world.getTileEntity(x, y, z)).checkCompressor();
+		}
     }
     
     private void func_149930_e(World p_149930_1_, int p_149930_2_, int p_149930_3_, int p_149930_4_)
@@ -185,7 +203,7 @@ public class BlockSteamQuarry extends BlockContainer
      */
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_)
     {
-    	if(player.isSneaking())
+    	if(player.isSneaking()&&player.getHeldItem()!=null&&player.getHeldItem().getItem()==AdvancedUtilitiesItems.bronzeWrench)
 		{
 			this.sneakWrench(world, x, y, z, player);
 			return true;
@@ -193,6 +211,42 @@ public class BlockSteamQuarry extends BlockContainer
     	if(!world.isRemote)
     	{
     		TileEntitySteamQuarry tile = (TileEntitySteamQuarry) world.getTileEntity(x, y, z);
+    		if(player.getHeldItem() != null &&player.getHeldItem().isItemEqual(new ItemStack(AdvancedUtilitiesItems.upgrade,1 ,9)))
+    		{
+    			if(!tile.isFortune3)
+    			{
+    				tile.isFortune3 = true;
+    				if(player.getHeldItem().stackSize==1)
+    					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+    				else
+    				{
+    					ItemStack temp = player.getHeldItem();
+    					temp.stackSize--;
+    					player.inventory.setInventorySlotContents(player.inventory.currentItem, temp);
+    				}
+    				return false;
+    			}
+    		}
+    		if(player.getHeldItem() != null &&player.getHeldItem().isItemEqual(new ItemStack(AdvancedUtilitiesItems.upgrade,1 ,1)))
+    		{
+    			if(!tile.isEff)
+    			{
+    				tile.isEff = true;
+    				if(player.getHeldItem().stackSize==1)
+    					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+    				else
+    				{
+    					ItemStack temp = player.getHeldItem();
+    					temp.stackSize--;
+    					player.inventory.setInventorySlotContents(player.inventory.currentItem, temp);
+    				}
+    				return false;
+    			}
+    		}
+    		
+    		player.addChatMessage(new ChatComponentText("Speed: "+tile.speedMult));
+    		int[] temp4 = tile.getDigCoords();
+    		player.addChatMessage(new ChatComponentText("Last Dig: "+temp4[0]+" :X: "+temp4[1]+" :Y: "+temp4[2]+" :Z: "));
     		if(!tile.hasDetermined)
     		{
     			player.addChatMessage(new ChatComponentText("Determining Quarry Size."));

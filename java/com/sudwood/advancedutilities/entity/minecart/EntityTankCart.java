@@ -1,5 +1,9 @@
 package com.sudwood.advancedutilities.entity.minecart;
 
+import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
+import com.sudwood.advancedutilities.fluids.AdvancedUtilitiesFluids;
+import com.sudwood.advancedutilities.tileentity.TileEntityTank;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,9 +18,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-
-import com.sudwood.advancedutilities.blocks.AdvancedUtilitiesBlocks;
-import com.sudwood.advancedutilities.tileentity.TileEntityTank;
 
 public class EntityTankCart extends EntityMinecart{
 
@@ -142,7 +143,7 @@ public class EntityTankCart extends EntityMinecart{
 				  
 				  if(FluidContainerRegistry.isEmptyContainer(player.getCurrentEquippedItem()))
 				  {
-						  if(this.tank.getFluidAmount() > 0 && this.tank.getFluid().getFluid()!= AdvancedUtilitiesBlocks.fluidSteam)
+						  if(this.tank.getFluidAmount() > 0 && this.tank.getFluid().getFluid()!= AdvancedUtilitiesFluids.fluidSteam)
 						  {
 							  player.inventory.addItemStackToInventory(FluidContainerRegistry.fillFluidContainer(this.tank.drain(FluidContainerRegistry.BUCKET_VOLUME, true), player.getCurrentEquippedItem()));
 							  if(!player.capabilities.isCreativeMode)
